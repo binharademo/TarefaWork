@@ -5,7 +5,7 @@ using TarefasLibrary.Interface;
 
 namespace TarefasLibrary.Negocio
 {
-    public class UsuarioServico
+    public class UsuarioServico : IUsuarioServico
     {
         IUsuarioRepositorio _usuarioRepositorio;
 
