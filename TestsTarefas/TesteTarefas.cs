@@ -15,7 +15,7 @@ namespace TestsTarefas
             string status = "Pendente";
             string criador = "Gabriel";
             string responsavel = "Vinicius";
-            DateTime prazo = new DateTime(2025, 12, 31);
+            DateTime prazo = new DateTime(2025, 12, 01);
             string descricao = "Estudar C# para ser um bom programador";
             Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
 
@@ -37,12 +37,12 @@ namespace TestsTarefas
         public void TesteSalvarEBuscar()
         {
             //Arrange
-            int id = 1;
+            int id = 177;
             string titulo = "Estudar C#";
             string status = "Pendente";
             string criador = "Gabriel";
             string responsavel = "Vinicius";
-            DateTime prazo = new DateTime(2025, 12, 31);
+            DateTime prazo = new DateTime(2025, 12, 02);
             string descricao = "Estudar C# para ser um bom programador";
 
             Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
@@ -103,7 +103,7 @@ namespace TestsTarefas
             string status = "Concluído";
             string criador = "Gabriel#1";
             string responsavel = "Vinicius_2";
-            DateTime prazo = new DateTime(4025, 12, 31);
+            DateTime prazo = new DateTime(4025, 12, 03);
             string descricao = "Estudar C# para ser um bom programador!";
 
             Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
@@ -128,7 +128,7 @@ namespace TestsTarefas
             string status = "Pendente";
             string criador = "Gabriel";
             string responsavel = "Vinicius";
-            DateTime prazo = new DateTime(2025, 12, 31);
+            DateTime prazo = new DateTime(2025, 12, 04);
             string descricao = "Estudar C# para ser um bom programador";
             Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
 
@@ -142,11 +142,11 @@ namespace TestsTarefas
         }
 
         [Theory]
-        [InlineData(1, "Estudar C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
-        [InlineData(2, "Estudar 1 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
-        [InlineData(3, "Estudar 2 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
-        [InlineData(4, "Estudar 3 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
-        [InlineData(5, "Estudar 4 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
+        [InlineData(1, "Estudar C#", "Pendente", "Gabriel", "Vinicius", "2025-12-05", "Estudar C#")]
+        [InlineData(2, "Estudar 1 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-05", "Estudar C#")]
+        [InlineData(3, "Estudar 2 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-05", "Estudar C#")]
+        [InlineData(4, "Estudar 3 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-05", "Estudar C#")]
+        [InlineData(5, "Estudar 4 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-05", "Estudar C#")]
         public void AtualizarTarefa(int id, string titulo, string status, string criador, string responsavel, DateTime prazo, string descricao)
         {
             //Arrange
@@ -157,14 +157,14 @@ namespace TestsTarefas
             //Act
             string novostatus = "Finalizado";
             string novadescricao = "Estudar VB";
-            DateTime novoprazo = new DateTime(2025, 12, 01);
+            DateTime novoprazo = new DateTime(2025, 12, 05);
             bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
 
             //Assert
             Assert.True(resultado);
             Assert.Equal("Finalizado", tarefa01.Status);
             Assert.Equal("Estudar VB", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 12, 01), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 12, 05), tarefa01.Prazo);
 
         }
 
@@ -178,7 +178,7 @@ namespace TestsTarefas
             string status = "Pendente";
             string criador = "Gabriel";
             string responsavel = "Vinicius";
-            DateTime prazo = new DateTime(2025, 05, 20);
+            DateTime prazo = new DateTime(2025, 05, 08);
             string descricao = "Estudar C#";
             Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -187,14 +187,14 @@ namespace TestsTarefas
             //Act
             string novostatus = "Atendimento";
             string novadescricao = "Estudar PHP";
-            DateTime novoprazo = new DateTime(2025, 12, 31);
+            DateTime novoprazo = new DateTime(2025, 12, 09);
             bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
 
             //Assert
             Assert.True(resultado);
             Assert.Equal("Atendimento", tarefa01.Status);
             Assert.Equal("Estudar PHP", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 12, 31), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 12, 09), tarefa01.Prazo);
 
 
         }
@@ -204,12 +204,12 @@ namespace TestsTarefas
         public void AtualizarTarefa_OutraTentatic()
         {
             //Arrange
-            int id = 1;
+            int id = 52;
             string titulo = "Estudar C#";
             string status = "Pendente";
             string criador = "Gabriel";
             string responsavel = "Vinicius";
-            DateTime prazo = new DateTime(2025, 05, 20);
+            DateTime prazo = new DateTime(2025, 05, 10);
             string descricao = "Estudar C#";
             Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -218,14 +218,14 @@ namespace TestsTarefas
             //Act
             string novostatus = "";
             string novadescricao = "Estudar VB";
-            DateTime novoprazo = new DateTime(2025, 12, 31);
+            DateTime novoprazo = new DateTime(2025, 12, 11);
             bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
 
             //Assert
             Assert.False(resultado);
             Assert.Equal("Pendente", tarefa01.Status);
             Assert.Equal("Estudar C#", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 05, 20), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 05, 10), tarefa01.Prazo);
 
         }
 
