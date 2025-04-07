@@ -8,5 +8,6 @@ namespace TarefasLibrary.Interface
         List<Tarefa> ListarTodas();
         bool Salvar(Tarefa tarefa);
         public bool Atualizar(Tarefa tarefa, string novostatus, string novadescricao, DateTime novoprazo);
+        public List<Tarefa> ListarPorUsuario(int id);
     }
 }

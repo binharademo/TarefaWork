@@ -11,8 +11,8 @@ namespace Tests_Tarefas
 {
     public class UsuarioTeste
     {
-
-        public void CriarUsuario(Usuario usuario)
+        [Fact]
+        public void CriarUsuario()
         {
             //arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());

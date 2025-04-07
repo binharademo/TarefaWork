@@ -12,18 +12,20 @@ namespace Tests_Tarefas
         public void SalvarTarefa_Testes()
         {
             //Arrange
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             int id = 1;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
 
             //Act
-            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
-            tarefaServico.Salvar(tarefa01);
+            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
 
             //Assert
             Assert.Equal(titulo, tarefa01.Titulo);
@@ -38,50 +40,55 @@ namespace Tests_Tarefas
         [Fact]
         public void TesteSalvarEBuscar()
         {
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
             int id = 1;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
 
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
-           
-            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
-
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
 
             //Act
             tarefaServico.Salvar(tarefa01);
-
             Tarefa Tresultado = tarefaServico.BuscarPorId(tarefa01.Id);
-            bool result = Tresultado != null;
-
+            
             //Assert
+            Assert.NotNull(Tresultado);
             Assert.Equal(titulo, Tresultado.Titulo);
             Assert.Equal(status, Tresultado.Status);
-            Assert.Equal(criador, Tresultado.Criador);
-            Assert.Equal(responsavel, Tresultado.Responsavel);
+            Assert.Equal(criador.Nome, Tresultado.Criador.Nome);
+            Assert.Equal(responsavel.Nome, Tresultado.Responsavel.Nome);
             Assert.Equal(prazo, Tresultado.Prazo);
             Assert.Equal(descricao, Tresultado.Descricao);
 
-            Assert.True(result);
+
         }
 
         [Fact]
         public void SalvarTarefa_ValoresNulosOuVazios()
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
             int id = 1;
             string titulo = "";
             string status = "";
-            string criador = "";
-            string responsavel = "";
             DateTime prazo = new DateTime();
             string descricao = "";
 
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa( titulo, status, criador, responsavel, prazo, descricao);
 
             //Act
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -99,16 +106,20 @@ namespace Tests_Tarefas
         [Fact]
         public void SalvarTarefa_ValoresEspeciais()
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
             int id = 1;
             string titulo = "Estudar C# @ 2025!";
             string status = "Concluído";
-            string criador = "Gabriel#1";
-            string responsavel = "Vinicius_2";
             DateTime prazo = new DateTime(4025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador!";
 
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
 
             //Act
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -124,15 +135,19 @@ namespace Tests_Tarefas
         [Fact]
         public void ListarTarefas()
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
             int id = 1;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
 
             //Act
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -149,10 +164,16 @@ namespace Tests_Tarefas
         [InlineData(3, "Estudar 2 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
         [InlineData(4, "Estudar 3 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
         [InlineData(5, "Estudar 4 C#", "Pendente", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
-        public void AtualizarTarefa(int id, string titulo, string status, string criador, string responsavel, DateTime prazo, string descricao)
+        public void AtualizarTarefa(int id, string titulo, string status, string nomeCriador, string nomeResponsavel, DateTime prazo, string descricao)
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario(nomeCriador, "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario(nomeResponsavel, "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
@@ -170,19 +191,23 @@ namespace Tests_Tarefas
 
         }
 
-         
+
         [Fact]
         public void AtualizarTarefa_02()
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
             int id = 1000;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 05, 20);
             string descricao = "Estudar C#";
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
@@ -205,15 +230,19 @@ namespace Tests_Tarefas
         [Fact]
         public void AtualizarTarefa_OutraTentatic()
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //Arrange
             int id = 1;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 05, 20);
             string descricao = "Estudar C#";
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
@@ -228,6 +257,37 @@ namespace Tests_Tarefas
             Assert.Equal("Pendente", tarefa01.Status);
             Assert.Equal("Estudar C#", tarefa01.Descricao);
             Assert.Equal(new DateTime(2025, 05, 20), tarefa01.Prazo);
+
+        }
+
+        [Fact]
+        public void Listar_Tarefas_Por_Usuario()
+        {
+            //Arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
+            int id = 1;
+            string titulo = "Estudar C#";
+            string status = "Pendente";
+
+            DateTime prazo = new DateTime(2025, 05, 20);
+            string descricao = "Estudar C#";
+            Tarefa tarefa01 = new Tarefa(titulo, status, criador, responsavel, prazo, descricao);
+
+            tarefaServico.Salvar(tarefa01);
+            // act
+            tarefaServico.ListarPorUsuario(responsavel.Id);
+
+            // assert
+            Assert.NotEmpty(tarefaServico.ListarPorUsuario(responsavel.Id));
+            Assert.NotEmpty(tarefaServico.ListarPorUsuario(criador.Id));
+            Assert.Contains(tarefa01, tarefaServico.ListarPorUsuario(responsavel.Id));
 
         }
 
