@@ -29,6 +29,20 @@ namespace TarefasLibrary.Repositorio
             return null;
         }
 
+        public bool Editar(int id,string nome,string senha, string funcao, string setor)
+        {
+            var usuarioExistente = BuscarPorId(id);
+            if (usuarioExistente != null)
+            {
+                usuarioExistente.Nome = nome;
+                usuarioExistente.Senha = senha;
+                usuarioExistente.Funcao = funcao;
+                usuarioExistente.Setor =setor;
+                return true;
+            }
+            return false;
+        }
+
         private int GeraNovoId()
         {
             if (ListaUsuarios.Count == 0) return 1;
