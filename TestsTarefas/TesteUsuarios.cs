@@ -1,8 +1,9 @@
 ﻿using TarefasLibrary;
+using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
 
-namespace TestsTarefas
+namespace Tests_Tarefas
 {
     public class UsuarioTeste
     {

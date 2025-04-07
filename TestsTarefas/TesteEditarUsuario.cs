@@ -3,7 +3,7 @@ using TarefasLibrary.Repositorio;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Modelo;
 
-namespace TestsTarefas
+namespace Tests_Tarefas
 {
     public class TesteEditarUsuario
     {
