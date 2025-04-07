@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TarefasLibrary;
+using TarefasLibrary.Modelo;
 using TarefasLibrary.Repositorio;
 
 namespace TarefasLibrary.Negocio

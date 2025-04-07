@@ -1,4 +1,4 @@
-﻿namespace TarefasLibrary
+﻿namespace TarefasLibrary.Modelo
 {
     public class Comentario
     {
@@ -10,8 +10,8 @@
 
         public Comentario(string descricao, DateTime dataCriacao)
         {
-            this.Descricao = descricao;
-            this.DataCriacao = dataCriacao;
+            Descricao = descricao;
+            DataCriacao = dataCriacao;
         }
 
         public Comentario(int id)
@@ -26,15 +26,15 @@
 
         public void SalvarComentario()
         {
-            this.Id = ++contadorIDs;
-            Comentario.ListaComentarios.Add(this);
+            Id = ++contadorIDs;
+            ListaComentarios.Add(this);
         }
 
         public bool BuscarComentario()
         {
             foreach (var comentario in ListaComentarios)
             {
-                if (comentario.Id == this.Id)
+                if (comentario.Id == Id)
                 {
                     Id = comentario.Id;
                     Descricao = comentario.Descricao;

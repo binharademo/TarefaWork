@@ -1,5 +1,4 @@
-﻿
-using TarefasLibrary;
+﻿using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Interface
 {
@@ -8,5 +7,6 @@ namespace TarefasLibrary.Interface
         Usuario? BuscarPorId(int id);
         bool Cadastrar(Usuario usuario);
         List<Usuario> ListarUsuario();
+        bool Editar(int id, string nome, string senha, string funcao, string setor);
     }
 }

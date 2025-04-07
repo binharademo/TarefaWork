@@ -1,5 +1,5 @@
-﻿using TarefasLibrary;
-using TarefasLibrary.Interface;
+﻿using TarefasLibrary.Interface;
+using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Negocio
 {
