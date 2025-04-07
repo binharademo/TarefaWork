@@ -2,7 +2,7 @@
 using TarefasLibrary.Repositorio;
 using TarefasLibrary.Negocio;
 
-namespace ComentariosTests
+namespace Tests_Tarefas
 {
     public class TesteComentarios
     {
