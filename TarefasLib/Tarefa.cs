@@ -17,7 +17,7 @@ namespace Tarefas_Library
             Criador = criador;
             Responsavel = responsavel;
             Prazo = prazo;
-            DataCriacao = dataCriacao?? DateAndTime.Now;
+            DataCriacao = dataCriacao ?? DateAndTime.Now;
             Descricao = descricao;
         }
 
@@ -35,13 +35,15 @@ namespace Tarefas_Library
         public DateTime DataCriacao { get; set; }
         public DateTime Prazo { get; set; }
 
+        public List<Comentario> listaComentarios = new List<Comentario>();
+
         private static List<Tarefa> _tarefas = new List<Tarefa>();
         private int v;
 
         public void Salvar()
         {
             _tarefas.Add(this);
-            return ;
+            return;
         }
 
         public List<Tarefa> ListarTodas()
@@ -79,6 +81,16 @@ namespace Tarefas_Library
                 }
             }
             return false;
+        }
+
+        public void Adicionar(Comentario comentario)
+        {
+            listaComentarios.Add(comentario);
+        }
+
+        public List<Comentario> ListarComentarios()
+        {
+            return listaComentarios;
         }
     }
 }
