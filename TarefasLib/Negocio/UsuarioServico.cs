@@ -30,5 +30,12 @@ namespace TarefasLibrary.Negocio
         {
             return _usuarioRepositorio.ListarUsuario();
         }
+
+        public bool? Editar(int id, string nome, string senha, string funcao, string setor)
+        {
+            if (_usuarioRepositorio.Editar( id, nome, senha, funcao, setor))
+                return true;
+            return null;
+        }
     }
 }
