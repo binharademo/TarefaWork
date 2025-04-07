@@ -1,5 +1,5 @@
 using NuGet.Frameworks;
-using TarefasLibrary;
+using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
 using Xunit;

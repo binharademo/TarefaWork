@@ -1,4 +1,4 @@
-﻿using TarefasLibrary;
+﻿using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Interface
 {

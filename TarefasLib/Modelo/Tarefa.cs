@@ -4,9 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TarefasLibrary;
 
-namespace TarefasLibrary
+namespace TarefasLibrary.Modelo
 {
     public class Tarefa
     {
