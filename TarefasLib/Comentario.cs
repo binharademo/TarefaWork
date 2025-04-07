@@ -1,4 +1,4 @@
-﻿namespace Tarefas_Library
+﻿namespace TarefasLibrary
 {
     public class Comentario
     {

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TarefasLibrary;
 
-namespace Tarefas_Library
+namespace TarefasLibrary
 {
     public class Tarefa
     {
@@ -36,52 +37,6 @@ namespace Tarefas_Library
         public DateTime Prazo { get; set; }
 
         public List<Comentario> listaComentarios = new List<Comentario>();
-
-        private static List<Tarefa> _tarefas = new List<Tarefa>();
-        private int v;
-
-        public void Salvar()
-        {
-            _tarefas.Add(this);
-            return;
-        }
-
-        public List<Tarefa> ListarTodas()
-        {
-            return _tarefas;
-        }
-
-        public bool Buscar()
-        {
-            foreach (var tarefa in _tarefas)
-            {
-                if (tarefa.Id == this.Id)
-                {
-                    Id = tarefa.Id;
-                    Titulo = tarefa.Titulo;
-                    Status = tarefa.Status;
-                    Criador = tarefa.Criador;
-                    Responsavel = tarefa.Responsavel;
-                    Prazo = tarefa.Prazo;
-                    Descricao = tarefa.Descricao;
-                    DataCriacao = tarefa.DataCriacao;
-                    return true;
-                }
-                else
-                {
-                    Id = 0;
-                    Titulo = "";
-                    Status = "";
-                    Criador = "";
-                    Responsavel = "";
-                    Prazo = DateTime.Now;
-                    Descricao = "";
-                    DataCriacao = DateTime.Now;
-                    return false;
-                }
-            }
-            return false;
-        }
 
         public void Adicionar(Comentario comentario)
         {

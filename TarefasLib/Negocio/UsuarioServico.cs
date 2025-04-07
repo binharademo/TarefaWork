@@ -1,6 +1,9 @@
 ﻿
 
-namespace Tarefas_Library
+using TarefasLibrary;
+using TarefasLibrary.Interface;
+
+namespace TarefasLibrary.Negocio
 {
     public class UsuarioServico
     {
@@ -26,6 +29,13 @@ namespace Tarefas_Library
         public List<Usuario> ListarUsuario()
         {
             return _usuarioRepositorio.ListarUsuario();
+        }
+
+        public bool? Editar(int id, string nome, string senha, string funcao, string setor)
+        {
+            if (_usuarioRepositorio.Editar( id, nome, senha, funcao, setor))
+                return true;
+            return null;
         }
     }
 }

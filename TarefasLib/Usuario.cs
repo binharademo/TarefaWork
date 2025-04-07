@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Tarefas_Library
+namespace TarefasLibrary
 {
     public class Usuario
     {

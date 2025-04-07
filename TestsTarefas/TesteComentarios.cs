@@ -1,5 +1,6 @@
-﻿using Tarefas_Library;
-using TarefasLibrary;
+﻿using TarefasLibrary;
+using TarefasLibrary.Repositorio;
+using TarefasLibrary.Negocio;
 
 namespace ComentariosTests
 {
