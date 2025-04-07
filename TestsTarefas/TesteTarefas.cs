@@ -1,10 +1,8 @@
-using NuGet.Frameworks;
 using TarefasLibrary;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
-using Xunit;
 
-namespace Tests_Tarefas
+namespace TestsTarefas
 {
     public class TesteTarefas
     {
