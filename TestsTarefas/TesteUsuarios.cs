@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tarefas_Library;
+using TarefasLibrary;
+using TarefasLibrary.Negocio;
+using TarefasLibrary.Repositorio;
 
 namespace Tests_Tarefas
 {

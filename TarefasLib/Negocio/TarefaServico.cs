@@ -1,4 +1,7 @@
-﻿namespace Tarefas_Library
+﻿using TarefasLibrary;
+using TarefasLibrary.Interface;
+
+namespace TarefasLibrary.Negocio
 {
     public class TarefaServico : ITarefaServico
     {

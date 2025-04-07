@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tarefas_Library;
+using TarefasLibrary;
 
-namespace TarefasLibrary
+namespace TarefasLibrary.Repositorio
 {
     public class ListaComentarios
     {

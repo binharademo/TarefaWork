@@ -1,5 +1,7 @@
 using NuGet.Frameworks;
-using Tarefas_Library;
+using TarefasLibrary;
+using TarefasLibrary.Negocio;
+using TarefasLibrary.Repositorio;
 using Xunit;
 
 namespace Tests_Tarefas

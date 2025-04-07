@@ -1,5 +1,7 @@
 ﻿
-namespace Tarefas_Library
+using TarefasLibrary;
+
+namespace TarefasLibrary.Interface
 {
     public interface IUsuarioRepositorio
     {

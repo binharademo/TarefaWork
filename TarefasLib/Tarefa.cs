@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TarefasLibrary;
 
-namespace Tarefas_Library
+namespace TarefasLibrary
 {
     public class Tarefa
     {
