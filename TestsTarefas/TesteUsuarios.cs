@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TarefasLibrary.Modelo;
+﻿using TarefasLibrary;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
 
-namespace Tests_Tarefas
+namespace TestsTarefas
 {
     public class UsuarioTeste
     {

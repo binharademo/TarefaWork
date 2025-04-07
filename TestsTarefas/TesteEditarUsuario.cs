@@ -1,9 +1,9 @@
-﻿using Xunit;
+﻿using TarefasLibrary;
 using TarefasLibrary.Repositorio;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Modelo;
 
-namespace Tests_Tarefas
+namespace TestsTarefas
 {
     public class TesteEditarUsuario
     {

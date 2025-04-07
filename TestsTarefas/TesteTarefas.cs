@@ -1,10 +1,8 @@
-using NuGet.Frameworks;
-using TarefasLibrary.Modelo;
+using TarefasLibrary;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
-using Xunit;
 
-namespace Tests_Tarefas
+namespace TestsTarefas
 {
     public class TesteTarefas
     {
@@ -21,7 +19,9 @@ namespace Tests_Tarefas
             int id = 1;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            DateTime prazo = new DateTime(2025, 12, 31);
+            string criador = "Gabriel";
+            string responsavel = "Vinicius";
+            DateTime prazo = new DateTime(2025, 12, 01);
             string descricao = "Estudar C# para ser um bom programador";
 
             //Act
@@ -48,9 +48,12 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
 
             //Arrange
-            int id = 1;
+            int id = 177;
             string titulo = "Estudar C#";
             string status = "Pendente";
+            string criador = "Gabriel";
+            string responsavel = "Vinicius";
+            DateTime prazo = new DateTime(2025, 12, 02);
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
 
@@ -180,14 +183,14 @@ namespace Tests_Tarefas
             //Act
             string novostatus = "Finalizado";
             string novadescricao = "Estudar VB";
-            DateTime novoprazo = new DateTime(2025, 12, 01);
+            DateTime novoprazo = new DateTime(2025, 12, 05);
             bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
 
             //Assert
             Assert.True(resultado);
             Assert.Equal("Finalizado", tarefa01.Status);
             Assert.Equal("Estudar VB", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 12, 01), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 12, 05), tarefa01.Prazo);
 
         }
 
@@ -214,14 +217,14 @@ namespace Tests_Tarefas
             //Act
             string novostatus = "Atendimento";
             string novadescricao = "Estudar PHP";
-            DateTime novoprazo = new DateTime(2025, 12, 31);
+            DateTime novoprazo = new DateTime(2025, 12, 09);
             bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
 
             //Assert
             Assert.True(resultado);
             Assert.Equal("Atendimento", tarefa01.Status);
             Assert.Equal("Estudar PHP", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 12, 31), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 12, 09), tarefa01.Prazo);
 
 
         }
@@ -237,7 +240,7 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
 
             //Arrange
-            int id = 1;
+            int id = 52;
             string titulo = "Estudar C#";
             string status = "Pendente";
             DateTime prazo = new DateTime(2025, 05, 20);
@@ -249,14 +252,14 @@ namespace Tests_Tarefas
             //Act
             string novostatus = "";
             string novadescricao = "Estudar VB";
-            DateTime novoprazo = new DateTime(2025, 12, 31);
+            DateTime novoprazo = new DateTime(2025, 12, 11);
             bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
 
             //Assert
             Assert.False(resultado);
             Assert.Equal("Pendente", tarefa01.Status);
             Assert.Equal("Estudar C#", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 05, 20), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 05, 10), tarefa01.Prazo);
 
         }
 
