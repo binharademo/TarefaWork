@@ -88,9 +88,15 @@ namespace ComentariosTests
         [Fact]
         public void TestVicularUmComentarioAUmTarefa()
         {
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
             //arrange
-            Tarefa tarefa01 = new Tarefa(01, "titulo", "iniciado", "Binhara", "jose", new DateTime(2025, 12, 31), "descricao");
-            Tarefa tarefa02 = new Tarefa(02, "titulo", "iniciado", "Silveira", "Rodrigo", new DateTime(2025, 12, 31), "descricao");
+            Tarefa tarefa01 = new Tarefa(01, "titulo", "iniciado", criador, responsavel, new DateTime(2025, 12, 31), "descricao");
+            Tarefa tarefa02 = new Tarefa(02, "titulo", "iniciado", criador, responsavel, new DateTime(2025, 12, 31), "descricao");
 
             tarefa01.Adicionar(new Comentario("Comentario 1", new DateTime(2025, 12, 31)));
             tarefa01.Adicionar(new Comentario("Comentario 2", new DateTime(2025, 12, 31)));

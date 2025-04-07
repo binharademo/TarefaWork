@@ -17,7 +17,7 @@ namespace TarefasLibrary.Negocio
             return _repositorio.Salvar(tarefa);
         }
 
-        public Tarefa BuscarPorId(int id)
+        public Tarefa? BuscarPorId(int id)
         {
             return _repositorio.BuscarPorID(id);
         }
@@ -32,5 +32,9 @@ namespace TarefasLibrary.Negocio
             return _repositorio.ListarTodas();
         }
 
+        public List<Tarefa> ListarPorUsuario(int id)
+        {
+            return _repositorio.ListarPorUsuario(id);
+        }
     }
 }
