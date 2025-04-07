@@ -1,8 +1,9 @@
 using TarefasLibrary;
+using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
 
-namespace TestsTarefas
+namespace Tests_Tarefas
 {
     public class TesteTarefas
     {
@@ -19,8 +20,8 @@ namespace TestsTarefas
             int id = 1;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
+            //string criador = "Gabriel";
+            //string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 12, 01);
             string descricao = "Estudar C# para ser um bom programador";
 
@@ -51,9 +52,9 @@ namespace TestsTarefas
             int id = 177;
             string titulo = "Estudar C#";
             string status = "Pendente";
-            string criador = "Gabriel";
-            string responsavel = "Vinicius";
-            DateTime prazo = new DateTime(2025, 12, 02);
+           // string criador = "Gabriel";
+            //string responsavel = "Vinicius";
+            //DateTime prazo = new DateTime(2025, 12, 02);
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
 

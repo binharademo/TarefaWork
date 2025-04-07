@@ -1,6 +1,6 @@
 ﻿using TarefasLibrary.ExemploTarefaSolid;
 
-namespace TestsTarefas
+namespace Tests_Tarefas
 {
     public class TestTarefaSolid
     {
