@@ -47,7 +47,7 @@ namespace Tests_Tarefas
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
 
-            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(id, titulo, status, criador, destinario, responsavel, prazo, descricao);
            
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
 
