@@ -260,7 +260,7 @@ namespace Tests_Tarefas
             Assert.False(resultado);
             Assert.Equal("Pendente", tarefa01.Status);
             Assert.Equal("Estudar C#", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 05, 10), tarefa01.Prazo);
+            Assert.Equal(new DateTime(2025, 05, 20), tarefa01.Prazo);
 
         }
 
