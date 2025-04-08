@@ -295,7 +295,81 @@ namespace Tests_Tarefas
 
         }
 
+        [Fact]
+        public void MarcarUsuarios()
+        {
+
+            //Arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            Usuario membro = new Usuario("Guilherme", "123456", "Desenvolvedor", "TI");
+            servico.Criar(membro);
+
+            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao" );
+
+            tarefaServico.Salvar(tarefa01);
+            var resultado = tarefaServico.MarcarMembro(tarefa01, membro);
+
+            Assert.True(resultado);
+            Assert.Contains(membro, tarefa01.Membros);
+        }
 
 
+        [Fact]
+        public void MarcarUsuarioSemTarefa()
+        {
+
+            //Arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            Usuario membro = new Usuario("Guilherme", "123456", "Desenvolvedor", "TI");
+            servico.Criar(membro);
+
+            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao");
+
+            var resultado = tarefaServico.MarcarMembro(tarefa01, membro);
+
+            Assert.False(resultado);
+            Assert.DoesNotContain(membro, tarefa01.Membros);
+        }
+
+        [Fact]
+        public void MarcarUsuarioQueJaExisteNaTarefa()
+        {
+
+            //Arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+
+            Usuario membroExistente = new Usuario("Guilherme", "123456", "Desenvolvedor", "TI");
+            servico.Criar(membroExistente);
+
+            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao");
+
+            tarefaServico.Salvar(tarefa01);
+            tarefaServico.MarcarMembro(tarefa01, membroExistente);
+
+            var resultado = tarefaServico.MarcarMembro(tarefa01, membroExistente);
+
+            Assert.False(resultado);
+            Assert.Contains(membroExistente, tarefa01.Membros);
+            Assert.Single(tarefa01.Membros, membroExistente);
+        }
     }
 }

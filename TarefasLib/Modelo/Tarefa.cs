@@ -37,6 +37,7 @@ namespace TarefasLibrary.Modelo
         public string Status { get; set; }
         public Usuario Criador { get; set; }
         public Usuario Responsavel { get; set; } 
+        public List<Usuario> Membros { get; set; } = new List<Usuario>();
         public string Descricao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime Prazo { get; set; }
