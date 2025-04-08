@@ -52,5 +52,15 @@ namespace TarefasLibrary.Repositorio
         {
             return ListarTodas().Where(t => t.Responsavel.Id == id || t.Criador.Id == id).ToList();
         }
+
+        public bool MarcarMembro(Tarefa tarefa, Usuario membro)
+        {
+            var tarefaEncontrada = BuscarPorID(tarefa.Id);
+            if (tarefaEncontrada == null)
+                return false;
+            
+            tarefaEncontrada.Membros.Add(membro);
+            return true;
+        }
     }
 }

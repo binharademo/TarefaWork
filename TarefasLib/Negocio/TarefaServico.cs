@@ -36,5 +36,17 @@ namespace TarefasLibrary.Negocio
         {
             return _repositorio.ListarPorUsuario(id);
         }
+
+        public bool MarcarMembro(Tarefa tarefa, Usuario membro)
+        {
+            var tarefaPesquisa = BuscarPorId(tarefa.Id);
+            if (tarefaPesquisa == null)
+                return false;
+
+            if (tarefaPesquisa.Membros.Contains(membro))
+                return false;
+
+            return _repositorio.MarcarMembro(tarefa, membro);
+        }
     }
 }
