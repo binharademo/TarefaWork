@@ -10,4 +10,3 @@ namespace TarefasLibrary.Interface
         public bool Atualizar(Tarefa tarefa, string novostatus, string novadescricao, DateTime novoprazo);
         public List<Tarefa> ListarPorUsuario(int id);
     }
-}
