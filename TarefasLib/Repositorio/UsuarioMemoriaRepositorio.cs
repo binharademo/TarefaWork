@@ -1,9 +1,10 @@
-﻿using TarefasLibrary.Interface;
+﻿using System;
+using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio
 {
-    public class UsuarioMemoriaRepositorio : IUsuarioRepositorio
+    public class UsuarioMemoriaRepositorio : IRepositorio<Usuario>
     {
         private List<Usuario> ListaUsuarios = new List<Usuario>();
 
@@ -12,11 +13,6 @@ namespace TarefasLibrary.Repositorio
             usuario.Id = GeraNovoId();
             ListaUsuarios.Add(usuario);
             return true;
-        }
-
-        public List<Usuario> ListarUsuario()
-        {
-            return ListaUsuarios;
         }
 
         public Usuario? BuscarPorId(int id)
@@ -29,25 +25,35 @@ namespace TarefasLibrary.Repositorio
             return null;
         }
 
-        public bool Editar(int id,string nome,string senha, string funcao, string setor)
-        {
-            var usuarioExistente = BuscarPorId(id);
-            if (usuarioExistente != null)
-            {
-                usuarioExistente.Nome = nome;
-                usuarioExistente.Senha = senha;
-                usuarioExistente.Funcao = funcao;
-                usuarioExistente.Setor =setor;
-                return true;
-            }
-            return false;
-        }
-
         private int GeraNovoId()
         {
             if (ListaUsuarios.Count == 0) return 1;
 
             return ListaUsuarios.Max(u => u.Id) + 1;
+        }
+
+        public List<Usuario> Listar()
+        {
+            return ListaUsuarios;
+        }
+
+        public bool Editar(Usuario obj)
+        {
+            var usuarioExistente = BuscarPorId(obj.Id);
+            if (usuarioExistente != null)
+            {
+                usuarioExistente.Nome = obj.Nome;
+                usuarioExistente.Senha = obj.Senha;
+                usuarioExistente.Funcao = obj.Funcao;
+                usuarioExistente.Setor = obj.Setor;
+                return true;
+            }
+            return false;
+        }
+
+        public bool Remover(Usuario obj)
+        {
+            throw new NotImplementedException();
         }
     }
 }

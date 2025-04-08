@@ -12,6 +12,6 @@ namespace TarefasLibrary.Interface
         public Usuario? Buscar(int id);
         public Usuario Criar(Usuario usuario);
         public List<Usuario> ListarUsuario();
-        public bool? Editar(int id, string nome, string senha, string funcao, string setor);
+        public bool Editar(int id, string nome, string senha, string funcao, string setor);
     }
 }
