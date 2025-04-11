@@ -97,8 +97,8 @@ namespace Tests_Tarefas
 
 
             //arrange
-            Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao");
-            Tarefa tarefa02 = new Tarefa(02, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao");
+            Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
+            Tarefa tarefa02 = new Tarefa(02, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
 
             tarefa01.Adicionar(new Comentario("Comentario 1", new DateTime(2025, 12, 31)));
             tarefa01.Adicionar(new Comentario("Comentario 2", new DateTime(2025, 12, 31)));
