@@ -3,7 +3,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Negocio
 {
-    public class TarefaServico : ITarefaServico
+    public class TarefaServico : ITarefaServico, ICronometroServico<Tarefa>
     {
         ITarefaRepositorio _repositorio;
 
@@ -53,5 +53,30 @@ namespace TarefasLibrary.Negocio
 
             return _repositorio.MarcarMembro(tarefa, membro);
         }
+
+        public TimeSpan PausaCronometro(Tarefa tarefa)
+        {
+            if (tarefa.Tempos.Count == 0) 
+                return TimeSpan.Zero;
+
+            if (!tarefa.Tempos.Last().EmAndamento())
+                return tarefa.TempoTotal;
+
+            tarefa.Tempos.Last().Stop();
+            tarefa.TempoTotal = tarefa.Tempos.Select(t => t.Total)
+                 .Aggregate(TimeSpan.Zero, (acc, curr) => acc + curr);
+
+            return tarefa.TempoTotal;
+        }
+
+        public bool IniciaCronometro(Tarefa tarefa)
+        {
+            if (tarefa.Tempos.Count > 0 && tarefa.Tempos.Last().EmAndamento())
+                return false;
+
+            tarefa.Tempos.Add(new Cronometro());
+            return true;
+        }
+
     }
 }
