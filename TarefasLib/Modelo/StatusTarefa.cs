@@ -10,7 +10,7 @@ public class StatusTarefa
     // Definindo o enum Status dentro da classe
     public enum Status
     {
-        TODO,
+        ToDo,
         Doing,
         Done
     }
