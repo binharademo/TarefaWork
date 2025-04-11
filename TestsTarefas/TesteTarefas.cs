@@ -267,7 +267,7 @@ namespace Tests_Tarefas
 
         }
         [Fact]
-        public void Atualizar_Status_Tarefa()
+        public void Atualizar_Status_VerificaSeOStatusAntigoEhDiferenteDoNovo()
         {
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
             Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
