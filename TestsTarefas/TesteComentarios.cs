@@ -93,7 +93,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.TODO);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
 
             //arrange

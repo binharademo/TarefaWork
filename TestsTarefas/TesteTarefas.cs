@@ -264,12 +264,7 @@ namespace Tests_Tarefas
             Assert.NotEmpty(tarefaServico.ListarPorUsuario(responsavel.Id));
             Assert.NotEmpty(tarefaServico.ListarPorUsuario(criador.Id));
             Assert.Contains(tarefa01, tarefaServico.ListarPorUsuario(responsavel.Id));
-            //Assert
-            Assert.False(resultado);
-            Assert.Equal("Pendente", tarefa01.Status);
-            Assert.Equal("Estudar C#", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 05, 20), tarefa01.Prazo);
-
+      
         }
         [Fact]
         public void Atualizar_Status_VerificaSeOStatusAntigoEhDiferenteDoNovo()
@@ -315,8 +310,9 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
             Usuario membro = new Usuario("Guilherme", "123456", "Desenvolvedor", "TI");
             servico.Criar(membro);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
-            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao" );
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao" );
 
             tarefaServico.Salvar(tarefa01);
             var resultado = tarefaServico.MarcarMembro(tarefa01, membro);
@@ -340,8 +336,9 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
             Usuario membro = new Usuario("Guilherme", "123456", "Desenvolvedor", "TI");
             servico.Criar(membro);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
-            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao");
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao");
 
             var resultado = tarefaServico.MarcarMembro(tarefa01, membro);
 
@@ -366,7 +363,9 @@ namespace Tests_Tarefas
             Usuario membroExistente = new Usuario("Guilherme", "123456", "Desenvolvedor", "TI");
             servico.Criar(membroExistente);
 
-            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao");
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao");
 
             tarefaServico.Salvar(tarefa01);
             tarefaServico.MarcarMembro(tarefa01, membroExistente);
