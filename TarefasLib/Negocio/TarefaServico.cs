@@ -22,9 +22,14 @@ namespace TarefasLibrary.Negocio
             return _repositorio.BuscarPorID(id);
         }
 
-        public bool Atualizar(Tarefa tarefa, string novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus, string novadescricao, DateTime novoprazo)
         {
             return _repositorio.Atualizar(tarefa, novostatus, novadescricao, novoprazo);    
+        }
+
+        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus)
+        {
+            return _repositorio.Atualizar(tarefa, novostatus);
         }
 
         public List<Tarefa> ListarTodas()

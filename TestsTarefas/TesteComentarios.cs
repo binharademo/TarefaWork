@@ -93,10 +93,12 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
             servico.Criar(responsavel);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
 
             //arrange
-            Tarefa tarefa01 = new Tarefa(01, "titulo", "iniciado", criador, responsavel, new DateTime(2025, 12, 31), "descricao");
-            Tarefa tarefa02 = new Tarefa(02, "titulo", "iniciado", criador, responsavel, new DateTime(2025, 12, 31), "descricao");
+            Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao");
+            Tarefa tarefa02 = new Tarefa(02, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao");
 
             tarefa01.Adicionar(new Comentario("Comentario 1", new DateTime(2025, 12, 31)));
             tarefa01.Adicionar(new Comentario("Comentario 2", new DateTime(2025, 12, 31)));
