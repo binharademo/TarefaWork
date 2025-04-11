@@ -327,7 +327,6 @@ namespace Tests_Tarefas
         [Fact]
         public void MarcarUsuarioSemTarefa()
         {
-
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
@@ -395,5 +394,109 @@ namespace Tests_Tarefas
             Assert.Equal(Tarefa.Prioridade.Alta, tarefa01.PrioridadeTarefa);
 
         }
-    }
+
+        [Fact]
+        public void CronometroCriacao()
+        {
+            // arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            tarefaServico.Salvar(tarefa01);
+
+            //act
+            tarefaServico.IniciaCronometro(tarefa01);
+            tarefaServico.PausaCronometro(tarefa01);
+
+            tarefaServico.IniciaCronometro(tarefa01);
+            tarefaServico.PausaCronometro(tarefa01);
+
+            //assert
+            Assert.NotEmpty(tarefa01.Tempos);
+            Assert.Equal(2, tarefa01.Tempos.Count);
+        }
+
+        [Fact]
+        public void CronometroTentaStartarSemPause()
+        {
+            // arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            tarefaServico.Salvar(tarefa01);
+            tarefaServico.IniciaCronometro(tarefa01);
+
+            //act
+            bool result = tarefaServico.IniciaCronometro(tarefa01);
+
+            //assert
+            Assert.NotEmpty(tarefa01.Tempos);
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void CronometroPausaSemInicio()
+        {
+            // arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            tarefaServico.Salvar(tarefa01);
+
+            //act
+            var result = tarefaServico.PausaCronometro(tarefa01);
+
+            //assert
+            Assert.Empty(tarefa01.Tempos);
+            Assert.Equal(TimeSpan.Zero, result);
+        }
+
+        [Fact]
+        public void CronometroCalculaTempo()
+        {
+            // arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            tarefaServico.Salvar(tarefa01);
+
+            // arrange
+
+            tarefaServico.IniciaCronometro(tarefa01);
+            Thread.Sleep(100);
+            tarefaServico.PausaCronometro(tarefa01);
+            tarefaServico.IniciaCronometro(tarefa01);
+            Thread.Sleep(100);
+
+            //act
+            TimeSpan result = tarefaServico.PausaCronometro(tarefa01);
+
+            //assert
+            Assert.True(result.Milliseconds >= 200);
+        }
+    }    
 }
