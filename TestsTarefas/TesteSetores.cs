@@ -51,7 +51,19 @@ namespace TestsTarefas
             var resultadoEdicao = servico.Editar(setor.Id, "Financeiro", true);
 
             Assert.True(resultadoEdicao);
+            Assert.Equal("Financeiro", setor.Nome);
 
+        }
+
+        [Fact]
+        public void RemoverSetor()
+        {
+            var repositorio = new SetorRepositorio();
+            var servico = new SetorServico(repositorio);
+            Setor setor = new Setor("Comercial");
+            servico.Cadastrar(setor);
+            var resultadoRemocao = servico.Remover(setor);
+            Assert.True(resultadoRemocao);
         }
 
     }
