@@ -41,7 +41,9 @@ namespace TarefasLibrary.Modelo
         public string Descricao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime Prazo { get; set; }
-       
+        public TimeSpan TempoTotal { get; set; } = TimeSpan.Zero;
+        public List<Cronometro> Tempos { get; set; } = new();
+
         public List<Comentario> listaComentarios = new List<Comentario>();
 
         public void Adicionar(Comentario comentario)

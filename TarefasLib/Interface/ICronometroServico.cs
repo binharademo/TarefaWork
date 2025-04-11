@@ -1,10 +1,10 @@
-﻿namespace TestsTarefas
+﻿using TarefasLibrary.Modelo;
+
+namespace TarefasLibrary.Interface
 {
-    public interface ICronometroServico
+    public interface ICronometroServico<T>
     {
-        void Iniciar();
-        void Pausar();
-        TimeSpan ObterTempoDecorrido();
-        CronometroServico ObterCronometro();
+        bool IniciaCronometro(T obj);
+        TimeSpan PausaCronometro(T obj);
     }
 }

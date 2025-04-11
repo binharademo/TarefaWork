@@ -1,5 +1,5 @@
 ﻿
-namespace TestsTarefas
+namespace TarefasLibrary.Repositorio
 {
     public class CronometroRepositorio //: ICronometroRepositorio
     {
