@@ -78,5 +78,13 @@ namespace TarefasLibrary.Negocio
             return true;
         }
 
+        public bool Finalizar(Tarefa tarefa01)
+        {
+            PausaCronometro(tarefa01);
+            tarefa01.Status.setStatus(StatusTarefa.Status.Done);
+
+            _repositorio.Atualizar(tarefa01, new StatusTarefa(StatusTarefa.Status.Done));
+            return true;
+        }
     }
 }

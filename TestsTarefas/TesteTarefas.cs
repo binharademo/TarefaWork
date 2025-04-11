@@ -233,8 +233,6 @@ namespace Tests_Tarefas
             Assert.Equal(tarefa.getStatus(), tarefa01.Status.getStatus());
             Assert.Equal("Estudar PHP", tarefa01.Descricao);
             Assert.Equal(new DateTime(2025, 12, 09), tarefa01.Prazo);
-
-
         }
 
 
@@ -497,6 +495,33 @@ namespace Tests_Tarefas
 
             //assert
             Assert.True(result.Milliseconds >= 200);
+        }
+
+
+        [Fact]
+        public void StatusFinalizarTarefa()
+        {
+            // arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+
+            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            tarefaServico.Salvar(tarefa01);
+            tarefaServico.IniciaCronometro(tarefa01);
+            Thread.Sleep(100);
+            tarefaServico.PausaCronometro(tarefa01);
+
+            //act
+            bool result = tarefaServico.Finalizar(tarefa01);
+
+            //assert
+            Assert.True(result);
+            Assert.Equal(StatusTarefa.Status.Done, tarefa01.Status.getStatus());
         }
     }    
 }
