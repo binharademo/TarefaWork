@@ -9,8 +9,9 @@ namespace TarefasLibrary.Modelo
 {
     public class Tarefa
     {
-        public Tarefa(string titulo, string status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, DateTime? dataCriacao = null)
+        public Tarefa(string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, DateTime? dataCriacao = null)
         {
+
             Titulo = titulo;
             Status = status;
             Criador = criador;
@@ -20,7 +21,7 @@ namespace TarefasLibrary.Modelo
             Descricao = descricao;
         }
 
-        public Tarefa(int id, string titulo, string status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, DateTime? dataCriacao = null)
+        public Tarefa(int id, string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, DateTime? dataCriacao = null)
         {
             Id = id;
             Titulo = titulo;
@@ -34,7 +35,7 @@ namespace TarefasLibrary.Modelo
 
         public int Id { get; set; }
         public string Titulo { get; set; }
-        public string Status { get; set; }
+        public StatusTarefa Status { get; set; }
         public Usuario Criador { get; set; }
         public Usuario Responsavel { get; set; } 
         public List<Usuario> Membros { get; set; } = new List<Usuario>();
@@ -53,5 +54,6 @@ namespace TarefasLibrary.Modelo
         {
             return listaComentarios;
         }
+
     }
 }
