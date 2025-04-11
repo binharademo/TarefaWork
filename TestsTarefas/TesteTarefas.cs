@@ -56,9 +56,10 @@ namespace Tests_Tarefas
             //string responsavel = "Vinicius";
             //DateTime prazo = new DateTime(2025, 12, 02);
             DateTime prazo = new DateTime(2025, 12, 31);
+            DateTime dataCriacao = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
 
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, dataCriacao);
 
             //Act
             tarefaServico.Salvar(tarefa01);
@@ -121,9 +122,10 @@ namespace Tests_Tarefas
             string titulo = "Estudar C# @ 2025!";
             StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.Done);
             DateTime prazo = new DateTime(4025, 12, 31);
+            DateTime dataCriacao = new DateTime(4025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador!";
 
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, dataCriacao);
 
             //Act
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -163,7 +165,7 @@ namespace Tests_Tarefas
         }
 
         [Theory]
-        [InlineData(1, "Estudar C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
+        [InlineData(1, "Estudar C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#", Tarefa.Prioridade.Alta, "2025-12-31")]
         [InlineData(2, "Estudar 1 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
         [InlineData(3, "Estudar 2 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
         [InlineData(4, "Estudar 3 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#")]
@@ -182,7 +184,7 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
 
             //Arrange
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao);
+            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, prioridade, prazo);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
@@ -375,6 +377,22 @@ namespace Tests_Tarefas
             Assert.False(resultado);
             Assert.Contains(membroExistente, tarefa01.Membros);
             Assert.Single(tarefa01.Membros, membroExistente);
+        }
+        [Fact]
+        public void DefinirPrioridadeTarefa() 
+        {
+            //Arrange
+            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+            UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            servico.Criar(criador);
+            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            servico.Criar(responsavel);
+            Tarefa tarefa01 = new Tarefa("titulo", "status", criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta, new DateTime(2025, 05, 20));
+            tarefaServico.Salvar(tarefa01);
+
+            Assert.Equal(Tarefa.Prioridade.Alta, tarefa01.PrioridadeTarefa);
+
         }
     }
 }

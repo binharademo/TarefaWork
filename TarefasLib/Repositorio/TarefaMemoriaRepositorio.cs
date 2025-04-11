@@ -9,6 +9,7 @@ namespace TarefasLibrary.Repositorio
 
         public bool Salvar(Tarefa tarefa)
         {
+            
             tarefa.Id = GeraNovoId();
             _tarefas.Add(tarefa);
             return true;
