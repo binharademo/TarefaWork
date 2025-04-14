@@ -42,6 +42,8 @@ namespace Tests_Tarefas
             //assert
             Assert.Equal(tarefa01.TempoTotal, resultado[0].TempoTotal);
             Assert.Equal(tarefa02.TempoTotal, resultado[1].TempoTotal);
+            Assert.Equal(tarefa01.Responsavel, resultado[0].Responsavel);
+            Assert.Equal(tarefa02.Responsavel, resultado[1].Responsavel);
 
         }
 
@@ -70,6 +72,8 @@ namespace Tests_Tarefas
 
             //assert
             Assert.Equal(tarefa01.TempoTotal, resultado[0].TempoTotal);
+            Assert.Equal(tarefa01.Responsavel, resultado[0].Responsavel);
+
             Assert.NotEqual(2, resultado.Count);
 
 
