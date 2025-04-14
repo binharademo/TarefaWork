@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsTarefas", "TestsTarefa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarefasLibrary", "TarefasLib\TarefasLibrary.csproj", "{BBE528F6-474E-DF61-9904-001383FBAFA6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiRest", "ApiRest\ApiRest.csproj", "{8D92C03C-87FD-4391-A323-670DFE878774}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{BBE528F6-474E-DF61-9904-001383FBAFA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBE528F6-474E-DF61-9904-001383FBAFA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBE528F6-474E-DF61-9904-001383FBAFA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D92C03C-87FD-4391-A323-670DFE878774}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D92C03C-87FD-4391-A323-670DFE878774}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D92C03C-87FD-4391-A323-670DFE878774}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D92C03C-87FD-4391-A323-670DFE878774}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
