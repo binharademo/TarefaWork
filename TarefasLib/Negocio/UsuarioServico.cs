@@ -7,7 +7,8 @@ namespace TarefasLibrary.Negocio
     {
         IUsuarioRepositorio<Usuario> _usuarioRepositorio;
 
-        public UsuarioServico(IUsuarioRepositorio<Usuario> usuarioRepositorio) {
+        public UsuarioServico(IUsuarioRepositorio<Usuario> usuarioRepositorio)
+        {
             _usuarioRepositorio = usuarioRepositorio;
         }
 
@@ -44,9 +45,15 @@ namespace TarefasLibrary.Negocio
             return _usuarioRepositorio.Editar(new(id, nome, senha, funcao, setor));
         }
 
-        public bool Editar(int id, string nome, string senha, string funcao, string setor)
+        public bool Remover(Usuario usuario)
         {
-            throw new NotImplementedException();
+            var existente = Buscar(usuario.Id);
+
+            if (existente == null)
+                return false; 
+
+            _usuarioRepositorio.Remover(usuario);
+            return true;
         }
     }
 }
