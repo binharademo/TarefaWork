@@ -58,6 +58,7 @@ public class UsuarioController : ControllerBase
             // Retorna NoContent indicando que a alteração foi feita com sucesso
             return NoContent();
         }
+
         catch (Exception ex)
         {
             // Opcional: log da exceção
@@ -68,21 +69,35 @@ public class UsuarioController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> BuscaPorId(int id)
     {
-        var retorno = _usuario.Buscar(id);
-        if (retorno is null)
-            return NotFound();
+        try
+        {
+            var retorno = _usuario.Buscar(id);
 
-        return Ok(retorno);
+            if (retorno is null)
+            return NotFound("Não foi possível encontrar o ID");
+
+            return Ok(retorno);
+        }
+        catch (Exception ex) {
+            return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}");
+        }
     }
 
     [HttpGet]
     public async Task<IActionResult>Listar()
     {
-        var retorno = _usuario.ListarUsuario();
-        if (retorno is null)
-            return NotFound();
+        try
+        {
+            var retorno = _usuario.ListarUsuario();
+            if (retorno is null)
+            return NotFound("Nenhum usuário listado");
 
-        return Ok(retorno);
+            return Ok(retorno);
+
+        }
+        catch (Exception ex) {
+            return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}" );
+        }
     }
 
 }
