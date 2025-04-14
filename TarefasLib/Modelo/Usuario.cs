@@ -14,6 +14,7 @@ namespace TarefasLibrary.Modelo
         public string Funcao { get; set; }
         public string Setor { get; set; }
 
+
         public Usuario(string nome, string senha, string funcao, string setor)
         {
             Nome = nome;
