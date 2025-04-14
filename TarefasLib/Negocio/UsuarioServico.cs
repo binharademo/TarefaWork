@@ -7,7 +7,8 @@ namespace TarefasLibrary.Negocio
     {
         IRepositorio<Usuario> _usuarioRepositorio;
 
-        public UsuarioServico(IRepositorio<Usuario> usuarioRepositorio) {
+        public UsuarioServico(IRepositorio<Usuario> usuarioRepositorio)
+        {
             _usuarioRepositorio = usuarioRepositorio;
         }
 
@@ -32,6 +33,17 @@ namespace TarefasLibrary.Negocio
         public bool Editar(int id, string nome, string senha, string funcao, string setor)
         {
             return _usuarioRepositorio.Editar(new(id, nome, senha, funcao, setor));
+        }
+
+        public bool Remover(Usuario usuario)
+        {
+            var existente = Buscar(usuario.Id);
+
+            if (existente == null)
+                return false; 
+
+            _usuarioRepositorio.Remover(usuario);
+            return true;
         }
 
     }
