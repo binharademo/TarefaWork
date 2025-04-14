@@ -89,9 +89,9 @@ namespace Tests_Tarefas
         public void TestVicularUmComentarioAUmTarefa()
         {
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
             StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 

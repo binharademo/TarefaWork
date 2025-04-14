@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TarefasLibrary.Interface;
+using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio
 {
@@ -30,6 +31,11 @@ namespace TarefasLibrary.Repositorio
         }
 
         public List<Empresa> Listar()
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Empresa> Listar(Enum obj)
         {
             throw new NotImplementedException();
         }

@@ -4,7 +4,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio
 {
-    public class UsuarioMemoriaRepositorio : IRepositorio<Usuario>
+    public class UsuarioMemoriaRepositorio : IUsuarioRepositorio<Usuario>
     {
         private List<Usuario> ListaUsuarios = new List<Usuario>();
 
@@ -36,6 +36,15 @@ namespace TarefasLibrary.Repositorio
         {
             return ListaUsuarios;
         }
+        public List<Usuario> Listar(Usuario.Setor setor)
+        {
+            return ListaUsuarios.Where(t=>t.SetorUsuario==setor).ToList();
+        }
+
+        public List<Usuario> Listar(Usuario.Funcao funcao)
+        {
+            return ListaUsuarios.Where(t => t.FuncaoUsuario == funcao).ToList();
+        }
 
         public bool Editar(Usuario obj)
         {
@@ -44,8 +53,8 @@ namespace TarefasLibrary.Repositorio
             {
                 usuarioExistente.Nome = obj.Nome;
                 usuarioExistente.Senha = obj.Senha;
-                usuarioExistente.Funcao = obj.Funcao;
-                usuarioExistente.Setor = obj.Setor;
+                usuarioExistente.FuncaoUsuario = obj.FuncaoUsuario;
+                usuarioExistente.SetorUsuario = obj.SetorUsuario;
                 return true;
             }
             return false;
@@ -55,5 +64,7 @@ namespace TarefasLibrary.Repositorio
         {
             throw new NotImplementedException();
         }
+
+
     }
 }
