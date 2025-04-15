@@ -9,6 +9,7 @@ using TarefasLibrary.Repositorio;
 
 namespace Tests_Tarefas
 {
+
     public class TesteSetores
     {
         [Fact]
