@@ -11,5 +11,6 @@ namespace TarefasLibrary.Interface
         public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus);
         public List<Tarefa> ListarPorUsuario(int id);
         public bool MarcarMembro(Tarefa tarefa, Usuario membro);
+        List<Tarefa> Buscar(FiltroTarefa filtro);
     }
 }

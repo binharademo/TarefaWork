@@ -73,5 +73,19 @@ namespace TarefasLibrary.Repositorio
             tarefaEncontrada.Membros.Add(membro);
             return true;
         }
+
+        public List<Tarefa> Buscar(FiltroTarefa filtro)
+        {
+            return _tarefas.Where(t => 
+                   (string.IsNullOrEmpty(filtro.Nome) ? true : t.Titulo.Contains(filtro.Nome))
+                && (filtro.Prioridade is null || t.PrioridadeTarefa == filtro.Prioridade)
+                && (filtro.Status is null || t.Status.status == filtro.Status)
+                && (filtro.Criador is null || t.Criador.Id == filtro.Criador)
+                && (filtro.Responsavel is null || t.Responsavel.Id == filtro.Responsavel)
+                && (filtro.Membro is null || t.Membros.Exists(m => m.Id == filtro.Membro ))
+                && (filtro.Inicio is null || t.DataCriacao >= filtro.Inicio)
+                && (filtro.Fim is null || t.DataCriacao <= filtro.Fim)
+            ).ToList();
+        }
     }
 }

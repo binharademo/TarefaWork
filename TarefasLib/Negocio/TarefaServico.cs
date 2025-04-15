@@ -86,5 +86,10 @@ namespace TarefasLibrary.Negocio
             _repositorio.Atualizar(tarefa01, new StatusTarefa(StatusTarefa.Status.Done));
             return true;
         }
+
+        public List<Tarefa> Busca(FiltroTarefa filtro)
+        {
+            return _repositorio.Buscar(filtro);
+        }
     }
 }
