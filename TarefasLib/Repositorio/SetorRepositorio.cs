@@ -42,6 +42,11 @@ namespace TarefasLibrary.Repositorio
             return ListaSetores;
         }
 
+        public List<Setor> Listar(Enum obj)
+        {
+            throw new NotImplementedException();
+        }
+
         public bool Remover(Setor obj)
         {
             return ListaSetores.Remove(obj);

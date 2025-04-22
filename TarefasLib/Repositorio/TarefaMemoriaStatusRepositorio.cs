@@ -83,6 +83,11 @@ namespace TarefasLibrary.Repositorio
         {
             throw new NotImplementedException("TesteEditar");
         }
+
+        public List<Tarefa> Listar(Enum obj)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

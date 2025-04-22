@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,8 @@ namespace Tests_Tarefas
 {
     public class TesteCronometro
     {
+        // TODO: Melhorar o nome do teste para indicar claramente o comportamento esperado (ex: NovoCronometro_DeveIniciarEmAndamento)
+        // TODO: Adicionar verificações adicionais para outras propriedades iniciais do cronômetro
         [Fact]
         public void NovoCronometro()
         {
@@ -18,6 +20,9 @@ namespace Tests_Tarefas
             Assert.True(c.EmAndamento());
         }
 
+        // TODO: Seguir convenção de nomenclatura PascalCase para nomes de métodos (StopCronometro em vez de stopCronometro)
+        // TODO: Evitar uso de Thread.Sleep em testes, pois torna os testes mais lentos e potencialmente instáveis
+        // TODO: Implementar um mock para o tempo para tornar o teste mais determinístico
         [Fact]
         public void stopCronometro()
         {

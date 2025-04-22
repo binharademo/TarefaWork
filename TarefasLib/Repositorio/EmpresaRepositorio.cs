@@ -4,39 +4,47 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TarefasLibrary.Interface;
+using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio
 {
-    public class Empresa {
 
-        public int id { get; set; }
-        public string Cnpj { get; set; }
-    }
-    public class EmpresaRepositorio : IRepositorio<Empresa>
+    public class EmpresaMemoriaRepositorio : IRepositorio<Empresa>
     {
+        private List<Empresa> _empresas = new();
+        private int contadorIDs = 0;
+
         public Empresa? BuscarPorId(int id)
         {
-            throw new NotImplementedException();
+            return _empresas.FirstOrDefault(e => e.Id == id);
         }
 
         public bool Cadastrar(Empresa obj)
         {
-            throw new NotImplementedException();
+            obj.Id = ++contadorIDs;
+            _empresas.Add(obj);
+            return true;
         }
 
         public bool Editar(Empresa obj)
         {
-            throw new NotImplementedException();
+            var e = BuscarPorId(obj.Id);
+            if (e is null || e.Id != obj.Id)
+                return false;
+
+            e.Cnpj = obj.Cnpj;
+            e.Nome = obj.Nome;
+            return true;
         }
 
         public List<Empresa> Listar()
         {
-            throw new NotImplementedException();
+            return _empresas;
         }
 
         public bool Remover(Empresa obj)
         {
-            throw new NotImplementedException();
+            return _empresas.Remove(obj);
         }
     }
 }

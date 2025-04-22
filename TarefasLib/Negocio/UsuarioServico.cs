@@ -5,9 +5,9 @@ namespace TarefasLibrary.Negocio
 {
     public class UsuarioServico : IUsuarioServico
     {
-        IRepositorio<Usuario> _usuarioRepositorio;
+        IUsuarioRepositorio<Usuario> _usuarioRepositorio;
 
-        public UsuarioServico(IRepositorio<Usuario> usuarioRepositorio)
+        public UsuarioServico(IUsuarioRepositorio<Usuario> usuarioRepositorio)
         {
             _usuarioRepositorio = usuarioRepositorio;
         }
@@ -30,7 +30,17 @@ namespace TarefasLibrary.Negocio
             return _usuarioRepositorio.Listar();
         }
 
-        public bool Editar(int id, string nome, string senha, string funcao, string setor)
+        public List<Usuario> ListarUsuarioPorSetor(Usuario.Setor setor)
+        {
+            return _usuarioRepositorio.Listar(setor);
+        }
+
+        public List<Usuario> ListarUsuarioPorFuncao(Usuario.Funcao funcao)
+        {
+            return _usuarioRepositorio.Listar(funcao);
+        }
+
+        public bool Editar(int id, string nome, string senha, Usuario.Funcao funcao, Usuario.Setor setor)
         {
             return _usuarioRepositorio.Editar(new(id, nome, senha, funcao, setor));
         }
@@ -45,6 +55,5 @@ namespace TarefasLibrary.Negocio
             _usuarioRepositorio.Remover(usuario);
             return true;
         }
-
     }
 }

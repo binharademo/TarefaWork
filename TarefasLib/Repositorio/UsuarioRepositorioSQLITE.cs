@@ -10,7 +10,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio
 {
-    public class UsuarioRepositorioSQLITE : IRepositorio<Usuario>
+    public class UsuarioRepositorioSQLITE : IUsuarioRepositorio<Usuario>
     {
         private static readonly string _connectionString = "Data Source=tarefas.db;";
 
@@ -53,8 +53,8 @@ namespace TarefasLibrary.Repositorio
                             reader.GetInt32(0),
                             reader.GetString(1),
                             reader.GetString(2),
-                            reader.GetString(3),
-                            reader.GetString(4)
+                            (Usuario.Funcao) Enum.Parse(typeof(Usuario.Funcao), reader.GetString(3)),
+                            (Usuario.Setor) Enum.Parse(typeof(Usuario.Setor), reader.GetString(4))
                         );
                     }
                     return null;
@@ -72,8 +72,8 @@ namespace TarefasLibrary.Repositorio
                 command.CommandText = query;
                 command.Parameters.AddWithValue("@Nome", obj.Nome);
                 command.Parameters.AddWithValue("@Senha", obj.Senha);
-                command.Parameters.AddWithValue("@Funcao", obj.Funcao);
-                command.Parameters.AddWithValue("@Setor", obj.Setor);
+                command.Parameters.AddWithValue("@Funcao", obj.FuncaoUsuario);
+                command.Parameters.AddWithValue("@Setor", obj.SetorUsuario);
                 command.ExecuteNonQuery();
                 return true;
             }
@@ -90,8 +90,8 @@ namespace TarefasLibrary.Repositorio
                 command.CommandText = query;
                 command.Parameters.AddWithValue("@Nome", obj.Nome);
                 command.Parameters.AddWithValue("@Senha", obj.Senha);
-                command.Parameters.AddWithValue("@Funcao", obj.Funcao);
-                command.Parameters.AddWithValue("@Setor", obj.Setor);
+                command.Parameters.AddWithValue("@Funcao", obj.FuncaoUsuario);
+                command.Parameters.AddWithValue("@Setor", obj.SetorUsuario);
                 command.Parameters.AddWithValue("@Id", obj.Id);
                 command.ExecuteNonQuery();
                 return true;
@@ -115,8 +115,63 @@ namespace TarefasLibrary.Repositorio
                             reader.GetInt32(0),
                             reader.GetString(1),
                             reader.GetString(2),
-                            reader.GetString(3),
-                            reader.GetString(4)
+                            (Usuario.Funcao)Enum.Parse(typeof(Usuario.Funcao), reader.GetString(3)),
+                            (Usuario.Setor)Enum.Parse(typeof(Usuario.Setor), reader.GetString(4))
+                        );
+                        ListaUsuarios.Add(usuario);
+                    }
+                    return ListaUsuarios;
+                }
+
+            }
+        }
+
+        public List<Usuario> Listar(Usuario.Setor setor)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand(); ;
+                string query = "SELECT * FROM Usuarios WHERE Setor = @Setor";
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Setor", setor);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var usuario = new Usuario(
+                            reader.GetInt32(0),
+                            reader.GetString(1),
+                            reader.GetString(2),
+                            (Usuario.Funcao)Enum.Parse(typeof(Usuario.Funcao), reader.GetString(3)),
+                            (Usuario.Setor)Enum.Parse(typeof(Usuario.Setor), reader.GetString(4))
+                        );
+                        ListaUsuarios.Add(usuario);
+                    }
+                    return ListaUsuarios;
+                }
+            }
+        }
+
+        public List<Usuario> Listar(Usuario.Funcao funcao)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            {
+                connection.Open();
+                var command = connection.CreateCommand(); ;
+                string query = "SELECT * FROM Usuarios WHERE Funcao = @Funcao";
+                command.CommandText = query;
+                command.Parameters.AddWithValue("@Funcao", funcao);
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        var usuario = new Usuario(
+                            reader.GetInt32(0),
+                            reader.GetString(1),
+                            reader.GetString(2),
+                            (Usuario.Funcao)Enum.Parse(typeof(Usuario.Funcao), reader.GetString(3)),
+                            (Usuario.Setor)Enum.Parse(typeof(Usuario.Setor), reader.GetString(4))
                         );
                         ListaUsuarios.Add(usuario);
                     }

@@ -71,7 +71,7 @@ public class UsuarioController : ControllerBase
         try
         {
             // Chama o serviço para editar o usuário
-            bool editado = _usuario.Editar(id, usuario.Nome, usuario.Senha, usuario.Funcao, usuario.Setor);
+            bool editado = _usuario.Editar(id, usuario.Nome, usuario.Senha, usuario.FuncaoUsuario, usuario.SetorUsuario);
 
             if (!editado)
             {

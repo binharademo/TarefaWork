@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,10 +7,14 @@ using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
 
-namespace TestsTarefas
+namespace Tests_Tarefas
 {
+
     public class TesteSetores
     {
+        // TODO: Verificar se o setor foi realmente cadastrado no repositório, não apenas o retorno do método
+        // TODO: Testar cadastro de setor com nome vazio ou inválido
+        // TODO: Testar tentativa de cadastrar setor com nome duplicado
         [Fact]
         public void Cadastrar_Setor()
         {
@@ -39,6 +43,9 @@ namespace TestsTarefas
             Assert.Contains(setor, listaSetores);
         }
 
+        // TODO: Testar edição de setor inexistente (deve retornar false)
+        // TODO: Verificar se a edição persiste no repositório
+        // TODO: Testar edição com nome inválido ou duplicado
         [Fact]
         public void EditarSetor()
         {
@@ -55,6 +62,9 @@ namespace TestsTarefas
 
         }
 
+        // TODO: Verificar se o setor foi realmente removido do repositório (listar e confirmar que não está presente)
+        // TODO: Testar remoção de setor inexistente
+        // TODO: Testar remoção de setor que está sendo utilizado por usuários (deve falhar ou tratar adequadamente)
         [Fact]
         public void RemoverSetor()
         {

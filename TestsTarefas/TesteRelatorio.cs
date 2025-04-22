@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,13 +11,17 @@ namespace Tests_Tarefas
 {
     public class TesteRelatorio
     {
+        // TODO: Melhorar o nome do teste para indicar claramente o que está sendo testado
+        // TODO: Separar claramente as fases de Arrange, Act e Assert
+        // TODO: Evitar uso de Thread.Sleep em testes, pois torna os testes mais lentos e potencialmente instáveis
+        // TODO: A variável resultado2 é criada mas não utilizada
         [Fact]
         public void GeraRelatorio() { 
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
             StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
@@ -47,14 +51,18 @@ namespace Tests_Tarefas
 
         }
 
+        // TODO: Melhorar o teste para verificar explicitamente que tarefa02 não está no resultado
+        // TODO: Evitar uso de Thread.Sleep em testes, pois torna os testes mais lentos e potencialmente instáveis
+        // TODO: Verificar se o método está realmente testando o comportamento esperado com tarefas não existentes
+        // TODO: Considerar extrair configuração comum entre os testes para um método de inicialização
         [Fact]
         public void GeraRelatorioComTarefaNaoExistente()
         {
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", "Desenvolvedor", "TI");
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", "Desenvolvedor", "TI");
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
             StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
