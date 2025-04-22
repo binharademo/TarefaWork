@@ -4,7 +4,7 @@
     {
         public string? Nome { get; set; }
         public Tarefa.Prioridade? Prioridade { get; set; }
-        public StatusTarefa.Status? Status { get; set; }
+        public Tarefa.Status? Status { get; set; }
 
         public int? Criador { get; set; } // id do usuario
         public int? Responsavel{ get; set; }

@@ -10,7 +10,7 @@ namespace TarefasLibrary.Modelo
 {
     public class Usuario
     {
-        public int Id { get; set; } = -1;
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "O nome é obrigatório")]
         public string Nome { get; set; }
@@ -19,6 +19,11 @@ namespace TarefasLibrary.Modelo
         public Funcao FuncaoUsuario { get; set; }
         public Setor SetorUsuario { get; set; }
 
+        public List<Tarefa> TarefasDono { get; set; } = new List<Tarefa>();
+        public List<Tarefa> TarefasResponsavel { get; set; } = new List<Tarefa>();
+        public List<Tarefa> TarefasMembro { get; set; } = new List<Tarefa>();
+
+        [JsonConstructor]
         public Usuario(string nome, string senha, Funcao funcao, Setor setor)
         {
             Nome = nome;
@@ -26,6 +31,8 @@ namespace TarefasLibrary.Modelo
             FuncaoUsuario = funcao;
             SetorUsuario = setor;
         }
+
+        public Usuario() { }
 
         public Usuario(int id, string nome, string senha, Funcao funcao, Setor setor)
         {
