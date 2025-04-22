@@ -6,7 +6,7 @@ namespace TarefasLibrary.Repositorio
 {
     public class UsuarioMemoriaRepositorio : IRepositorio<Usuario>
     {
-        private List<Usuario> ListaUsuarios = new List<Usuario>();
+        private static List<Usuario> ListaUsuarios = new List<Usuario>();
 
         public bool Cadastrar(Usuario usuario)
         {

@@ -26,9 +26,32 @@ public class UsuarioController : ControllerBase
         {
             return BadRequest(ModelState);
         }
-         _usuario.Criar(usuario);
 
-        return CreatedAtAction(nameof(BuscaPorId), new { id = usuario.Id }, usuario);
+        try
+        {
+            _logger.LogInformation("Tentativa de criar novo usuário: {Nome}", usuario.Nome);
+        
+            _usuario.Criar(usuario);
+        
+            _logger.LogInformation("Usuário criado com sucesso. ID: {Id}", usuario.Id);
+        
+            return CreatedAtAction(nameof(BuscaPorId), new { id = usuario.Id }, usuario);
+        }
+        catch (ArgumentException ex)
+        {
+            _logger.LogError(ex, "Argumento inválido ao criar usuário: {Message}", ex.Message);
+            return BadRequest(ex.Message);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogError(ex, "Operação inválida ao criar usuário: {Message}", ex.Message);
+            return Conflict(ex.Message);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogCritical(ex, "Erro inesperado ao criar usuário: {Message}", ex.Message);
+            return StatusCode(500, "Ocorreu um erro interno ao processar sua requisição");
+        }
     }
 
 
@@ -84,19 +107,26 @@ public class UsuarioController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult>Listar()
+    public async Task<IActionResult> Listar()
     {
+        _logger.LogInformation("Iniciando listagem de usuários");
+
         try
         {
-            var retorno = _usuario.ListarUsuario();
-            if (retorno is null)
-            return NotFound("Nenhum usuário listado");
+            var retorno = _usuario.ListarUsuario(); 
+            if (retorno == null || !retorno.Any())
+            {
+                _logger.LogWarning("Nenhum usuário encontrado para listagem");
+                return NotFound("Nenhum usuário cadastrado no sistema");
+            }
 
+            _logger.LogInformation("Listagem concluída. Total de usuários: {QuantidadeUsuarios}", retorno.Count());
             return Ok(retorno);
-
         }
-        catch (Exception ex) {
-            return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}" );
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Falha ao listar usuários. Erro: {ErrorMessage}", ex.Message);
+            return StatusCode(500, "Ocorreu um erro interno ao processar a listagem de usuários");
         }
     }
 
