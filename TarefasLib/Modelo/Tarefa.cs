@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,10 @@ namespace TarefasLibrary.Modelo
 {
     public class Tarefa
     {
+        // TODO: Validar parâmetros de entrada para evitar valores inválidos (SRP - Single Responsibility Principle)
         public Tarefa(string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
         {
-
+            // TODO: Considerar usar Guard Clauses para validar os parâmetros
             Titulo = titulo;
             Status = status;
             Criador = criador;
@@ -22,8 +23,10 @@ namespace TarefasLibrary.Modelo
             PrioridadeTarefa = prioridade;
         }
 
+        // TODO: Considerar usar o padrão Factory para criar instâncias de Tarefa (criação centralizada)
         public Tarefa(int id, string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
         {
+            // TODO: Reutilizar código do construtor anterior para evitar duplicação (DRY - Don't Repeat Yourself)
             Id = id;
             Titulo = titulo;
             Status = status;
@@ -35,7 +38,9 @@ namespace TarefasLibrary.Modelo
             PrioridadeTarefa = prioridade;
         }
 
+        // TODO: Considerar tornar as propriedades imutáveis (init-only) para garantir integridade dos dados
         public int Id { get; set; }
+        // TODO: Adicionar validação para garantir que Titulo não seja nulo ou vazio
         public string Titulo { get; set; }
         public StatusTarefa Status { get; set; }
         public Usuario Criador { get; set; }
@@ -45,8 +50,11 @@ namespace TarefasLibrary.Modelo
         public DateTime DataCriacao { get; set; }
         public DateTime Prazo { get; set; }
         public TimeSpan TempoTotal { get; set; } = TimeSpan.Zero;
+        // TODO: Encapsular a lista de Tempos para controlar acesso e modificações (Encapsulation)
         public List<Cronometro> Tempos { get; set; } = new();
 
+        // TODO: Transformar em propriedade privada com getter público para encapsulamento adequado
+        // TODO: Seguir convenção de nomenclatura (_listaComentarios ou usar PascalCase para propriedades públicas)
         public List<Comentario> listaComentarios = new List<Comentario>();
 
         public Prioridade PrioridadeTarefa { get; set; }
@@ -58,13 +66,17 @@ namespace TarefasLibrary.Modelo
             Urgente
         }
 
+        // TODO: Validar se o comentário não é nulo antes de adicionar
         public void Adicionar(Comentario comentario)
         {
+            // TODO: Implementar validação de parâmetro
             listaComentarios.Add(comentario);
         }
 
+        // TODO: Retornar IReadOnlyCollection<Comentario> para evitar modificações externas da coleção
         public List<Comentario> ListarComentarios()
         {
+            // TODO: Considerar retornar uma cópia da lista para evitar modificações externas
             return listaComentarios;
         }
 
