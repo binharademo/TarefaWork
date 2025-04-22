@@ -84,5 +84,10 @@ namespace TarefasLibrary.Repositorio.Entity
             context.Tarefas.Add(tarefa);
             return context.SaveChanges() > 0;
         }
+
+        public List<Tarefa> Buscar(FiltroTarefa filtro)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

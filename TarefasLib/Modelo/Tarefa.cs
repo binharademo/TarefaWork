@@ -10,7 +10,7 @@ namespace TarefasLibrary.Modelo
     public class Tarefa
     {
         // TODO: Validar parâmetros de entrada para evitar valores inválidos (SRP - Single Responsibility Principle)
-        public Tarefa(string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(string titulo, Tarefa.Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
         {
             // TODO: Considerar usar Guard Clauses para validar os parâmetros
             Titulo = titulo;
@@ -24,7 +24,7 @@ namespace TarefasLibrary.Modelo
         }
 
         // TODO: Considerar usar o padrão Factory para criar instâncias de Tarefa (criação centralizada)
-        public Tarefa(int id, string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(int id, string titulo, Tarefa.Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
         {
             // TODO: Reutilizar código do construtor anterior para evitar duplicação (DRY - Don't Repeat Yourself)
             Id = id;

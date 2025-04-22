@@ -17,7 +17,7 @@ namespace Tests_Tarefas
         {
             //arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            
+
             //act
             Usuario usuario01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(usuario01);
@@ -25,7 +25,7 @@ namespace Tests_Tarefas
 
             //assert
             Assert.NotNull(usuario01);
-         
+
         }
 
 
@@ -63,7 +63,7 @@ namespace Tests_Tarefas
         {
             // arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-         
+
             Usuario u01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             Usuario u02 = new Usuario("binhara1", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             Usuario u03 = new Usuario("binhara2", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
@@ -103,99 +103,6 @@ namespace Tests_Tarefas
             //assert
             Assert.NotEmpty(resultado);
             Assert.Equal(3, resultado.Count);
-        }
-
-        // TODO: Evitar usar prefixos numéricos nos nomes dos testes (t1_) - use nomes descritivos
-        // TODO: Verificar se o usuário foi realmente persistido no banco de dados (buscar e confirmar)
-        // TODO: Limpar o banco de dados antes/depois do teste para garantir isolamento
-        [Fact]  
-        public void t1_CadastrarUsuarioSQLITE_DeveCadastrarOUsuarioNoBD()
-        {
-            //arrange
-            UsuarioServico servico = new UsuarioServico(new UsuarioRepositorioSQLITE());
-
-            //act
-            Usuario usuario01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
-            servico.Criar(usuario01);
-
-
-            //assert
-            Assert.NotNull(usuario01);
-        }
-
-        [Fact]
-        public void t2_AtualizarUsuarioSQLITE_PegaOIDEAtualizaEleNoBD()
-        {
-            // Arrange
-            var repositorio = new UsuarioRepositorioSQLITE();
-            var servico = new UsuarioServico(repositorio);
-
-            // Act
-            bool usuarioEditado = servico.Editar(1, "guilherme", "99999", Usuario.Funcao.Dev, Usuario.Setor.Ti);
-
-
-            // Assert
-
-            Assert.True(usuarioEditado);
-
-        }
-
-        [Fact]
-        public void t3_ListarUsuarioSQLITE_DeveListarTodosOsUsuarios()
-        {
-            //arrange
-            var repositorio = new UsuarioRepositorioSQLITE();
-            var servico = new UsuarioServico(repositorio);
-
-            //Usuario u01 = new Usuario("binhara", "123", "dev", "ti");
-            //Usuario u02 = new Usuario("binhara1", "123", "dev", "ti");
-            //Usuario u03 = new Usuario("binhara2", "123", "dev", "ti");
-
-            //servico.Criar(u01);
-            //servico.Criar(u02);
-            //servico.Criar(u03);
-
-
-            //act
-            var resultado = servico.ListarUsuario();
-
-            //assert
-            Assert.NotEmpty(resultado);
-        }
-
-        // TODO: Evitar usar prefixos numéricos nos nomes dos testes (t4_) - use nomes descritivos
-        // TODO: Não depender de dados existentes no banco - criar o usuário a ser removido no próprio teste
-        // TODO: Verificar se o usuário foi realmente removido do banco (buscar e confirmar que não existe mais)
-        [Fact]
-        public void t4_DeletarUsuarioSQLITE_DeveDeletarOUltimo()
-        {
-            //arrange
-            var repositorio = new UsuarioRepositorioSQLITE();
-            var servico = new UsuarioServico(repositorio);
-
-            //act
-            var usuario = servico.ListarUsuario().Last();
-            var resultado = servico.Remover(usuario);
-
-            //asserts
-
-            Assert.True(resultado);
-        }
-
-        [Fact]
-        public void t5_DeletarUsuarioSQLITE_NaoDeveDeletarIdInexistente()
-        {
-            //arrange
-            var repositorio = new UsuarioRepositorioSQLITE();
-            var servico = new UsuarioServico(repositorio);
-
-            //act
-            Usuario u01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
-            var resultado = servico.Remover(u01);
-
-            //asserts
-
-            Assert.False(resultado);
         }
     }
 

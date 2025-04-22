@@ -105,7 +105,7 @@ namespace TarefasLibrary.Negocio
             tarefa01.StatusTarefa = Tarefa.Status.Done;
 
             // TODO: Verificar o resultado da atualização e retornar false em caso de falha
-            _repositorio.Atualizar(tarefa01, new StatusTarefa(StatusTarefa.Status.Done));
+            _repositorio.Atualizar(tarefa01, Tarefa.Status.Done);
             return true;
         }
 
