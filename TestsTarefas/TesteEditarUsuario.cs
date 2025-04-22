@@ -49,7 +49,7 @@ namespace Tests_Tarefas
             servico.Criar(usuario);
 
             // Act
-            var usuarioEditado = servico.Editar(usuario.Id, "marcelo",usuario.Senha, usuario.FuncaoUsuario, usuario.SetorUsuario);
+            var usuarioEditado = servico.Editar(usuario.Id, "marcelo", usuario.Senha, usuario.FuncaoUsuario, usuario.SetorUsuario);
             
 
             // Assert

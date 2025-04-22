@@ -19,7 +19,6 @@ namespace TarefasLibrary.Modelo
         public Funcao FuncaoUsuario { get; set; }
         public Setor SetorUsuario { get; set; }
 
-        [JsonConstructor]
         public Usuario(string nome, string senha, Funcao funcao, Setor setor)
         {
             Nome = nome;

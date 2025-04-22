@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ApiRest.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
@@ -19,115 +20,103 @@ public class UsuarioController : ControllerBase
         _usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());//usuario;
     }
 
-    [HttpPost]
-    public async Task<IActionResult> CriaUsuario([FromBody] Usuario usuario)
+    [HttpGet]
+    public ActionResult<IEnumerable<UsuarioDTO>> ObterTodos()
     {
-        if (!ModelState.IsValid)
+        var usuarios = _usuario.ListarUsuario();
+        var usuariosDTO = usuarios.Select(u => new UsuarioDTO
         {
-            return BadRequest(ModelState);
+            Id = u.Id,
+            Nome = u.Nome,
+            FuncaoUsuario = u.FuncaoUsuario,
+            SetorUsuario = u.SetorUsuario,
+        });
+
+        return Ok(usuariosDTO);
+    }
+
+    [HttpGet("{id}")]
+    public ActionResult<UsuarioDTO> ObterPorId(int id)
+    {
+        var usuario = _usuario.Buscar(id);
+        if (usuario == null)
+        {
+            return NotFound();
         }
 
-        try
+        var usuarioDTO = new UsuarioDTO
         {
-            _logger.LogInformation("Tentativa de criar novo usuário: {Nome}", usuario.Nome);
-        
-            _usuario.Criar(usuario);
-        
-            _logger.LogInformation("Usuário criado com sucesso. ID: {Id}", usuario.Id);
-        
-            return CreatedAtAction(nameof(BuscaPorId), new { id = usuario.Id }, usuario);
-        }
-        catch (ArgumentException ex)
+            Id = usuario.Id,
+            Nome = usuario.Nome,
+            FuncaoUsuario = usuario.FuncaoUsuario,
+            SetorUsuario = usuario.SetorUsuario
+        };
+
+        return Ok(usuarioDTO);
+    }
+
+    [HttpPost]
+    public ActionResult<UsuarioDTO> Criar(CriarUsuarioDTO usuarioDTO)
+    {
+        var usuario = new Usuario(
+            id: 0,
+            nome: usuarioDTO.Nome,
+            senha: usuarioDTO.Senha,
+            funcao: usuarioDTO.FuncaoUsuario,
+            setor: usuarioDTO.SetorUsuario
+            );
+
+        var usuarioCriado = _usuario.Criar(usuario);
+
+        var usuarioCriadoDTO = new UsuarioDTO
         {
-            _logger.LogError(ex, "Argumento inválido ao criar usuário: {Message}", ex.Message);
-            return BadRequest(ex.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            _logger.LogError(ex, "Operação inválida ao criar usuário: {Message}", ex.Message);
-            return Conflict(ex.Message);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogCritical(ex, "Erro inesperado ao criar usuário: {Message}", ex.Message);
-            return StatusCode(500, "Ocorreu um erro interno ao processar sua requisição");
-        }
+            Id = usuarioCriado.Id,
+            Nome = usuarioCriado.Nome,
+            FuncaoUsuario = usuarioCriado.FuncaoUsuario,
+            SetorUsuario = usuarioCriado.SetorUsuario
+        };
+
+        return CreatedAtAction(nameof(ObterPorId), new { id = usuarioCriadoDTO.Id }, usuarioCriadoDTO);
+
     }
 
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> Editar(int id, [FromBody] Usuario usuario)
+    public ActionResult<UsuarioDTO> Atualizar(int id, AtualizarUsuarioDTO usuarioDTO)
     {
-        // Validação básica dos dados recebidos
-        if (usuario == null)
+        var usuarioExistente = _usuario.Buscar(id);
+        if (usuarioExistente == null)
         {
-            return BadRequest("Dados do usuário não foram informados.");
-        }
-        if (id != usuario.Id)
-        {
-            return BadRequest("Id não encontrado.");
+            return NotFound();
         }
 
-        try
-        {
-            // Chama o serviço para editar o usuário
-            bool editado = _usuario.Editar(id, usuario.Nome, usuario.Senha, usuario.FuncaoUsuario, usuario.SetorUsuario);
+        // Atualizar os campos do usuário
+        usuarioExistente.Nome = usuarioDTO.Nome;
+        usuarioExistente.Senha = usuarioDTO.Senha;
+        usuarioExistente.FuncaoUsuario = usuarioDTO.FuncaoUsuario;
+        usuarioExistente.SetorUsuario = usuarioDTO.SetorUsuario;
 
-            if (!editado)
-            {
-                return NotFound("Usuário não encontrado ou não foi possível editar.");
-            }
+        var usuarioAtualizado = _usuario.Editar(usuarioExistente);
 
-            // Retorna NoContent indicando que a alteração foi feita com sucesso
-            return NoContent();
-        }
-
-        catch (Exception ex)
-        {
-            // Opcional: log da exceção
-            return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}");
-        }
+        return Ok(usuarioAtualizado);
     }
 
-    [HttpGet("{id}")]
-    public async Task<IActionResult> BuscaPorId(int id)
-    {
-        try
-        {
-            var retorno = _usuario.Buscar(id);
+    //[HttpDelete("{id}")]
+    //public ActionResult Remover(int id)
+    //{
+    //    var usuario = _usuario.Buscar(id);
+    //    if (usuario == null)
+    //    {
+    //        return NotFound();
+    //    }
 
-            if (retorno is null)
-            return NotFound("Não foi possível encontrar o ID");
+    //    var resultado = _usuario.Remover(usuario);
+    //    if (!resultado)
+    //    {
+    //        return StatusCode(500, "Erro ao remover o usuário");
+    //    }
 
-            return Ok(retorno);
-        }
-        catch (Exception ex) {
-            return StatusCode(500, $"Ocorreu um erro interno: {ex.Message}");
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Listar()
-    {
-        _logger.LogInformation("Iniciando listagem de usuários");
-
-        try
-        {
-            var retorno = _usuario.ListarUsuario(); 
-            if (retorno == null || !retorno.Any())
-            {
-                _logger.LogWarning("Nenhum usuário encontrado para listagem");
-                return NotFound("Nenhum usuário cadastrado no sistema");
-            }
-
-            _logger.LogInformation("Listagem concluída. Total de usuários: {QuantidadeUsuarios}", retorno.Count());
-            return Ok(retorno);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Falha ao listar usuários. Erro: {ErrorMessage}", ex.Message);
-            return StatusCode(500, "Ocorreu um erro interno ao processar a listagem de usuários");
-        }
-    }
+    //    return NoContent();
+    //}
 
 }

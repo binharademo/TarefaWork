@@ -44,6 +44,7 @@ namespace TarefasLibrary.Repositorio
             {
                 return false;
             }
+            // TODO: Salvar as alterações na tarefa da lista de tarefas. 
             // TODO: Verificar se a tarefa existe no repositório antes de atualizar
             // TODO: Considerar criar uma cópia da tarefa para evitar modificações externas durante a atualização
             tarefa.Status = novostatus;
@@ -59,8 +60,15 @@ namespace TarefasLibrary.Repositorio
             {
                 return false;
             }
+            // TODO: Salvar as alterações na tarefa da lista de tarefas. 
             // TODO: Verificar se a tarefa existe no repositório antes de atualizar
             tarefa.Status = novostatus;
+            return true;
+        }
+
+        public bool Atualizar(Tarefa tarefa)
+        {
+            // TODO: Salvar as alterações na tarefa da lista de tarefas. 
             return true;
         }
 
@@ -84,7 +92,8 @@ namespace TarefasLibrary.Repositorio
             var tarefaEncontrada = BuscarPorID(tarefa.Id);
             if (tarefaEncontrada == null)
                 return false;
-            
+
+            // TODO: Salvar as alterações na tarefa da lista de tarefas. 
             // TODO: Verificar se o membro já está na lista antes de adicionar
             tarefaEncontrada.Membros.Add(membro);
             return true;
