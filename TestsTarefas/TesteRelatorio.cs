@@ -23,9 +23,9 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            
 
-            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            Tarefa tarefa01 = new Tarefa("titulo", Tarefa.Status.ToDo, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);
 
             //act
@@ -33,7 +33,7 @@ namespace Tests_Tarefas
             Thread.Sleep(100);
             tarefaServico.PausaCronometro(tarefa01);
 
-            Tarefa tarefa02 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            Tarefa tarefa02 = new Tarefa("titulo", Tarefa.Status.ToDo, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa02);
 
             tarefaServico.IniciaCronometro(tarefa02);
@@ -64,7 +64,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);

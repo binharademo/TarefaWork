@@ -14,7 +14,7 @@ namespace TarefasLibrary.Modelo
         {
             // TODO: Considerar usar Guard Clauses para validar os parâmetros
             Titulo = titulo;
-            Status = status;
+            StatusTarefa = status;
             Criador = criador;
             Responsavel = responsavel;
             Prazo = prazo;
@@ -29,7 +29,7 @@ namespace TarefasLibrary.Modelo
             // TODO: Reutilizar código do construtor anterior para evitar duplicação (DRY - Don't Repeat Yourself)
             Id = id;
             Titulo = titulo;
-            Status = status;
+            StatusTarefa = status;
             Criador = criador;
             Responsavel = responsavel;
             Prazo = prazo;
@@ -37,12 +37,13 @@ namespace TarefasLibrary.Modelo
             Descricao = descricao;
             PrioridadeTarefa = prioridade;
         }
+        public Tarefa() { }
 
         // TODO: Considerar tornar as propriedades imutáveis (init-only) para garantir integridade dos dados
         public int Id { get; set; }
         // TODO: Adicionar validação para garantir que Titulo não seja nulo ou vazio
         public string Titulo { get; set; }
-        public StatusTarefa Status { get; set; }
+       
         public Usuario Criador { get; set; }
         public Usuario Responsavel { get; set; }
         public List<Usuario> Membros { get; set; } = new List<Usuario>();
@@ -58,6 +59,14 @@ namespace TarefasLibrary.Modelo
         public List<Comentario> listaComentarios = new List<Comentario>();
 
         public Prioridade PrioridadeTarefa { get; set; }
+        public Status StatusTarefa { get; set; }
+
+        public enum Status
+        {
+            ToDo,
+            Doing,
+            Done
+        }
 
         public enum Prioridade
         {

@@ -103,7 +103,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
             Tarefa tarefa02 = new Tarefa(02, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
@@ -121,8 +121,8 @@ namespace Tests_Tarefas
 
 
             //Assert
-            Assert.Equal(result1.Count, 3);
-            Assert.Equal(result2.Count, 2);
+            Assert.Equal(3, result1.Count);
+            Assert.Equal(2, result2.Count);
 
         }
         //+---------------------------------------------------------------------------------------------------------------------------------------------------+

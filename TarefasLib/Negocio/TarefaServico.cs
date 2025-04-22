@@ -28,14 +28,14 @@ namespace TarefasLibrary.Negocio
             return _repositorio.BuscarPorID(id);
         }
 
-        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
         {
             // TODO: Validar todos os parâmetros antes de atualizar (null checks e validações de negócio)
             // TODO: Considerar usar um objeto DTO para encapsular os parâmetros de atualização
             return _repositorio.Atualizar(tarefa, novostatus, novadescricao, novoprazo);    
         }
 
-        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus)
         {
             // TODO: Validar os parâmetros tarefa e novostatus (null checks)
             return _repositorio.Atualizar(tarefa, novostatus);
@@ -102,7 +102,7 @@ namespace TarefasLibrary.Negocio
             // TODO: Validar o parâmetro tarefa01 (null check)
             // TODO: Renomear o parâmetro para 'tarefa' para manter consistência com os outros métodos
             PausaCronometro(tarefa01);
-            tarefa01.Status.setStatus(StatusTarefa.Status.Done);
+            tarefa01.StatusTarefa = Tarefa.Status.Done;
 
             // TODO: Verificar o resultado da atualização e retornar false em caso de falha
             _repositorio.Atualizar(tarefa01, new StatusTarefa(StatusTarefa.Status.Done));
