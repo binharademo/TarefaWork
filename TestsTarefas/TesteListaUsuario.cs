@@ -1,4 +1,4 @@
-﻿using TarefasLibrary.Modelo;
+using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
 
@@ -6,6 +6,9 @@ namespace Tests_Tarefas
 {
     public class TesteListaUsuario
     {
+        // TODO: Remover os parâmetros comentados do método de teste
+        // TODO: Verificar a quantidade exata de usuários retornados (deve ser 1)
+        // TODO: Testar caso em que não existem usuários no setor especificado
         [Fact]
         public void ListarUsuarioPorSetor(/*int id, string nome, string senha, string funcao, string setor*/)
         {
@@ -29,6 +32,9 @@ namespace Tests_Tarefas
             Assert.Equal(Usuario.Setor.Ti, resultado[0].SetorUsuario);
         }
 
+        // TODO: Adicionar caso de teste para função que não tem nenhum usuário
+        // TODO: Verificar se os usuários retornados são exatamente os esperados (não apenas a contagem)
+        // TODO: Considerar usar SetUp/TearDown para inicializar o repositório e evitar duplicação de código
         [Theory]
         [InlineData(Usuario.Funcao.Analista, 1)]
         [InlineData(Usuario.Funcao.Marketing, 2)]

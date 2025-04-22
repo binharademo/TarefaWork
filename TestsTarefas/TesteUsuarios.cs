@@ -1,4 +1,4 @@
-﻿using TarefasLibrary;
+using TarefasLibrary;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
@@ -9,6 +9,9 @@ namespace Tests_Tarefas
     public class UsuarioTeste
     {
 
+        // TODO: Verificar se o usuário foi realmente persistido no repositório
+        // TODO: Testar criação de usuário com dados inválidos (nome vazio, senha fraca, etc.)
+        // TODO: Verificar se o ID do usuário é atribuído corretamente
         [Fact]
         public void CriarUsuario()
         {
@@ -53,6 +56,9 @@ namespace Tests_Tarefas
 
 
 
+        // TODO: Este método não tem a anotação [Fact] ou [Theory], portanto não é executado como teste
+        // TODO: Os usuários são criados mas não são salvos no repositório
+        // TODO: O teste tenta buscar um usuário por ID sem ter salvo nenhum usuário com esse ID
         public void SalvarEBuscar(int id, string nome, string senha, Usuario.Funcao funcao, Usuario.Setor setor)
         {
             // arrange
@@ -74,6 +80,9 @@ namespace Tests_Tarefas
             Assert.Equal(setor, result.SetorUsuario);
         }
 
+        // TODO: Verificar se os usuários retornados são exatamente os mesmos que foram criados
+        // TODO: Testar o caso de listar quando não há usuários cadastrados
+        // TODO: Considerar usar SetUp/TearDown para inicializar o repositório e evitar duplicação de código
         [Fact]
         public void ListarUsuarios()
         {
@@ -96,6 +105,9 @@ namespace Tests_Tarefas
             Assert.Equal(3, resultado.Count);
         }
 
+        // TODO: Evitar usar prefixos numéricos nos nomes dos testes (t1_) - use nomes descritivos
+        // TODO: Verificar se o usuário foi realmente persistido no banco de dados (buscar e confirmar)
+        // TODO: Limpar o banco de dados antes/depois do teste para garantir isolamento
         [Fact]  
         public void t1_CadastrarUsuarioSQLITE_DeveCadastrarOUsuarioNoBD()
         {
@@ -151,6 +163,9 @@ namespace Tests_Tarefas
             Assert.NotEmpty(resultado);
         }
 
+        // TODO: Evitar usar prefixos numéricos nos nomes dos testes (t4_) - use nomes descritivos
+        // TODO: Não depender de dados existentes no banco - criar o usuário a ser removido no próprio teste
+        // TODO: Verificar se o usuário foi realmente removido do banco (buscar e confirmar que não existe mais)
         [Fact]
         public void t4_DeletarUsuarioSQLITE_DeveDeletarOUltimo()
         {

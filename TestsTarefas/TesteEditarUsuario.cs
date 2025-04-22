@@ -1,4 +1,4 @@
-﻿using TarefasLibrary;
+using TarefasLibrary;
 using TarefasLibrary.Repositorio;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Modelo;
@@ -7,6 +7,9 @@ namespace Tests_Tarefas
 {
     public class TesteEditarUsuario
     {
+        // TODO: Este teste modifica o objeto diretamente, mas não chama nenhum método de persistência
+        // TODO: Adicionar verificação se as alterações são persistidas no repositório
+        // TODO: Testar caso de edição de usuário inexistente
         [Fact]
         public void EditarUsuarioManual()
         {
@@ -99,6 +102,8 @@ namespace Tests_Tarefas
         }
 
 
+        // TODO: Corrigir a verificação no Assert - está verificando a função quando deveria verificar o setor
+        // TODO: Adicionar verificação para confirmar que apenas o setor foi alterado
         [Fact]
         public void EditarSetorUsuario()
         {
@@ -121,6 +126,9 @@ namespace Tests_Tarefas
         }
 
 
+        // TODO: Adicionar teste para edição de usuário com ID inválido
+        // TODO: Verificar se o objeto retornado é o mesmo que foi editado (comparação de referência)
+        // TODO: Considerar adicionar validações para campos inválidos (nome vazio, senha fraca, etc.)
         [Fact]
         public void EditarUsuario()
         {
