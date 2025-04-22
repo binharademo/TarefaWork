@@ -31,7 +31,7 @@ public class TarefaController : ControllerBase
         {
             Id = t.Id,
             Titulo = t.Titulo,
-            Status = t.Status,
+            Status = t.StatusTarefa,
             Criador = new UsuarioDTO
             {
                 Id = t.Criador.Id,
@@ -76,7 +76,7 @@ public class TarefaController : ControllerBase
         {
             Id = tarefa.Id,
             Titulo = tarefa.Titulo,
-            Status = tarefa.Status,
+            Status = tarefa.StatusTarefa,
             Criador = new UsuarioDTO
             {
                 Id = tarefa.Criador.Id,
@@ -144,7 +144,7 @@ public class TarefaController : ControllerBase
         {
             Id = tarefaCriada.Id,
             Titulo = tarefaCriada.Titulo,
-            Status = tarefaCriada.Status,
+            Status = tarefaCriada.StatusTarefa,
             Criador = new UsuarioDTO
             {
                 Id = tarefaCriada.Criador.Id,
@@ -190,7 +190,7 @@ public class TarefaController : ControllerBase
 
         // Atualizar os campos da tarefa
         tarefaExistente.Titulo = tarefaDTO.Titulo;
-        tarefaExistente.Status = tarefaDTO.Status;
+        tarefaExistente.StatusTarefa = tarefaDTO.Status;
         tarefaExistente.Responsavel = responsavel;
         tarefaExistente.Prazo = tarefaDTO.Prazo;
         tarefaExistente.Descricao = tarefaDTO.Descricao;
@@ -208,7 +208,7 @@ public class TarefaController : ControllerBase
         {
             Id = tarefaAtualizada.Id,
             Titulo = tarefaAtualizada.Titulo,
-            Status = tarefaAtualizada.Status,
+            Status = tarefaAtualizada.StatusTarefa,
             Criador = new UsuarioDTO
             {
                 Id = tarefaAtualizada.Criador.Id,
