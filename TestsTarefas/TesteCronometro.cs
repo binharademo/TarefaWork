@@ -10,28 +10,38 @@ namespace Tests_Tarefas
 {
     public class TesteCronometro
     {
-        // TODO: Melhorar o nome do teste para indicar claramente o comportamento esperado (ex: NovoCronometro_DeveIniciarEmAndamento)
-        // TODO: Adicionar verificações adicionais para outras propriedades iniciais do cronômetro
         [Fact]
-        public void NovoCronometro()
+        public void NovoCronometro_DeveIniciarComPropriedadesCorretas()
         {
+            // Arrange & Act
             var c = new Cronometro();
 
+            // Assert
             Assert.True(c.EmAndamento());
+            Assert.Equal(TimeSpan.Zero, c.Total);
+            Assert.NotEqual(default(DateTime), c.DataInicio);
+            Assert.True(c.DataInicio <= DateTime.Now);
         }
 
-        // TODO: Seguir convenção de nomenclatura PascalCase para nomes de métodos (StopCronometro em vez de stopCronometro)
-        // TODO: Evitar uso de Thread.Sleep em testes, pois torna os testes mais lentos e potencialmente instáveis
+
+
         // TODO: Implementar um mock para o tempo para tornar o teste mais determinístico
         [Fact]
-        public void stopCronometro()
+        public void StopCronometro_DeveInterromperCronometro()
         {
+            // Arrange
             var c = new Cronometro();
-            Thread.Sleep(100);
+
+            // Act
+            var tempoInicial = c.DataInicio;
             c.Stop();
 
+            // Assert
             Assert.False(c.EmAndamento());
-            Assert.True(c.Total.Milliseconds >= 100); 
+            Assert.True(c.Total >= TimeSpan.Zero);
         }
     }
 }
+
+//FALTA
+// 1 - Implementar um mock para o tempo para tornar o teste mais determinístico

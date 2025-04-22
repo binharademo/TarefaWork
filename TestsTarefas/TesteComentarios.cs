@@ -6,14 +6,15 @@ namespace Tests_Tarefas
 {
     public class TesteComentarios
     {
-        // TODO: Melhorar o teste para validar casos extremos como strings muito longas e caracteres especiais.
-        // TODO: Adicionar validação para o caso de string vazia, que deveria lançar uma exceção.
         [Theory]
         [InlineData("ABCDEFG")]
         [InlineData("abcdefg")]
         [InlineData("!@#$%¨&*()")]
         [InlineData("1234567890")]
-        [InlineData("")]
+        //[InlineData("")]
+        [InlineData("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.")]
+        [InlineData("♥♦♣♠")]
+        [InlineData("😀🙂🙁😢")]
 
         public void AdicionarComentario(string descricao)
         {
@@ -28,18 +29,34 @@ namespace Tests_Tarefas
             Assert.NotNull(descricao);
         }
 
-        // TODO: Melhorar o teste para verificar se o comentário específico foi adicionado à lista
-        // TODO: Adicionar limpeza da lista de comentários antes do teste para garantir isolamento
+        [Fact]
+        public void AdicionarComentarioVazio_DeveLancarExcecao()
+        {
+            //arrange
+            DateTime dataCriacao = new DateTime(2024, 04, 01);
+            string descricaoVazia = "";
+
+            //act & assert
+            var exception = Assert.Throws<ArgumentException>(() =>
+                new Comentario(descricaoVazia, dataCriacao));
+
+            Assert.Contains("descrição", exception.Message.ToLower());
+        }
+
         [Fact]
         public void ListarComentario()
         {
             //arrange
+            Comentario.ListaComentarios.Clear();
             DateTime dataCriacao = new DateTime(2025, 04, 01);
-            Comentario comentario01 = new Comentario("Teste Comentario", dataCriacao);
+            Comentario comentario01 = new Comentario("teste", dataCriacao);
             //act
             comentario01.SalvarComentario();
             //assert
             Assert.NotEmpty(Comentario.ListaComentarios);
+            Assert.Contains(comentario01, Comentario.ListaComentarios);
+            Assert.Equal("teste", Comentario.ListaComentarios.First().Descricao);
+            Assert.Equal(dataCriacao, Comentario.ListaComentarios.First().DataCriacao);
         }
 
         [Fact]
@@ -66,13 +83,11 @@ namespace Tests_Tarefas
 
         }
 
-        // TODO: Adicionar teste para busca de comentário inexistente
-        // TODO: Limpar a lista de comentários antes do teste para garantir isolamento
         [Fact]
         public void BuscaComentario()
         {
             //arrange
-
+            Comentario.ListaComentarios.Clear();
             DateTime dataCriacao = new DateTime(2025, 04, 04);
             string descricao = "oiii";
             Comentario comentario = new Comentario(descricao, dataCriacao);
@@ -91,11 +106,9 @@ namespace Tests_Tarefas
             Assert.True(result);
         }
 
-        // TODO: Reorganizar o teste para separar claramente as fases de Arrange, Act e Assert
-        // TODO: Verificar o conteúdo específico dos comentários retornados, não apenas a contagem
         // TODO: Testar a remoção de comentários de uma tarefa
         [Fact]
-        public void TestVicularUmComentarioAUmTarefa()
+        public void TestVincularUmComentarioAUmTarefa()
         {
             //arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
@@ -106,25 +119,46 @@ namespace Tests_Tarefas
             StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
             Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
-            Tarefa tarefa02 = new Tarefa(02, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
 
-            tarefa01.Adicionar(new Comentario("Comentario 1", new DateTime(2025, 12, 31)));
-            tarefa01.Adicionar(new Comentario("Comentario 2", new DateTime(2025, 12, 31)));
-            tarefa01.Adicionar(new Comentario("Comentario 3", new DateTime(2025, 12, 31)));
-
-            tarefa02.Adicionar(new Comentario("Comentario 4", new DateTime(2025, 12, 31)));
-            tarefa02.Adicionar(new Comentario("Comentario 5", new DateTime(2025, 12, 31)));
+            Comentario comentario1 = new Comentario("Comentario 01", new DateTime(2025, 12, 31));
+            Comentario comentario2 = new Comentario("Comentario 02", new DateTime(2025, 12, 31));
+            Comentario comentario3 = new Comentario("Comentario 03", new DateTime(2025, 12, 31));
 
             //act
-            List<Comentario> result1 = tarefa01.ListarComentarios();
-            List<Comentario> result2 = tarefa02.ListarComentarios();
+            tarefa01.Adicionar(comentario1);
+            tarefa01.Adicionar(comentario2);
+            tarefa01.Adicionar(comentario3);
 
+            List<Comentario> result = tarefa01.ListarComentarios();
 
             //Assert
-            Assert.Equal(result1.Count, 3);
-            Assert.Equal(result2.Count, 2);
+            Assert.Equal(3, result.Count);
+            Assert.Contains(comentario1, result);
+            Assert.Contains(comentario2, result);
+            Assert.Contains(comentario3, result);
+            Assert.Equal("Comentario 01", result[0].Descricao);
+            Assert.Equal("Comentario 02", result[1].Descricao);
+            Assert.Equal("Comentario 03", result[2].Descricao);
 
         }
+
+        [Fact]
+        public void BuscaComentarioInexistente()
+        {
+            //arrange
+            Comentario.ListaComentarios.Clear();
+            int idInexistente = 999;
+
+            //act
+            Comentario comentarioInexistente = new Comentario(idInexistente);
+            bool resultado = comentarioInexistente.BuscarComentario();
+
+            //assert
+            Assert.False(resultado);
+            Assert.Null(comentarioInexistente.Descricao);
+        }
+
+
         //+---------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
@@ -174,5 +208,11 @@ namespace Tests_Tarefas
 
     }
 }
+
+
+//FALTA:
+// 1 - Testar a remoção de comentários de uma tarefa
+
+
 
 

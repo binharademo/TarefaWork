@@ -15,7 +15,8 @@ namespace TarefasLibrary.Modelo
         // TODO: Validar parâmetros de entrada para evitar valores inválidos (SRP - Single Responsibility Principle)
         public Comentario(string descricao, DateTime dataCriacao)
         {
-            // TODO: Implementar validação de parâmetros (descricao não deve ser nula ou vazia)
+            if (string.IsNullOrWhiteSpace(descricao))
+                throw new ArgumentException("A descrição não pode ser vazia.", nameof(descricao));
             Descricao = descricao;
             DataCriacao = dataCriacao;
         }

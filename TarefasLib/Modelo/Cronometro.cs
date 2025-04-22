@@ -3,12 +3,14 @@
     public class Cronometro
     {
         private DateTime Inicio { get; set; }
+        public DateTime DataInicio { get; set; }
         private DateTime? Fim { get; set; }
         public TimeSpan Total { get; set; }
 
         public Cronometro()
         {
             Inicio = DateTime.Now;
+            DataInicio = DateTime.Now;
         }
 
         public bool Stop()

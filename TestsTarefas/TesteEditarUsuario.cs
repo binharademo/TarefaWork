@@ -11,7 +11,7 @@ namespace Tests_Tarefas
         // TODO: Adicionar verificação se as alterações são persistidas no repositório
         // TODO: Testar caso de edição de usuário inexistente
         [Fact]
-        public void EditarUsuarioManual()
+        public void EditarUsuarioManual_ModificaEPersisteValores()
         {
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
@@ -28,7 +28,10 @@ namespace Tests_Tarefas
             usuarioParaEditar.FuncaoUsuario = Usuario.Funcao.Dev;
             usuarioParaEditar.SetorUsuario = Usuario.Setor.Ti;
 
+            bool resultadoEdicao = servico.Editar(usuarioParaEditar.Id, usuarioParaEditar.Nome, usuarioParaEditar.Senha, usuarioParaEditar.FuncaoUsuario, usuarioParaEditar.SetorUsuario);
+
             // Assert
+            Assert.True(resultadoEdicao);
             var usuarioEditado = servico.Buscar(usuario.Id);
             Assert.NotNull(usuarioEditado);
             Assert.Equal("binhara_editado", usuarioEditado.Nome);
