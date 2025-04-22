@@ -22,12 +22,12 @@ namespace TarefasLibrary.Negocio
             return _repositorio.BuscarPorID(id);
         }
 
-        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
         {
             return _repositorio.Atualizar(tarefa, novostatus, novadescricao, novoprazo);    
         }
 
-        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus)
         {
             return _repositorio.Atualizar(tarefa, novostatus);
         }
@@ -81,9 +81,9 @@ namespace TarefasLibrary.Negocio
         public bool Finalizar(Tarefa tarefa01)
         {
             PausaCronometro(tarefa01);
-            tarefa01.Status.setStatus(StatusTarefa.Status.Done);
+            tarefa01.StatusTarefa = Tarefa.Status.Done;
 
-            _repositorio.Atualizar(tarefa01, new StatusTarefa(StatusTarefa.Status.Done));
+            _repositorio.Atualizar(tarefa01, Tarefa.Status.Done);
             return true;
         }
     }

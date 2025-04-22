@@ -19,18 +19,15 @@ namespace Tests_Tarefas
 
             int id = 1;
             string titulo = "Estudar C#";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
-            //string criador = "Gabriel";
-            //string responsavel = "Vinicius";
             DateTime prazo = new DateTime(2025, 12, 01);
             string descricao = "Estudar C# para ser um bom programador";
 
             //Act
-            Tarefa tarefa01 = new Tarefa(id, titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
+            Tarefa tarefa01 = new Tarefa(id, titulo, Tarefa.Status.ToDo, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
 
             //Assert
             Assert.Equal(titulo, tarefa01.Titulo);
-            Assert.Equal(tarefa, tarefa01.Status);
+            Assert.Equal(Tarefa.Status.ToDo, tarefa01.StatusTarefa);
             Assert.Equal(criador, tarefa01.Criador);
             Assert.Equal(responsavel, tarefa01.Responsavel);
             Assert.Equal(prazo, tarefa01.Prazo);
@@ -51,24 +48,21 @@ namespace Tests_Tarefas
             //Arrange
             int id = 177;
             string titulo = "Estudar C#";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
-            // string criador = "Gabriel";
-            //string responsavel = "Vinicius";
-            //DateTime prazo = new DateTime(2025, 12, 02);
+
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
 
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, dataCriacao);
+            Tarefa tarefa01 = new Tarefa(titulo, Tarefa.Status.ToDo, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, dataCriacao);
 
             //Act
             tarefaServico.Salvar(tarefa01);
             Tarefa Tresultado = tarefaServico.BuscarPorId(tarefa01.Id);
-            
+
             //Assert
             Assert.NotNull(Tresultado);
             Assert.Equal(titulo, Tresultado.Titulo);
-            Assert.Equal(tarefa, Tresultado.Status);
+            Assert.Equal(Tarefa.Status.ToDo, tarefa01.StatusTarefa);
             Assert.Equal(criador.Nome, Tresultado.Criador.Nome);
             Assert.Equal(responsavel.Nome, Tresultado.Responsavel.Nome);
             Assert.Equal(prazo, Tresultado.Prazo);
@@ -89,11 +83,10 @@ namespace Tests_Tarefas
             //Arrange
             int id = 1;
             string titulo = "";
-            StatusTarefa tarefa = null;
             DateTime prazo = new DateTime();
             string descricao = "";
 
-            Tarefa tarefa01 = new Tarefa( titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
+            Tarefa tarefa01 = new Tarefa(titulo, Tarefa.Status.ToDo, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
 
             //Act
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -101,7 +94,7 @@ namespace Tests_Tarefas
 
             //Assert
             Assert.Equal(titulo, tarefa01.Titulo);
-            Assert.Equal(tarefa, tarefa01.Status);
+            Assert.Equal(Tarefa.Status.ToDo, tarefa01.StatusTarefa);
             Assert.Equal(criador, tarefa01.Criador);
             Assert.Equal(responsavel, tarefa01.Responsavel);
             Assert.Equal(prazo, tarefa01.Prazo);
@@ -120,12 +113,11 @@ namespace Tests_Tarefas
             //Arrange
             int id = 1;
             string titulo = "Estudar C# @ 2025!";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.Done);
             DateTime prazo = new DateTime(4025, 12, 31);
             DateTime dataCriacao = new DateTime(4025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador!";
 
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, dataCriacao);
+            Tarefa tarefa01 = new Tarefa(titulo, Tarefa.Status.Done, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, dataCriacao);
 
             //Act
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -133,7 +125,7 @@ namespace Tests_Tarefas
 
             //Assert
             Assert.Equal(titulo, tarefa01.Titulo);
-            Assert.Equal(tarefa, tarefa01.Status);
+            Assert.Equal(Tarefa.Status.Done, tarefa01.StatusTarefa);
             Assert.Equal(criador, tarefa01.Criador);
             Assert.Equal(responsavel, tarefa01.Responsavel);
         }
@@ -150,7 +142,7 @@ namespace Tests_Tarefas
             //Arrange
             int id = 1;
             string titulo = "Estudar C#";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
             DateTime prazo = new DateTime(2025, 12, 31);
             string descricao = "Estudar C# para ser um bom programador";
             Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
@@ -165,42 +157,45 @@ namespace Tests_Tarefas
         }
 
         [Theory]
-        [InlineData(1, "Estudar C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31",  "Estudar C#", Tarefa.Prioridade.Alta)]
+        [InlineData(1, "Estudar C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#", Tarefa.Prioridade.Alta)]
         [InlineData(2, "Estudar 1 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#", Tarefa.Prioridade.Alta)]
         [InlineData(3, "Estudar 2 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#", Tarefa.Prioridade.Alta)]
         [InlineData(4, "Estudar 3 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#", Tarefa.Prioridade.Alta)]
         [InlineData(5, "Estudar 4 C#", "ToDo", "Gabriel", "Vinicius", "2025-12-31", "Estudar C#", Tarefa.Prioridade.Alta)]
-        public void AtualizarTarefa(int id, string titulo, string statusStr, string nomeCriador, string nomeResponsavel, DateTime prazo, string descricao, Tarefa.Prioridade prioridade)
+        public void AtualizarTarefa(int id, string titulo, string statusStr, string nomeCriador, string nomeResponsavel, string prazoStr, string descricao, Tarefa.Prioridade prioridade)
         {
-            if (!Enum.TryParse(statusStr, out StatusTarefa.Status statusEnum))
+            // Conversão do status
+            if (!Enum.TryParse(statusStr, out Tarefa.Status statusEnum))
             {
                 throw new ArgumentException("Status inválido");
             }
-            StatusTarefa tarefa = new StatusTarefa(statusEnum);
+
+            // Conversão da data
+            DateTime prazo = DateTime.Parse(prazoStr);
+
+            // Arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
             Usuario criador = new Usuario(nomeCriador, "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
             Usuario responsavel = new Usuario(nomeResponsavel, "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
 
-            //Arrange
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta, prazo);
+            Tarefa tarefa01 = new Tarefa(id, titulo, statusEnum, criador, responsavel, prazo, descricao, prioridade);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
-            //Act
-            StatusTarefa novostatus = new StatusTarefa(StatusTarefa.Status.ToDo);
-            string novadescricao = "Estudar VB";
-            DateTime novoprazo = new DateTime(2025, 12, 05);
-            bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
+            // Act
+            string novaDescricao = "Estudar VB";
+            DateTime novoPrazo = new DateTime(2025, 12, 05);
+            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done, novaDescricao, novoPrazo);
 
-            //Assert
+            // Assert
             Assert.True(resultado);
-            Assert.Equal(tarefa.getStatus(), tarefa01.Status.getStatus());
-            Assert.Equal("Estudar VB", tarefa01.Descricao);
-            Assert.Equal(new DateTime(2025, 12, 05), tarefa01.Prazo);
-
+            Assert.Equal(Tarefa.Status.Done, tarefa01.StatusTarefa);
+            Assert.Equal(novaDescricao, tarefa01.Descricao);
+            Assert.Equal(novoPrazo, tarefa01.Prazo);
         }
+
 
 
         [Fact]
@@ -215,22 +210,20 @@ namespace Tests_Tarefas
             //Arrange
             int id = 1000;
             string titulo = "Estudar C#";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
             DateTime prazo = new DateTime(2025, 05, 20);
             string descricao = "Estudar C#";
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
+            Tarefa tarefa01 = new Tarefa(titulo, Tarefa.Status.ToDo, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
             //Act
-            StatusTarefa novostatus = new StatusTarefa(StatusTarefa.Status.ToDo);
             string novadescricao = "Estudar PHP";
             DateTime novoprazo = new DateTime(2025, 12, 09);
-            bool resultado = tarefaServico.Atualizar(tarefa01, novostatus, novadescricao, novoprazo);
+            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done, novadescricao, novoprazo);
 
             //Assert
             Assert.True(resultado);
-            Assert.Equal(tarefa.getStatus(), tarefa01.Status.getStatus());
+            Assert.Equal(Tarefa.Status.Done, tarefa01.StatusTarefa);
             Assert.Equal("Estudar PHP", tarefa01.Descricao);
             Assert.Equal(new DateTime(2025, 12, 09), tarefa01.Prazo);
         }
@@ -250,7 +243,7 @@ namespace Tests_Tarefas
 
             int id = 1;
             string titulo = "Estudar C#";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             DateTime prazo = new DateTime(2025, 05, 20);
             string descricao = "Estudar C#";
@@ -264,37 +257,37 @@ namespace Tests_Tarefas
             Assert.NotEmpty(tarefaServico.ListarPorUsuario(responsavel.Id));
             Assert.NotEmpty(tarefaServico.ListarPorUsuario(criador.Id));
             Assert.Contains(tarefa01, tarefaServico.ListarPorUsuario(responsavel.Id));
-      
+
         }
         [Fact]
         public void Atualizar_Status_VerificaSeOStatusAntigoEhDiferenteDoNovo()
         {
+            // Arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
             Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
 
-            //Arrange
             int id = 52;
             string titulo = "Estudar C#";
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
             DateTime prazo = new DateTime(2025, 05, 20);
             string descricao = "Estudar C#";
-            Tarefa tarefa01 = new Tarefa(titulo, tarefa, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
-            TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
+
+            var tarefa01 = new Tarefa(titulo, Tarefa.Status.ToDo, criador, responsavel, prazo, descricao, Tarefa.Prioridade.Alta);
+            var tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             tarefaServico.Salvar(tarefa01);
 
+            var statusAntigo = tarefa01.StatusTarefa;
 
+            // Act
+            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done);
 
-            //Act
-            StatusTarefa novostatus = new StatusTarefa(StatusTarefa.Status.Done);
-            bool resultado = tarefaServico.Atualizar(tarefa01, novostatus);
-
-            //Assert
-            Assert.NotEqual(tarefa.getStatus(), tarefa01.Status.getStatus());
-
+            // Assert
+            Assert.True(resultado);
+            Assert.NotEqual(statusAntigo, tarefa01.StatusTarefa);
         }
+
 
         [Fact]
         public void MarcarUsuarios()
@@ -310,7 +303,7 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
             Usuario membro = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(membro);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
 
@@ -335,7 +328,7 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
             Usuario membro = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(membro);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
 
@@ -362,7 +355,7 @@ namespace Tests_Tarefas
             Usuario membroExistente = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(membroExistente);
 
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
 
@@ -376,7 +369,7 @@ namespace Tests_Tarefas
             Assert.Single(tarefa01.Membros, membroExistente);
         }
         [Fact]
-        public void DefinirPrioridadeTarefa() 
+        public void DefinirPrioridadeTarefa()
         {
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -385,7 +378,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta, new DateTime(2025, 05, 20));
             tarefaServico.Salvar(tarefa01);
 
@@ -403,7 +396,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);
@@ -430,7 +423,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);
@@ -454,7 +447,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);
@@ -477,7 +470,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);
@@ -501,27 +494,29 @@ namespace Tests_Tarefas
         [Fact]
         public void StatusFinalizarTarefa()
         {
-            // arrange
+            // Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+
             Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
 
-            Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
+            Tarefa tarefa01 = new Tarefa("titulo", Tarefa.Status.ToDo, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);
             tarefaServico.Salvar(tarefa01);
+
             tarefaServico.IniciaCronometro(tarefa01);
-            Thread.Sleep(100);
+            Thread.Sleep(100); // Simula algum tempo de trabalho
             tarefaServico.PausaCronometro(tarefa01);
 
-            //act
+            // Act
             bool result = tarefaServico.Finalizar(tarefa01);
 
-            //assert
+            // Assert
             Assert.True(result);
-            Assert.Equal(StatusTarefa.Status.Done, tarefa01.Status.getStatus());
+            Assert.Equal(Tarefa.Status.Done, tarefa01.StatusTarefa);
+
         }
-    }    
+    }
 }

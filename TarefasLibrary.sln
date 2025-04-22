@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35818.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsTarefas", "TestsTarefas\TestsTarefas.csproj", "{4A2A8CEF-C317-559D-EA09-CFE58072922C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests_Tarefas", "TestsTarefas\Tests_Tarefas.csproj", "{4A2A8CEF-C317-559D-EA09-CFE58072922C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TarefasLibrary", "TarefasLib\TarefasLibrary.csproj", "{BBE528F6-474E-DF61-9904-001383FBAFA6}"
 EndProject

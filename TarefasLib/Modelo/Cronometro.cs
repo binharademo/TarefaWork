@@ -2,8 +2,9 @@
 {
     public class Cronometro
     {
-        private DateTime Inicio { get; set; }
-        private DateTime? Fim { get; set; }
+        public int Id { get; set; }
+        public DateTime Inicio { get; set; }
+        public DateTime? Fim { get; set; }
         public TimeSpan Total { get; set; }
 
         public Cronometro()

@@ -31,25 +31,25 @@ namespace TarefasLibrary.Repositorio
             return null;
         }
 
-        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
         {
             if(novostatus == null)
             {
                 return false;
             }
-            tarefa.Status = novostatus;
+            tarefa.StatusTarefa = novostatus;
             tarefa.Descricao = novadescricao;
             tarefa.Prazo = novoprazo;
             return true;
         }
 
-        public bool Atualizar(Tarefa tarefa, StatusTarefa novostatus)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus)
         {
             if (novostatus == null)
             {
                 return false;
             }
-            tarefa.Status = novostatus;
+            tarefa.StatusTarefa = novostatus;
             return true;
         }
 

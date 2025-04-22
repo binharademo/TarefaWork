@@ -9,11 +9,11 @@ namespace TarefasLibrary.Modelo
 {
     public class Tarefa
     {
-        public Tarefa(string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(string titulo, Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
         {
 
             Titulo = titulo;
-            Status = status;
+            StatusTarefa = status;
             Criador = criador;
             Responsavel = responsavel;
             Prazo = prazo;
@@ -22,11 +22,11 @@ namespace TarefasLibrary.Modelo
             PrioridadeTarefa = prioridade;
         }
 
-        public Tarefa(int id, string titulo, StatusTarefa status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(int id, string titulo, Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
         {
             Id = id;
             Titulo = titulo;
-            Status = status;
+            StatusTarefa = status;
             Criador = criador;
             Responsavel = responsavel;
             Prazo = prazo;
@@ -34,10 +34,11 @@ namespace TarefasLibrary.Modelo
             Descricao = descricao;
             PrioridadeTarefa = prioridade;
         }
+        public Tarefa() { }
 
         public int Id { get; set; }
         public string Titulo { get; set; }
-        public StatusTarefa Status { get; set; }
+       
         public Usuario Criador { get; set; }
         public Usuario Responsavel { get; set; }
         public List<Usuario> Membros { get; set; } = new List<Usuario>();
@@ -50,6 +51,14 @@ namespace TarefasLibrary.Modelo
         public List<Comentario> listaComentarios = new List<Comentario>();
 
         public Prioridade PrioridadeTarefa { get; set; }
+        public Status StatusTarefa { get; set; }
+
+        public enum Status
+        {
+            ToDo,
+            Doing,
+            Done
+        }
 
         public enum Prioridade
         {
