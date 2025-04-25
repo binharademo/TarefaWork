@@ -1,8 +1,17 @@
+using TarefasLibrary.Interface;
+using TarefasLibrary.Modelo;
+using TarefasLibrary.Repositorio;
+using TarefasLibrary.Repositorio.Entity;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddSingleton<ITarefaRepositorio, TarefaMemoriaRepositorio>();
+builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>, UsuarioMemoriaRepositorio>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

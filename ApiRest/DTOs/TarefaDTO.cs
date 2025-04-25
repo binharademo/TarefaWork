@@ -17,6 +17,21 @@ namespace ApiRest.DTOs
         public Tarefa.Prioridade PrioridadeTarefa { get; set; }
     }
 
+    public class TarefaBasicoDTO
+    {
+        public int Id { get; set; }
+        public string Titulo { get; set; }
+        public Tarefa.Status Status { get; set; }
+        public UsuarioBasicoDTO Criador { get; set; }
+        public UsuarioBasicoDTO Responsavel { get; set; }
+        public List<UsuarioBasicoDTO> Membros { get; set; } = new List<UsuarioBasicoDTO>();
+        public string Descricao { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime Prazo { get; set; }
+        public TimeSpan TempoTotal { get; set; }
+        public Tarefa.Prioridade PrioridadeTarefa { get; set; }
+    }
+
     public class CriarTarefaDTO
     {
         public string Titulo { get; set; }

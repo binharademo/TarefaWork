@@ -1,6 +1,7 @@
 ﻿using ApiRest.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
@@ -15,11 +16,11 @@ public class TarefaController : ControllerBase
     private readonly TarefaServico _tarefa;
     private readonly UsuarioServico _usuario;
 
-    public TarefaController(ILogger<TarefaController> logger/*, UsuarioServico usuario*/)
+    public TarefaController(ILogger<TarefaController> logger, ITarefaRepositorio tarefa, IUsuarioRepositorio<Usuario> usuario)
     {
         _logger = logger;
-        _tarefa = new TarefaServico(new TarefaMemoriaRepositorio());//usuario;
-        _usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());//usuario;
+        _tarefa = new TarefaServico(tarefa);
+        _usuario = new UsuarioServico(usuario);
 
     }
 
@@ -140,28 +141,25 @@ public class TarefaController : ControllerBase
         if (tarefaCriada is null)
             return StatusCode(500);
 
-        var tarefaCriadaDTO = new TarefaDTO
+        var tarefaCriadaDTO = new TarefaBasicoDTO
         {
             Id = tarefaCriada.Id,
             Titulo = tarefaCriada.Titulo,
             Status = tarefaCriada.StatusTarefa,
-            Criador = new UsuarioDTO
+            Criador = new UsuarioBasicoDTO
             {
                 Id = tarefaCriada.Criador.Id,
                 Nome = tarefaCriada.Criador.Nome,
-
             },
-            Responsavel = new UsuarioDTO
+            Responsavel = new UsuarioBasicoDTO
             {
                 Id = tarefaCriada.Responsavel.Id,
                 Nome = tarefaCriada.Responsavel.Nome,
-
             },
-            Membros = tarefaCriada.Membros.Select(m => new UsuarioDTO
+            Membros = tarefaCriada.Membros.Select(m => new UsuarioBasicoDTO
             {
                 Id = m.Id,
                 Nome = m.Nome,
-
             }).ToList(),
             Descricao = tarefaCriada.Descricao,
             DataCriacao = tarefaCriada.DataCriacao,
@@ -240,4 +238,108 @@ public class TarefaController : ControllerBase
         return Ok(tarefaAtualizadaDTO);
     }
 
+    [HttpPut("{id}/membro/{membro}")]
+    public ActionResult<TarefaBasicoDTO> AdicionarMembro(int id, int membro)
+    {
+
+        var tarefaExistente = _tarefa.BuscarPorId(id);
+        if (tarefaExistente == null)
+        {
+            return NotFound();
+        }
+
+        var novoMembro = _usuario.Buscar(membro);
+        if (novoMembro == null)
+        {
+            return BadRequest("Responsável não encontrado");
+        }
+
+        _tarefa.MarcarMembro(tarefaExistente, novoMembro);
+
+        var tarefaAtualizada = _tarefa.BuscarPorId(id);
+        if (tarefaAtualizada is null)
+            return StatusCode(500);
+
+        var tarefaAtualizadaDTO = new TarefaBasicoDTO
+        {
+            Id = tarefaAtualizada.Id,
+            Titulo = tarefaAtualizada.Titulo,
+            Status = tarefaAtualizada.StatusTarefa,
+            Criador = new UsuarioBasicoDTO
+            {
+                Id = tarefaAtualizada.Criador.Id,
+                Nome = tarefaAtualizada.Criador.Nome,
+            },
+            Responsavel = new UsuarioBasicoDTO
+            {
+                Id = tarefaAtualizada.Responsavel.Id,
+                Nome = tarefaAtualizada.Responsavel.Nome,
+            },
+            Membros = tarefaAtualizada.Membros.Select(m => new UsuarioBasicoDTO
+            {
+                Id = m.Id,
+                Nome = m.Nome,
+            }).ToList(),
+            Descricao = tarefaAtualizada.Descricao,
+            DataCriacao = tarefaAtualizada.DataCriacao,
+            Prazo = tarefaAtualizada.Prazo,
+            TempoTotal = tarefaAtualizada.TempoTotal,
+            PrioridadeTarefa = tarefaAtualizada.PrioridadeTarefa
+        };
+
+        return Ok(tarefaAtualizadaDTO);
+    }
+
+    [HttpPut("{id}/status/{status}")]
+    public ActionResult<TarefaBasicoDTO> AtualizarStatus(int id, Tarefa.Status status)
+    {
+
+        var tarefaExistente = _tarefa.BuscarPorId(id);
+        if (tarefaExistente == null)
+        {
+            return NotFound();
+        }
+
+        try
+        {
+            _tarefa.Atualizar(tarefaExistente, (Tarefa.Status)status);
+        }
+        catch(Exception e)
+        {
+            return StatusCode(500, e.Message);
+        }
+
+        var tarefaAtualizada = _tarefa.BuscarPorId(id);
+        if (tarefaAtualizada is null)
+            return StatusCode(500);
+
+        var tarefaAtualizadaDTO = new TarefaBasicoDTO
+        {
+            Id = tarefaAtualizada.Id,
+            Titulo = tarefaAtualizada.Titulo,
+            Status = tarefaAtualizada.StatusTarefa,
+            Criador = new UsuarioBasicoDTO
+            {
+                Id = tarefaAtualizada.Criador.Id,
+                Nome = tarefaAtualizada.Criador.Nome,
+            },
+            Responsavel = new UsuarioBasicoDTO
+            {
+                Id = tarefaAtualizada.Responsavel.Id,
+                Nome = tarefaAtualizada.Responsavel.Nome,
+            },
+            Membros = tarefaAtualizada.Membros.Select(m => new UsuarioBasicoDTO
+            {
+                Id = m.Id,
+                Nome = m.Nome,
+            }).ToList(),
+            Descricao = tarefaAtualizada.Descricao,
+            DataCriacao = tarefaAtualizada.DataCriacao,
+            Prazo = tarefaAtualizada.Prazo,
+            TempoTotal = tarefaAtualizada.TempoTotal,
+            PrioridadeTarefa = tarefaAtualizada.PrioridadeTarefa
+        };
+
+        return Ok(tarefaAtualizadaDTO);
+    }
 }
