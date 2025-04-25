@@ -11,12 +11,12 @@ namespace Tests_Tarefas
 {
     public class TesteRelatorio
     {
-        // TODO: Melhorar o nome do teste para indicar claramente o que está sendo testado
-        // TODO: Separar claramente as fases de Arrange, Act e Assert
         // TODO: Evitar uso de Thread.Sleep em testes, pois torna os testes mais lentos e potencialmente instáveis
-        // TODO: A variável resultado2 é criada mas não utilizada
         [Fact]
-        public void GeraRelatorio() { 
+        public void GeraRelatorio_DeveGerarListaPorUsuarios() { 
+
+
+            //arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
             Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
@@ -41,7 +41,6 @@ namespace Tests_Tarefas
             tarefaServico.PausaCronometro(tarefa02);
 
             var resultado = tarefaServico.ListarPorUsuario(criador.Id);
-            var resultado2 = tarefaServico.ListarPorUsuario(criador.Id);
             
             //assert
             Assert.Equal(tarefa01.TempoTotal, resultado[0].TempoTotal);
@@ -53,7 +52,6 @@ namespace Tests_Tarefas
 
         // TODO: Melhorar o teste para verificar explicitamente que tarefa02 não está no resultado
         // TODO: Evitar uso de Thread.Sleep em testes, pois torna os testes mais lentos e potencialmente instáveis
-        // TODO: Verificar se o método está realmente testando o comportamento esperado com tarefas não existentes
         // TODO: Considerar extrair configuração comum entre os testes para um método de inicialização
         [Fact]
         public void GeraRelatorioComTarefaNaoExistente()

@@ -7,11 +7,8 @@ namespace Tests_Tarefas
 {
     public class TesteEditarUsuario
     {
-        // TODO: Este teste modifica o objeto diretamente, mas não chama nenhum método de persistência
-        // TODO: Adicionar verificação se as alterações são persistidas no repositório
-        // TODO: Testar caso de edição de usuário inexistente
         [Fact]
-        public void EditarUsuarioManual()
+        public void EditarUsuarioManual_ModificaEPersisteValores()
         {
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
@@ -28,13 +25,39 @@ namespace Tests_Tarefas
             usuarioParaEditar.FuncaoUsuario = Usuario.Funcao.Dev;
             usuarioParaEditar.SetorUsuario = Usuario.Setor.Ti;
 
+            bool resultadoEdicao = servico.Editar(usuarioParaEditar.Id, usuarioParaEditar.Nome, usuarioParaEditar.Senha, usuarioParaEditar.FuncaoUsuario, usuarioParaEditar.SetorUsuario);
+
             // Assert
+            Assert.True(resultadoEdicao);
             var usuarioEditado = servico.Buscar(usuario.Id);
             Assert.NotNull(usuarioEditado);
             Assert.Equal("binhara_editado", usuarioEditado.Nome);
             Assert.Equal("456", usuarioEditado.Senha);
             Assert.Equal(Usuario.Funcao.Dev, usuarioEditado.FuncaoUsuario);
             Assert.Equal(Usuario.Setor.Ti, usuarioEditado.SetorUsuario);
+
+            var usuarioPersistido = repositorio.BuscarPorId(usuario.Id); 
+            Assert.NotNull(usuarioPersistido);
+            Assert.Equal("binhara_editado", usuarioPersistido.Nome);
+            Assert.Equal("456", usuarioPersistido.Senha);
+            Assert.Equal(Usuario.Funcao.Dev, usuarioPersistido.FuncaoUsuario);
+            Assert.Equal(Usuario.Setor.Ti, usuarioPersistido.SetorUsuario);
+        }
+
+        [Fact]
+        public void EditarUsuario_Inexistente_DeveRetornarFalse()
+        {
+            // Arrange
+            var repositorio = new UsuarioMemoriaRepositorio();
+            var servico = new UsuarioServico(repositorio);
+
+            int idInexistente = -1; 
+
+            // Act
+            var resultado = servico.Editar(idInexistente,"adair da silva","nova_senha",Usuario.Funcao.Analista,Usuario.Setor.Ti);
+
+            // Assert
+            Assert.False(resultado); 
         }
 
         [Fact]
@@ -101,9 +124,6 @@ namespace Tests_Tarefas
             Assert.Equal(Usuario.Funcao.Analista, usuario.FuncaoUsuario);
         }
 
-
-        // TODO: Corrigir a verificação no Assert - está verificando a função quando deveria verificar o setor
-        // TODO: Adicionar verificação para confirmar que apenas o setor foi alterado
         [Fact]
         public void EditarSetorUsuario()
         {
@@ -122,12 +142,13 @@ namespace Tests_Tarefas
             // Assert
 
             Assert.True(usuarioEditado);
+            Assert.Equal(Usuario.Setor.Marketing, usuario.SetorUsuario);
+            Assert.Equal("binhara", usuario.Nome);
+            Assert.Equal("123", usuario.Senha);
             Assert.Equal(Usuario.Funcao.Marketing, usuario.FuncaoUsuario);
+
         }
 
-
-        // TODO: Adicionar teste para edição de usuário com ID inválido
-        // TODO: Verificar se o objeto retornado é o mesmo que foi editado (comparação de referência)
         // TODO: Considerar adicionar validações para campos inválidos (nome vazio, senha fraca, etc.)
         [Fact]
         public void EditarUsuario()
@@ -151,6 +172,23 @@ namespace Tests_Tarefas
             Assert.Equal("SenhaNova", usuario.Senha);
             Assert.Equal(Usuario.Funcao.Analista, usuario.FuncaoUsuario);
             Assert.Equal(Usuario.Setor.Marketing, usuario.SetorUsuario);
+
+            var usuarioDoRepositorio = repositorio.BuscarPorId(usuario.Id);
+            Assert.Same(usuario, usuarioDoRepositorio);
+        }
+        [Fact]
+        public void EditarUsuario_ComIdInvalido_DeveRetornarFalse()
+        {
+            // Arrange
+            var repositorio = new UsuarioMemoriaRepositorio();
+            var servico = new UsuarioServico(repositorio);
+            var idInvalido = -1;
+
+            // Act
+            var resultado = servico.Editar(idInvalido, "Nome", "Senha123", Usuario.Funcao.Analista, Usuario.Setor.Marketing);
+
+            // Assert
+            Assert.False(resultado);
         }
 
 

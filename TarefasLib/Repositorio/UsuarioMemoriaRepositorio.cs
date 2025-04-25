@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 
@@ -13,7 +14,7 @@ namespace TarefasLibrary.Repositorio
             usuario.Id = GeraNovoId();
             ListaUsuarios.Add(usuario);
             return true;
-        }
+            }
 
         public Usuario? BuscarPorId(int id)
         {

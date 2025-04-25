@@ -27,7 +27,7 @@ namespace TarefasLibrary.Modelo
 
         [JsonConstructor]
         public Usuario(string nome, string senha, Funcao funcao, Setor setor)
-        {
+        {          
             Nome = nome;
             Senha = senha;
             FuncaoUsuario = funcao;
