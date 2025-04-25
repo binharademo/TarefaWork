@@ -9,7 +9,11 @@ using TarefasLibrary.Modelo;
 namespace TarefasLibrary.Repositorio
 {
 
-    public class EmpresaMemoriaRepositorio : IRepositorio<Empresa>
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public string Cnpj { get; set; }
+    }
+    public class EmpresaRepositorio : IRepositorio<Empresa>
     {
         private List<Empresa> _empresas = new();
         private int contadorIDs = 0;

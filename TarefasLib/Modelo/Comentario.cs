@@ -1,5 +1,3 @@
-// TODO: Adicionar using statements necessários para evitar dependências implícitas
-
 namespace TarefasLibrary.Modelo
 {
     public class Comentario
