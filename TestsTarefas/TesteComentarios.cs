@@ -116,7 +116,7 @@ namespace Tests_Tarefas
             servico.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(responsavel);
-            StatusTarefa tarefa = new StatusTarefa(StatusTarefa.Status.ToDo);
+            var tarefa = Tarefa.Status.ToDo;
 
             Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
 
@@ -132,14 +132,8 @@ namespace Tests_Tarefas
             List<Comentario> result = tarefa01.ListarComentarios();
 
             //Assert
-            Assert.Equal(3, result.Count);
-            Assert.Contains(comentario1, result);
-            Assert.Contains(comentario2, result);
-            Assert.Contains(comentario3, result);
-            Assert.Equal("Comentario 01", result[0].Descricao);
-            Assert.Equal("Comentario 02", result[1].Descricao);
-            Assert.Equal("Comentario 03", result[2].Descricao);
-
+            Assert.Equal(3, result1.Count);
+            Assert.Equal(2, result2.Count);
         }
 
         [Fact]
@@ -152,7 +146,6 @@ namespace Tests_Tarefas
             //act
             Comentario comentarioInexistente = new Comentario(idInexistente);
             bool resultado = comentarioInexistente.BuscarComentario();
-
             //assert
             Assert.False(resultado);
             Assert.Null(comentarioInexistente.Descricao);

@@ -20,15 +20,15 @@ namespace Tests_Tarefas.TarefaFiltro
             usuario.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             usuario.Criar(responsavel);
-            StatusTarefa status = new StatusTarefa(StatusTarefa.Status.ToDo);
+            Tarefa.Status status = Tarefa.Status.ToDo;
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
 
             //act
             var filtro = new FiltroTarefa();
@@ -54,15 +54,15 @@ namespace Tests_Tarefas.TarefaFiltro
             usuario.Criar(criador);
             Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             usuario.Criar(responsavel);
-            StatusTarefa status = new StatusTarefa(StatusTarefa.Status.ToDo);
+            Tarefa.Status status = Tarefa.Status.ToDo;
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
 
             //act
             var filtro = new FiltroTarefa();
@@ -77,10 +77,10 @@ namespace Tests_Tarefas.TarefaFiltro
 
 
         [Theory]
-        [InlineData(StatusTarefa.Status.ToDo, 3)]
-        [InlineData(StatusTarefa.Status.Done, 2)]
-        [InlineData(StatusTarefa.Status.Doing, 0)]
-        public void FiltrarPorStatus(StatusTarefa.Status statusTarefa, int totalResultados)
+        [InlineData(Tarefa.Status.Done, 3)]
+        [InlineData(Tarefa.Status.ToDo, 2)]
+        [InlineData(Tarefa.Status.Doing, 0)]
+        public void FiltrarPorStatus(Tarefa.Status statusTarefa, int totalResultados)
         {
             //Arrange
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -93,11 +93,11 @@ namespace Tests_Tarefas.TarefaFiltro
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
 
             //act
             var filtro = new FiltroTarefa();
@@ -106,7 +106,7 @@ namespace Tests_Tarefas.TarefaFiltro
 
             //assert
             Assert.Equal(totalResultados, resultado.Count);
-            Assert.Empty(resultado.Where(t => t.Status.getStatus() != statusTarefa));
+            Assert.Empty(resultado.Where(t => t.StatusTarefa != statusTarefa));
         }
 
 
@@ -127,11 +127,11 @@ namespace Tests_Tarefas.TarefaFiltro
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 3, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, new DateTime(2025, 3, 05)));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, new DateTime(2025, 3, 10)));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, new DateTime(2025, 3, 12)));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, new DateTime(2025, 3, 20)));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, new DateTime(2025, 3, 24)));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, new DateTime(2025, 3, 05)));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, new DateTime(2025, 3, 10)));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, new DateTime(2025, 3, 12)));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, new DateTime(2025, 3, 20)));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, new DateTime(2025, 3, 24)));
 
             //act
             var filtro = new FiltroTarefa();
@@ -160,11 +160,11 @@ namespace Tests_Tarefas.TarefaFiltro
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), responsavel, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), responsavel, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, responsavel, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, responsavel, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
 
             //act
             var filtro = new FiltroTarefa();
@@ -190,11 +190,11 @@ namespace Tests_Tarefas.TarefaFiltro
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), responsavel, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), responsavel, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, responsavel, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, responsavel, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
 
             //act
             var filtro = new FiltroTarefa();
@@ -222,19 +222,19 @@ namespace Tests_Tarefas.TarefaFiltro
             DateTime dataCriacao = new DateTime(2025, 12, 31);
             Tarefa t01;
 
-            t01 = new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao);
+            t01 = new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao);
             tarefa.Salvar(t01);
             tarefa.MarcarMembro(t01, responsavel);
-            t01 = new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao);
+            t01 = new Tarefa("titulo dois", Tarefa.Status.Done, criador, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao);
             tarefa.Salvar(t01);
             tarefa.MarcarMembro(t01, responsavel);
-            t01 = new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), responsavel, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao);
+            t01 = new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, responsavel, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao);
             tarefa.Salvar(t01);
             tarefa.MarcarMembro(t01, criador);
-            t01 = new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), responsavel, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao);
+            t01 = new Tarefa("4 567", Tarefa.Status.ToDo, responsavel, criador, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao);
             tarefa.Salvar(t01);
             tarefa.MarcarMembro(t01, criador);
-            t01 = new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao);
+            t01 = new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao);
             tarefa.Salvar(t01);
             tarefa.MarcarMembro(t01, responsavel);
 
@@ -250,12 +250,12 @@ namespace Tests_Tarefas.TarefaFiltro
 
 
         [Theory]
-        [InlineData(Tarefa.Prioridade.Baixa, StatusTarefa.Status.ToDo, 2)]
-        [InlineData(Tarefa.Prioridade.Baixa, StatusTarefa.Status.Done, 0)]
+        [InlineData(Tarefa.Prioridade.Baixa, Tarefa.Status.ToDo, 2)]
+        [InlineData(Tarefa.Prioridade.Baixa, Tarefa.Status.Done, 0)]
         [InlineData(Tarefa.Prioridade.Alta, null, 3)]
-        [InlineData(null, StatusTarefa.Status.ToDo, 3)]
+        [InlineData(null, Tarefa.Status.ToDo, 3)]
         [InlineData(null, null, 5)]
-        public void FiltrarPrioridadeEStatus(Tarefa.Prioridade? prioridade, StatusTarefa.Status? statusTarefa, int totalResultados)
+        public void FiltrarPrioridadeEStatus(Tarefa.Prioridade? prioridade, Tarefa.Status? statusTarefa, int totalResultados)
         {
             //Arrange
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
@@ -268,11 +268,11 @@ namespace Tests_Tarefas.TarefaFiltro
             DateTime prazo = new DateTime(2025, 12, 31);
             DateTime dataCriacao = new DateTime(2025, 12, 31);
 
-            tarefa.Salvar(new Tarefa("titulo001", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("titulo dois", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
-            tarefa.Salvar(new Tarefa("t i t u l o 3", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("4 567", new StatusTarefa(StatusTarefa.Status.ToDo), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
-            tarefa.Salvar(new Tarefa("%%%%% 5", new StatusTarefa(StatusTarefa.Status.Done), criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo001", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("titulo dois", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
+            tarefa.Salvar(new Tarefa("t i t u l o 3", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("4 567", Tarefa.Status.ToDo, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Baixa, dataCriacao));
+            tarefa.Salvar(new Tarefa("%%%%% 5", Tarefa.Status.Done, criador, responsavel, prazo, "Estudar C# para ser um bom programador", Tarefa.Prioridade.Alta, dataCriacao));
 
             //act
             var filtro = new FiltroTarefa();
@@ -282,7 +282,7 @@ namespace Tests_Tarefas.TarefaFiltro
 
             //assert
             Assert.Equal(totalResultados, resultado.Count);
-            Assert.Empty(resultado.Where(t => (prioridade is not null && t.PrioridadeTarefa != prioridade) && (statusTarefa is not null && t.Status.status != statusTarefa)));
+            Assert.Empty(resultado.Where(t => (prioridade is not null && t.PrioridadeTarefa != prioridade) && (statusTarefa is not null && Tarefa.Status.Done != statusTarefa)));
         }
 
     }

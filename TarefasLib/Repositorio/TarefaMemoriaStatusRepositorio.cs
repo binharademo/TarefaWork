@@ -50,24 +50,24 @@ namespace TarefasLibrary.Repositorio
             return _tarefas;
         }
 
-        public bool Editar(Tarefa obj, StatusTarefa novostatus)
+        public bool Editar(Tarefa obj, Tarefa.Status novostatus)
         {
             if (novostatus == null)
             {
                 return false;
             }
-            obj.Status = novostatus;
+            obj.StatusTarefa = novostatus;
             return true;
         }
 
 
-        public bool Editar(Tarefa obj, StatusTarefa novostatus, string novadescricao, DateTime novoprazo)
+        public bool Editar(Tarefa obj, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
         {
             if (novostatus == null)
             {
                 return false;
             }
-            obj.Status = novostatus;
+            obj.StatusTarefa = novostatus;
             obj.Descricao = novadescricao;
             obj.Prazo = novoprazo;
             return true;
