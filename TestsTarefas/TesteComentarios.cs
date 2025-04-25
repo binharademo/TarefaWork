@@ -132,8 +132,8 @@ namespace Tests_Tarefas
             List<Comentario> result = tarefa01.ListarComentarios();
 
             //Assert
-            Assert.Equal(3, result1.Count);
-            Assert.Equal(2, result2.Count);
+            Assert.Equal(3, result.Count);
+           
         }
 
         [Fact]

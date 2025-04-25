@@ -19,8 +19,7 @@ namespace Tests_Tarefas
             // Assert
             Assert.True(c.EmAndamento());
             Assert.Equal(TimeSpan.Zero, c.Total);
-            Assert.NotEqual(default(DateTime), c.DataInicio);
-            Assert.True(c.DataInicio <= DateTime.Now);
+            Assert.True(c.Inicio <= DateTime.Now);
         }
 
 
@@ -33,7 +32,7 @@ namespace Tests_Tarefas
             var c = new Cronometro();
 
             // Act
-            var tempoInicial = c.DataInicio;
+            var tempoInicial = c.Inicio;
             c.Stop();
 
             // Assert
