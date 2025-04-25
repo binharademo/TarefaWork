@@ -13,6 +13,12 @@ namespace ApiRest.DTOs
 
     }
 
+    public class UsuarioBasicoDTO
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+    }
+
     public class CriarUsuarioDTO
     {
         public string Nome { get; set; }

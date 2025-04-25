@@ -1,6 +1,7 @@
 ﻿using ApiRest.DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Repositorio;
@@ -14,10 +15,10 @@ public class UsuarioController : ControllerBase
     private readonly ILogger<UsuarioController> _logger;
     private readonly UsuarioServico _usuario;
 
-    public UsuarioController(ILogger<UsuarioController> logger/*, UsuarioServico usuario*/)
+    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepositorio<Usuario> usuario)
     {
         _logger = logger;
-        _usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());//usuario;
+        _usuario = new UsuarioServico(usuario);
     }
 
     [HttpGet]
