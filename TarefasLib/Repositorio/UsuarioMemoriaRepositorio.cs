@@ -49,15 +49,14 @@ namespace TarefasLibrary.Repositorio
         public bool Editar(Usuario obj)
         {
             var usuarioExistente = BuscarPorId(obj.Id);
-            if (usuarioExistente != null)
-            {
-                usuarioExistente.Nome = obj.Nome;
-                usuarioExistente.Senha = obj.Senha;
-                usuarioExistente.FuncaoUsuario = obj.FuncaoUsuario;
-                usuarioExistente.SetorUsuario = obj.SetorUsuario;
-                return true;
-            }
-            return false;
+            if (usuarioExistente == null)
+                return false;
+            
+            usuarioExistente.Nome = obj.Nome;
+            usuarioExistente.Senha = obj.Senha;
+            usuarioExistente.FuncaoUsuario = obj.FuncaoUsuario;
+            usuarioExistente.SetorUsuario = obj.SetorUsuario;
+            return true;
         }
 
         public bool Remover(Usuario obj)

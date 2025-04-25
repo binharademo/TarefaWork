@@ -1,4 +1,4 @@
-﻿using TarefasLibrary.Repositorio;
+using TarefasLibrary.Repositorio;
 using TarefasLibrary.Negocio;
 using TarefasLibrary.Modelo;
 
@@ -6,6 +6,8 @@ namespace Tests_Tarefas
 {
     public class TesteComentarios
     {
+        // TODO: Melhorar o teste para validar casos extremos como strings muito longas e caracteres especiais.
+        // TODO: Adicionar validação para o caso de string vazia, que deveria lançar uma exceção.
         [Theory]
         [InlineData("ABCDEFG")]
         [InlineData("abcdefg")]
@@ -26,6 +28,8 @@ namespace Tests_Tarefas
             Assert.NotNull(descricao);
         }
 
+        // TODO: Melhorar o teste para verificar se o comentário específico foi adicionado à lista
+        // TODO: Adicionar limpeza da lista de comentários antes do teste para garantir isolamento
         [Fact]
         public void ListarComentario()
         {
@@ -62,6 +66,8 @@ namespace Tests_Tarefas
 
         }
 
+        // TODO: Adicionar teste para busca de comentário inexistente
+        // TODO: Limpar a lista de comentários antes do teste para garantir isolamento
         [Fact]
         public void BuscaComentario()
         {
@@ -85,9 +91,13 @@ namespace Tests_Tarefas
             Assert.True(result);
         }
 
+        // TODO: Reorganizar o teste para separar claramente as fases de Arrange, Act e Assert
+        // TODO: Verificar o conteúdo específico dos comentários retornados, não apenas a contagem
+        // TODO: Testar a remoção de comentários de uma tarefa
         [Fact]
         public void TestVicularUmComentarioAUmTarefa()
         {
+            //arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
             Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
             servico.Criar(criador);
@@ -95,8 +105,6 @@ namespace Tests_Tarefas
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 
-
-            //arrange
             Tarefa tarefa01 = new Tarefa(01, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
             Tarefa tarefa02 = new Tarefa(02, "titulo", tarefa, criador, responsavel, new DateTime(2025, 12, 31), "descricao", Tarefa.Prioridade.Alta);
 

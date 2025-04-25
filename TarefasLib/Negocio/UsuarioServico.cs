@@ -45,6 +45,11 @@ namespace TarefasLibrary.Negocio
             return _usuarioRepositorio.Editar(new(id, nome, senha, funcao, setor));
         }
 
+        public bool Editar(Usuario usuario)
+        {
+            return _usuarioRepositorio.Editar(usuario);
+        }
+
         public bool Remover(Usuario usuario)
         {
             var existente = Buscar(usuario.Id);
