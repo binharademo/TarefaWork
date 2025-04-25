@@ -68,11 +68,16 @@ namespace Tests_Tarefas
         [Fact]
         public void RemoverSetor()
         {
+            //arrange
             var repositorio = new SetorRepositorio();
             var servico = new SetorServico(repositorio);
             Setor setor = new Setor("Comercial");
+            
+            //act
             servico.Cadastrar(setor);
             var resultadoRemocao = servico.Remover(setor);
+
+            //assert
             Assert.True(resultadoRemocao);
         }
 

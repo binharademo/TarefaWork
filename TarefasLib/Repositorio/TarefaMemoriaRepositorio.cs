@@ -5,8 +5,8 @@ namespace TarefasLibrary.Repositorio
 {
     public class TarefaMemoriaRepositorio : ITarefaRepositorio
     {
-        // TODO: Considerar tornar a lista readonly para evitar modificações acidentais
-        private List<Tarefa> _tarefas = new List<Tarefa>();
+        
+        private readonly List<Tarefa> _tarefas = new List<Tarefa>();
 
         public bool Salvar(Tarefa tarefa)
         {
@@ -26,11 +26,10 @@ namespace TarefasLibrary.Repositorio
 
         public Tarefa? BuscarPorID(int id)
         {
-            // TODO: Validar o id (deve ser maior que zero)
             // TODO: Usar LINQ para simplificar a busca (FirstOrDefault)
             foreach (var tarefa in _tarefas)
             {
-                if (tarefa.Id == id)
+                if (tarefa.Id == id && id > 0)
                     return tarefa;
             }
 
