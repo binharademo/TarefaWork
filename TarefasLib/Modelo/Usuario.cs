@@ -23,6 +23,8 @@ namespace TarefasLibrary.Modelo
         public List<Tarefa> TarefasResponsavel { get; set; } = new List<Tarefa>();
         public List<Tarefa> TarefasMembro { get; set; } = new List<Tarefa>();
 
+        public List<Comentario> listaComentarios = new List<Comentario>();
+
         [JsonConstructor]
         public Usuario(string nome, string senha, Funcao funcao, Setor setor)
         {

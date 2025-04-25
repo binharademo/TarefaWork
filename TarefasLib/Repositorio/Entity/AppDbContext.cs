@@ -15,6 +15,9 @@ namespace TarefasLibrary.Repositorio.Entity
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<Tarefa> Tarefas { get; set; }
         public DbSet<Cronometro> Cronometros { get; set; }
+        public DbSet<Comentario> Comentarios { get; set; }
+
+        public DbSet<Empresa> Empresas { get; set; }
 
         private readonly string _connectionString;
 
@@ -74,6 +77,8 @@ namespace TarefasLibrary.Repositorio.Entity
 
                 entity.Property(u => u.SetorUsuario)
                       .HasConversion<string>(); // Armazena como texto (opcional)  
+
+                entity.HasMany(t => t.listaComentarios);
             });
 
             modelBuilder.Entity<Cronometro>(entity =>
@@ -86,6 +91,31 @@ namespace TarefasLibrary.Repositorio.Entity
                       .IsRequired();
                 entity.Property(c => c.Fim);
             });
+
+            modelBuilder.Entity<Comentario>(entity =>
+            {
+                entity.ToTable("Comentarios"); // Nome da tabela no banco de dados
+                entity.HasKey(c => c.Id);
+                entity.Property(c => c.Id)
+                      .ValueGeneratedOnAdd(); // autoincremento  
+                entity.Property(c => c.Descricao)
+                      .IsRequired();
+                entity.Property(c => c.DataCriacao)
+                      .IsRequired();
+            });
+
+            modelBuilder.Entity<Empresa>(entity =>
+            {
+                entity.ToTable("Empresas"); // Nome da tabela no banco de dados
+                entity.HasKey(e => e.id);
+                entity.Property(e => e.id)
+                      .ValueGeneratedOnAdd(); // autoincremento  
+                entity.Property(e => e.Nome)
+                        .IsRequired();
+                entity.Property(e => e.Cnpj)
+                      .IsRequired();
+            });
+
         }
     }
 }

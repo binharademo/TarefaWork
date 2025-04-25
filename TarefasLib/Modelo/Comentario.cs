@@ -7,11 +7,21 @@
 
         public DateTime DataCriacao { get; set; }
 
+        public int TarefaId { get; set; }
+        public int UsuarioId { get; set; }
+        public Comentario(string descricao, DateTime dataCriacao, int tarefaId, int usuarioId )
+        {
+            Descricao = descricao;
+            DataCriacao = dataCriacao;
+            TarefaId = tarefaId;
+            UsuarioId = usuarioId;
+        }
 
         public Comentario(string descricao, DateTime dataCriacao)
         {
             Descricao = descricao;
             DataCriacao = dataCriacao;
+
         }
 
         public Comentario(int id)
