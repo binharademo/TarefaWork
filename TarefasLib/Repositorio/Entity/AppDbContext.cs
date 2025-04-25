@@ -107,8 +107,8 @@ namespace TarefasLibrary.Repositorio.Entity
             modelBuilder.Entity<Empresa>(entity =>
             {
                 entity.ToTable("Empresas"); // Nome da tabela no banco de dados
-                entity.HasKey(e => e.id);
-                entity.Property(e => e.id)
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id)
                       .ValueGeneratedOnAdd(); // autoincremento  
                 entity.Property(e => e.Nome)
                         .IsRequired();
