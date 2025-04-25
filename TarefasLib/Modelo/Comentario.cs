@@ -11,6 +11,15 @@ namespace TarefasLibrary.Modelo
         // TODO: Considerar tornar DataCriacao somente leitura (readonly) após inicialização
         public DateTime DataCriacao { get; set; }
 
+        public int TarefaId { get; set; }
+        public int UsuarioId { get; set; }
+        public Comentario(string descricao, DateTime dataCriacao, int tarefaId, int usuarioId )
+        {
+            Descricao = descricao;
+            DataCriacao = dataCriacao;
+            TarefaId = tarefaId;
+            UsuarioId = usuarioId;
+        }
 
         // TODO: Validar parâmetros de entrada para evitar valores inválidos (SRP - Single Responsibility Principle)
         public Comentario(string descricao, DateTime dataCriacao)
@@ -18,6 +27,7 @@ namespace TarefasLibrary.Modelo
             // TODO: Implementar validação de parâmetros (descricao não deve ser nula ou vazia)
             Descricao = descricao;
             DataCriacao = dataCriacao;
+
         }
 
         // TODO: Este construtor cria um objeto incompleto, considerar remover ou adicionar validação

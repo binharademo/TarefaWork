@@ -34,6 +34,7 @@ namespace Tests_Tarefas.RepositorioEntity
             var usuarioRepositorio = new UsuarioRepositorio(connectionString);
             usuarioRepositorio.InicializarBancoDados();
             usuarioRepositorio.Cadastrar(usuario);
+
             // Act
             usuario.Nome = "Gabriel Editado";
             bool resultado = usuarioRepositorio.Editar(usuario);
