@@ -8,7 +8,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio.Entity
 {
-    public class ComentarioRepositorio : IRepositorio<Comentario>
+    public class ComentarioRepositorio : IComentarioRepositorio
     {
         private readonly string _connectionString;
         public ComentarioRepositorio(string connectionString)
@@ -73,6 +73,12 @@ namespace TarefasLibrary.Repositorio.Entity
             {
                 return false;
             }
+        }
+
+        public List<Comentario> BuscarPorTarefa(int id)
+        {
+            using var context = new AppDbContext(_connectionString);
+            return context.Comentarios.Where(context => context.TarefaId == id).ToList();
         }
     }
 }
