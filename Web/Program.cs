@@ -1,3 +1,5 @@
+using ApiRest.DTOs;
+using GerenciadorUsuarios.Services;
 using Web.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
+builder.Services.AddSingleton<UsuarioServico>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
