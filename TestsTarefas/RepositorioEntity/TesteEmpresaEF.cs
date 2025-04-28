@@ -60,6 +60,5 @@ namespace Tests_Tarefas.RepositorioEntity
             // Assert
             Assert.True(empresaDeletada);
         }
-
     }
 }
