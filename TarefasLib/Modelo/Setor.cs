@@ -10,12 +10,14 @@ namespace TarefasLibrary.Modelo
     {
         public string Nome { get; set; }
         public bool Status { get; set; }
-        public int Id { get; set; } = -1;
+        public int Id { get; set; }
+        //public Empresa Empresa { get; set; }
 
-        public Setor(string nome)
+        public Setor(string nome/*, Empresa empresa*/)
         {
             Nome = nome;
             Status = true;
+            //Empresa = empresa;
         }
         public Setor(int id, string nome, bool status)
         {

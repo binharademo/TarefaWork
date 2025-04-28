@@ -20,8 +20,9 @@ namespace Tests_Tarefas
         {
             var repositorio = new SetorRepositorio();
             var servico = new SetorServico(repositorio);
+            var empresa = new Empresa("empresa vinicius", "12345678901234");
 
-            Setor setor = new Setor("Comercial");
+            Setor setor = new Setor("Comercial"/*, empresa*/);
             var resultado = servico.Cadastrar(setor);
 
             Assert.True(resultado);
@@ -32,8 +33,9 @@ namespace Tests_Tarefas
         {
             var repositorio = new SetorRepositorio();
             var servico = new SetorServico(repositorio);
+            var empresa = new Empresa("empresa vinicius", "12345678901234");
 
-            Setor setor = new Setor("Comercial");
+            Setor setor = new Setor("Comercial"/*, empresa*/);
             var resultado = servico.Cadastrar(setor);
 
             var listaSetores = servico.Listar();
@@ -51,8 +53,9 @@ namespace Tests_Tarefas
         {
             var repositorio = new SetorRepositorio();
             var servico = new SetorServico(repositorio);
+            var empresa = new Empresa("empresa vinicius", "12345678901234");
 
-            Setor setor = new Setor("Comercial");
+            Setor setor = new Setor("Comercial"/*, empresa*/);
             servico.Cadastrar(setor);
 
             var resultadoEdicao = servico.Editar(setor.Id, "Financeiro", true);
@@ -71,7 +74,8 @@ namespace Tests_Tarefas
             //arrange
             var repositorio = new SetorRepositorio();
             var servico = new SetorServico(repositorio);
-            Setor setor = new Setor("Comercial");
+            var empresa = new Empresa("empresa vinicius", "12345678901234");
+            Setor setor = new Setor("Comercial"/*, empresa*/);
             
             //act
             servico.Cadastrar(setor);
