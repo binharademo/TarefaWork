@@ -116,6 +116,7 @@ namespace TarefasLibrary.Repositorio.Entity
                         .IsRequired();
                 entity.Property(e => e.Cnpj)
                       .IsRequired();
+                entity.HasMany(e => e.Setores);
             });
 
             modelBuilder.Entity<Setor>(entity =>
@@ -128,9 +129,7 @@ namespace TarefasLibrary.Repositorio.Entity
                       .IsRequired();
                 entity.Property(s => s.Status)
                       .IsRequired();
-                //entity.HasOne(s => s.Empresa)
-                //      .WithMany()
-                //      .IsRequired();
+
             });
 
         }

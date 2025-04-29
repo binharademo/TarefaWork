@@ -10,35 +10,56 @@ namespace Tests_Tarefas.RepositorioEntity
 {
     public class TesteSetorEF
     {
-         private const string connectionString = "Data Source=TestTarefas.db";
+        private const string connectionString = "Data Source=TestTarefas.db";
 
         [Fact]
         public void Cadastro_SetorEF()
         {
-            // arrange
-            var setor = new Setor("setor teste123");
+            // Arrange  
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+            var empresa = empresaRepositorio.Listar().First();
+            
+            if (empresa == null)
+            {
+                empresa = new Empresa("empresa teste", "777777");
+                empresaRepositorio.Cadastrar(empresa);
+            }
+
+            var setor1 = new Setor("financeiro", empresa);
+            var setor2 = new Setor("ti", empresa);
             var setorRepositorio = new SetorRepositorio(connectionString);
             setorRepositorio.InicializarBancoDados();
 
-            //act
-            var setorBuscado = setorRepositorio.Cadastrar(setor);
+            // Act  
+            var setor1Buscado = setorRepositorio.Cadastrar(setor1);
+            var setor2Buscado = setorRepositorio.Cadastrar(setor2);
 
-            //assert
-            Assert.True(setorBuscado);
-
+            // Assert  
+            Assert.True(setor1Buscado);
+            Assert.True(setor2Buscado);
         }
+
         [Fact]
-        public void Editar_setorEF() {
-            
+        public void Editar_setorEF()
+        {
             // arrange
-            var setor = new Setor("setor teste123");
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+            var empresa = empresaRepositorio.Listar().First();
+
+            if (empresa == null)
+            {
+                empresa = new Empresa("empresa teste", "777777");
+                empresaRepositorio.Cadastrar(empresa);
+            }
+
+            var setor = new Setor("setor teste123", empresa);
             var setorRepositorio = new SetorRepositorio(connectionString);
             setorRepositorio.InicializarBancoDados();
             var setorBuscado = setorRepositorio.Cadastrar(setor);
 
             // act
 
-            setor.Nome = "setor alterado";
+            setor.Nome = "setor novo";
             var setorEditado = setorRepositorio.Editar(setor);
 
             // assert
@@ -47,22 +68,37 @@ namespace Tests_Tarefas.RepositorioEntity
         }
 
         [Fact]
-        public void Excluir_setorEF() {
-            // arrange
-            var setor = new Setor("setor teste123");
-            var setor2 = new Setor("nao excluido");
+        public void Excluir_setorEF()
+        {
+            // Arrange
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+            var empresa1 = empresaRepositorio.Listar().First();
+            if (empresa1 == null)
+            {
+                empresa1 = new Empresa("empresa1 teste", "777777");
+                empresaRepositorio.Cadastrar(empresa1);
+            }
+            var empresa2 = empresaRepositorio.Listar().First(e => e.Id != empresa1.Id);
+            if (empresa2 == null)
+            {
+                empresa2 = new Empresa("odeio vinicius ratzke", "777");
+                empresaRepositorio.Cadastrar(empresa2);
+            }
+
             var setorRepositorio = new SetorRepositorio(connectionString);
             setorRepositorio.InicializarBancoDados();
-            var setorExcluido = setorRepositorio.Cadastrar(setor);
-            var setorNaoExcluido = setorRepositorio.Cadastrar(setor2);
 
-            //act
+            var setor = new Setor("ti", empresa1);
+            var setor2 = new Setor("morte a vinicius", empresa2);
 
-            var excluirSetor = setorRepositorio.Remover(setor);
+            var criaSetor1 = setorRepositorio.Cadastrar(setor);
+            var criaSetor2 = setorRepositorio.Cadastrar(setor2);
 
-            //assert
-            Assert.True(excluirSetor);
+            // Act
+            var resultadoExclusao = setorRepositorio.Remover(setor);
+
+            // Assert
+            Assert.True(resultadoExclusao);
         }
-
     }
 }

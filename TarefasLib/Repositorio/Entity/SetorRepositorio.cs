@@ -1,4 +1,5 @@
-﻿using TarefasLibrary.Interface;
+﻿using Microsoft.EntityFrameworkCore;
+using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio.Entity
