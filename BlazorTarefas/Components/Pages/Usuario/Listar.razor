@@ -1,0 +1,79 @@
+﻿@page "/usuario/listar"
+@rendermode InteractiveServer
+@inject UsuarioServico UsuarioServico
+@inject NavigationManager NavigationManager
+
+<PageTitle>Lista de Usuários</PageTitle>
+
+<h3>Lista de Usuários</h3>
+
+@if (usuarios == null)
+{
+    <p>Carregando...</p>
+}
+else if (!usuarios.Any())
+{
+    <p>Nenhuma tarefa encontrada.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Função</th>
+                <th>Setor</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var usuario in usuarios)
+            {
+                <tr>
+                    <td>@usuario.Id</td>
+                    <td>@usuario.Nome</td>
+                    <td>@usuario.SetorUsuario</td>
+                    <td>@usuario.FuncaoUsuario</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(usuario.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => RemoverUsuario(usuario.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <button class="btn btn-success" @onclick="NavegarParaCriacao">Novo Usuário</button>
+</div>
+
+@code {
+    private List<UsuarioDTO>? usuarios;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a lista de usuarios ao inicializar a página
+        usuarios = await UsuarioServico.BuscaTodos();
+    }
+
+    private void NavegarParaCriacao()
+    {
+        // Navega para a página de criação
+        NavigationManager.NavigateTo("/usuario/criar");
+    }
+
+    private void NavegarParaEdicao(int id)
+    {
+        // Navega para a página de edição com o ID como parâmetro
+        NavigationManager.NavigateTo($"/tarefa/editar/{id}");
+    }
+
+    private async Task RemoverUsuario(int id)
+    {
+        // Deleta a tarefa e atualiza a lista
+        await UsuarioServico.Remover(id);
+        usuarios = await UsuarioServico.BuscaTodos();
+    }
+}

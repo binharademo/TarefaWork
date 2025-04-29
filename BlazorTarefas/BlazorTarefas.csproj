@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\ApiRest\ApiRest.csproj" />
     <ProjectReference Include="..\TarefasLib\TarefasLibrary.csproj" />
-    <ProjectReference Include="..\TestsTarefas\Tests_Tarefas.csproj" />
   </ItemGroup>
 
 </Project>

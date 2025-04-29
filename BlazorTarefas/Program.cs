@@ -1,9 +1,5 @@
 using BlazorTarefas.Components;
-using TarefasLibrary.Interface;
-using TarefasLibrary.Negocio;
-using TarefasLibrary.Repositorio;
-
-
+using BlazorTarefas.Servicos;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,8 +8,7 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Registrar serviços da aplicação
-builder.Services.AddSingleton<ITarefaRepositorio, TarefaMemoriaRepositorio>();
-builder.Services.AddSingleton<ITarefaServico, TarefaServico>();
+builder.Services.AddSingleton<UsuarioServico>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
