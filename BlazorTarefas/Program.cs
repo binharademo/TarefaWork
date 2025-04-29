@@ -8,6 +8,10 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 // Registrar serviços da aplicação
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => { options.DetailedErrors = true; });
+
+builder.Services.AddSingleton<TarefaService>();
 builder.Services.AddSingleton<UsuarioServico>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
