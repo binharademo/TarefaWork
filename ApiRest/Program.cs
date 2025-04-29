@@ -12,6 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddSingleton<ITarefaRepositorio, TarefaMemoriaRepositorio>();
 builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>, UsuarioMemoriaRepositorio>();
 builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
+builder.Services.AddSingleton<IRepositorio<Empresa>, EmpresaMemoriaRepositorio>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

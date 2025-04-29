@@ -1,0 +1,61 @@
+﻿@page "/usuario/criar"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject UsuarioServico UsuarioServico
+
+<PageTitle>Novo Usuário</PageTitle>
+
+<h1>Novo Usuário</h1>
+
+<EditForm Model="usuario" OnValidSubmit="SalvarTarefa" FormName="novoUsuarioForm">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-3">
+        <label>Nome</label>
+        <InputText class="form-control" @bind-Value="usuario.Nome" />
+        <ValidationMessage For="() => usuario.Nome" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Senha</label>
+        <InputText class="form-control" @bind-Value="usuario.Senha" />
+        <ValidationMessage For="() => usuario.Senha" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Função</label>
+        <InputSelect class="form-control" @bind-Value="usuario.FuncaoUsuario">
+            <option value="0">Dev</option>
+            <option value="1">Analista</option>
+            <option value="2">Marketing</option>
+        </InputSelect>
+    </div>
+    <div class="form-check mb-3">
+        <label>Setor</label><br />
+
+        <InputRadioGroup @bind-Value="usuario.SetorUsuario">
+            <InputRadio Value="Usuario.Setor.Ti" id="setor_ti" />
+            <label for="todo" class="me-3">TI</label>
+
+            <InputRadio Value="Usuario.Setor.Marketing" id="setor_marketing" />
+            <label for="doing" class="me-3">Marketing</label>
+
+        </InputRadioGroup>
+    </div>
+
+    <button type="submit" class="btn btn-success" >Salvar</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+</EditForm>
+
+@code {
+    private CriarUsuarioDTO usuario = new();
+
+    private void SalvarTarefa()
+    {
+        UsuarioServico.Adicionar(usuario);
+        NavigationManager.NavigateTo("/usuario/listar");
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/usuario/listar");
+    }
+}
