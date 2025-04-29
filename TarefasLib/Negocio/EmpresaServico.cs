@@ -2,6 +2,7 @@
 using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Repositorio;
+using TarefasLibrary.Repositorio.Entity;
 
 namespace TarefasLibrary.Negocio
 {
@@ -27,6 +28,11 @@ namespace TarefasLibrary.Negocio
             return _repository.Editar(e);
         }
 
+        public bool Editar(Empresa empresa)
+        {
+            return _repository.Editar(empresa);
+        }
+
         public List<Empresa> Listar()
         {
             return _repository.Listar();
@@ -35,6 +41,11 @@ namespace TarefasLibrary.Negocio
         public bool Remover(Empresa empresa)
         {
             return _repository.Remover(empresa);
+        }
+
+        public Empresa BuscarPorId(int id)
+        {
+            return _repository.BuscarPorId(id);
         }
     }
 }

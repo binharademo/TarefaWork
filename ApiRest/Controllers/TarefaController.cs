@@ -167,41 +167,4 @@ public class TarefaController : ControllerBase
         return Ok(new TarefaBasicoDTO(tarefaAtualizada));
     }
 
-    [HttpPut("{id}/play")]
-    public ActionResult<TarefaBasicoDTO> IniciarCronometro(int id)
-    {
-
-        var tarefaExistente = _tarefa.BuscarPorId(id);
-        if (tarefaExistente == null)
-        {
-            return NotFound();
-        }
-
-        _tarefa.IniciaCronometro(tarefaExistente);
-
-        var tarefaAtualizada = _tarefa.BuscarPorId(id);
-        if (tarefaAtualizada is null)
-            return StatusCode(500);
-
-        return Ok(new TarefaBasicoDTO(tarefaAtualizada));
-    }
-
-    [HttpPut("{id}/pause")]
-    public ActionResult<TarefaBasicoDTO> PausarCronometro(int id)
-    {
-
-        var tarefaExistente = _tarefa.BuscarPorId(id);
-        if (tarefaExistente == null)
-        {
-            return NotFound();
-        }
-
-        _tarefa.PausaCronometro(tarefaExistente);
-
-        var tarefaAtualizada = _tarefa.BuscarPorId(id);
-        if (tarefaAtualizada is null)
-            return StatusCode(500);
-
-        return Ok(new TarefaBasicoDTO(tarefaAtualizada));
-    }
 }

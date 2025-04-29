@@ -3,46 +3,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio.Entity
 {
-    public class ComentarioRepositorio : IComentarioRepositorio
+    public class EmpresaRepositorio : IRepositorio<Empresa>
     {
         private readonly string _connectionString;
-        public ComentarioRepositorio(string connectionString)
+        public EmpresaRepositorio(string connectionString)
         {
             _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
         }
+
         public void InicializarBancoDados()
         {
             using var context = new AppDbContext(_connectionString);
             context.Database.EnsureCreated();
         }
 
-        public Comentario? BuscarPorId(int id)
+
+        public Empresa? BuscarPorId(int id)
         {
             using var context = new AppDbContext(_connectionString);
-            return context.Comentarios.FirstOrDefault(context => context.Id == id);
+            return context.Empresas.Find(id);
         }
 
-        public bool Cadastrar(Comentario obj)
+        public bool Cadastrar(Empresa obj)
         {
             using var context = new AppDbContext(_connectionString);
-            context.Comentarios.Add(obj);
+            context.Empresas.Add(obj);
             context.SaveChanges();
             return true;
         }
 
-        public bool Editar(Comentario obj)
+        public bool Editar(Empresa obj)
         {
             using var context = new AppDbContext(_connectionString);
-            var comentarioExistente = context.Comentarios.Find(obj.Id);
-            if (comentarioExistente != null)
+            var usuarioExistente = context.Empresas.Find(obj.Id);
+            if (usuarioExistente != null)
             {
-                comentarioExistente.Descricao = obj.Descricao;
-                    context.SaveChanges();
+                usuarioExistente.Nome = obj.Nome;
+
+                context.SaveChanges();
                 return true;
             }
 
@@ -51,21 +55,21 @@ namespace TarefasLibrary.Repositorio.Entity
                 return false;
 
             }
-        }
 
-        public List<Comentario> Listar()
+        }
+        public List<Empresa> Listar()
         {
             using var context = new AppDbContext(_connectionString);
-            return context.Comentarios.ToList();
+            return context.Empresas.ToList();
         }
 
-        public bool Remover(Comentario obj)
+        public bool Remover(Empresa obj)
         {
             using var context = new AppDbContext(_connectionString);
-            var comentarioExistente = context.Comentarios.Find(obj.Id);
-            if (comentarioExistente != null)
+            var empresaExistente = context.Empresas.Find(obj.Id);
+            if (empresaExistente != null)
             {
-                context.Comentarios.Remove(comentarioExistente);
+                context.Empresas.Remove(empresaExistente);
                 context.SaveChanges();
                 return true;
             }
@@ -73,12 +77,6 @@ namespace TarefasLibrary.Repositorio.Entity
             {
                 return false;
             }
-        }
-
-        public List<Comentario> BuscarPorTarefa(int id)
-        {
-            using var context = new AppDbContext(_connectionString);
-            return context.Comentarios.Where(context => context.TarefaId == id).ToList();
         }
     }
 }
