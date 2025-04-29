@@ -1,0 +1,91 @@
+﻿@page "/usuario/editar/{id:int}"
+@rendermode InteractiveServer
+@inject UsuarioServico UsuarioServico
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar Usuário</PageTitle>
+
+<h3>Editar</h3>
+
+@if (usuario == null)
+{
+    <p>Carregando...</p>
+}else
+{
+    <EditForm Model="usuario" OnValidSubmit="SalvarUsuario" FormName="editarUsuarioForm">
+
+         <DataAnnotationsValidator />
+        <div class="form-group mb-3">
+            <label>Nome</label>
+            <InputText class="form-control" @bind-Value="usuario.Nome" />
+            <ValidationMessage For="() => usuario.Nome" />
+        </div>
+        <div class="form-group mb-3">
+            <label>Senha</label>
+            <InputText class="form-control" @bind-Value="usuario.Senha" />
+            <ValidationMessage For="() => usuario.Senha" />
+        </div>
+        <div class="form-group mb-3">
+            <label>Função</label>
+            <InputSelect class="form-control" @bind-Value="usuario.FuncaoUsuario">
+                <option value="0">Dev</option>
+                <option value="1">Analista</option>
+                <option value="2">Marketing</option>
+            </InputSelect>
+        </div>
+        <div class="form-check mb-3">
+            <label>Setor</label><br />
+
+            <InputRadioGroup @bind-Value="usuario.SetorUsuario">
+                <InputRadio Value="Usuario.Setor.Ti" id="setor_ti" />
+                <label class="me-3">TI</label>
+
+                <InputRadio Value="Usuario.Setor.Marketing" id="setor_marketing" />
+                <label class="me-3">Marketing</label>
+
+            </InputRadioGroup>
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+    </EditForm>
+}
+
+
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private UsuarioDTO usuario = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a tarefa pelo ID passado na URL
+        usuario = await UsuarioServico.BuscaPorId(Id);
+    }
+
+    private void SalvarUsuario()
+    {
+        var resultado = UsuarioServico.Atualizar(usuario);
+
+        if (resultado)
+        {
+            // Se a atualização for bem-sucedida, navega para a lista de usuários
+            NavigationManager.NavigateTo("/usuario/listar");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/erro");
+        }
+    }
+    private void Cancelar()
+    {
+        // Cancela e volta para a lista
+        NavigationManager.NavigateTo("/tarefas");
+    }
+}
+
+   
