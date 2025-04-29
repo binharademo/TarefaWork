@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Nome { get; set; }
         public string Cnpj { get; set; }
+        public List<Setor> Setores { get; set; } = new List<Setor>();
 
         public Empresa(string nome, string cnpj)
         {
