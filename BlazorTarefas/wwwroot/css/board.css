@@ -1,0 +1,112 @@
+/* Estilos para o quadro kanban */
+.board-container {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+    min-height: 70vh;
+    width: 100%;
+}
+
+.board-column {
+    flex: 1;
+    min-width: 250px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.column-header {
+    padding: 10px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.column-todo .column-header {
+    background-color: #ffc107;
+    color: #212529;
+    border-radius: 3px;
+}
+
+.column-doing .column-header {
+    background-color: #17a2b8;
+    color: white;
+    border-radius: 3px;
+}
+
+.column-done .column-header {
+    background-color: #28a745;
+    color: white;
+    border-radius: 3px;
+}
+
+.task-list {
+    flex-grow: 1;
+    min-height: 100px;
+    padding: 5px;
+}
+
+.task-card {
+    background-color: white;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: grab;
+    transition: all 0.2s ease;
+}
+
+.task-card:hover {
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.task-card h5 {
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+}
+
+.task-card p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #6c757d;
+}
+
+.task-card .badge {
+    margin-top: 8px;
+    font-size: 0.75rem;
+}
+
+.dragging {
+    opacity: 0.6;
+    transform: scale(0.98);
+}
+
+.drag-over {
+    background-color: #e9ecef;
+}
+
+.task-card .task-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+}
+
+.task-card .priority-baixa {
+    background-color: #6c757d;
+}
+
+.task-card .priority-media {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.task-card .priority-alta {
+    background-color: #dc3545;
+}
