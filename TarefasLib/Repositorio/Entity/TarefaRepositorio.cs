@@ -75,7 +75,14 @@ namespace TarefasLibrary.Repositorio.Entity
 
         public bool MarcarMembro(Tarefa tarefa, Usuario membro)
         {
-            throw new NotImplementedException();
+            using var context = new AppDbContext(_connectionString);
+            var tarefaExistente = context.Tarefas.Find(tarefa.Id);
+            if (tarefaExistente == null)
+                return false;
+            
+            tarefaExistente.Membros.Add(membro);
+            context.SaveChanges();
+            return true;
         }
 
         public bool Salvar(Tarefa tarefa)
@@ -87,7 +94,17 @@ namespace TarefasLibrary.Repositorio.Entity
 
         public List<Tarefa> Buscar(FiltroTarefa filtro)
         {
-            throw new NotImplementedException();
+            using var context = new AppDbContext(_connectionString);
+            return context.Tarefas.Where(t =>
+                   (string.IsNullOrEmpty(filtro.Nome) ? true : t.Titulo.Contains(filtro.Nome))
+                && (filtro.Prioridade == null || t.PrioridadeTarefa == filtro.Prioridade)
+                && (filtro.Status == null || t.StatusTarefa == filtro.Status)
+                && (filtro.Criador == null || t.Criador.Id == filtro.Criador)
+                && (filtro.Responsavel == null || t.Responsavel.Id == filtro.Responsavel)
+                && (filtro.Membro == null || t.Membros.Exists(m => m.Id == filtro.Membro))
+                && (filtro.Inicio == null || t.DataCriacao >= filtro.Inicio)
+                && (filtro.Fim == null || t.DataCriacao <= filtro.Fim)
+            ).ToList();
         }
     }
 }
