@@ -48,6 +48,8 @@ namespace ApiRest.DTOs
             TempoTotal = tarefa.TempoTotal;
             PrioridadeTarefa = tarefa.PrioridadeTarefa;
         }
+
+        public TarefaDTO() { }
     }
 
     public class TarefaBasicoDTO

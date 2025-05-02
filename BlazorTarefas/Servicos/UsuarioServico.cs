@@ -39,8 +39,8 @@ namespace BlazorTarefas.Servicos
             return Task.FromResult(_usuario);
         }
 
-        public Task<UsuarioDTO?> BuscaPorId(int id) =>
-            Task.FromResult(_usuario.FirstOrDefault(t => t.Id == id));
+        public async Task<UsuarioDTO> BuscaPorId(int id) =>
+            _usuario.FirstOrDefault(t => t.Id == id);
 
         public Task Remover(int id)
         {
