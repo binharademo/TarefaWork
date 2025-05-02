@@ -4,6 +4,7 @@
 @* @inject UsuarioServico UsuarioServico *@
 @inject IJSRuntime JSRuntime
 @* @inject SessaoService SessaoService *@
+@inject TarefaService TarefaService
 @implements IAsyncDisposable
 
 <PageTitle>Quadro de Tarefas</PageTitle>
@@ -39,6 +40,7 @@
                          ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
+                        <p>@tarefa.Criador.Nome</p>
                         <div class="task-actions">
                             <span class="badge priority-@tarefa.Prioridade.ToLower()">@tarefa.Prioridade</span>
                             <div>
@@ -74,6 +76,7 @@
                          ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
+                        <p>@tarefa.Criador.Nome</p>
                         <div class="task-actions">
                             <span class="badge priority-@tarefa.Prioridade.ToLower()">@tarefa.Prioridade</span>
                             <div>
@@ -109,6 +112,7 @@
                          ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
+                        <p>@tarefa.Criador.Nome</p>
                         <div class="task-actions">
                             <span class="badge priority-@tarefa.Prioridade.ToLower()">@tarefa.Prioridade</span>
                             <div>
@@ -123,9 +127,9 @@
 </div>
 
 @code {
-    private List<Tarefa>? todoTasks;
-    private List<Tarefa>? doingTasks;
-    private List<Tarefa>? doneTasks;
+    private List<TarefaTeste>? todoTasks;
+    private List<TarefaTeste>? doingTasks;
+    private List<TarefaTeste>? doneTasks;
     private DotNetObjectReference<Board>? objRef;
 
     protected override async Task OnInitializedAsync()
