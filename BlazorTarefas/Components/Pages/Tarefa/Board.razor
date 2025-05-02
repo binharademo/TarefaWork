@@ -1,17 +1,14 @@
 ﻿@page "/board"
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
+@* @inject UsuarioServico UsuarioServico *@
 @inject IJSRuntime JSRuntime
-@inject TarefaService TarefaService
 @* @inject SessaoService SessaoService *@
 @implements IAsyncDisposable
 
 <PageTitle>Quadro de Tarefas</PageTitle>
 
-@* <h3>Quadro de Tarefas @if (SessaoService.GetUsuario() != null)
-    {
-        <span>- Bem-vindo, @SessaoService.GetUsuario()</span>
-    }</h3> *@
+@* <h3>Quadro de Tarefas @if(UsuarioServico.BuscaPorId() != null) { <span>- Bem-vindo, @UsuarioServico.BuscaPorId()</span> }</h3> *@
 
 <div class="mb-3">
     <button class="btn btn-success" @onclick="NavegarParaCriacao">Nova Tarefa</button>
