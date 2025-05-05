@@ -19,11 +19,11 @@ namespace BlazorTarefas.Servicos
             });
             return Task.CompletedTask;
         }
-        public Task<UsuarioDTO> BuscaPorId(int id)
-        {
-            var usuario = _usuario.FirstOrDefault(t => t.Id == id);
-            return Task.FromResult(usuario);
-        }   
+        //public Task<UsuarioDTO> BuscaPorId(int id)
+        //{
+        //    var usuario = _usuario.FirstOrDefault(t => t.Id == id);
+        //    return Task.FromResult(usuario);
+        //}   
 
         public Boolean Atualizar(UsuarioDTO usuario)
         {

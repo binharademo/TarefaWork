@@ -1,15 +1,13 @@
 ﻿@page "/board"
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
-@* @inject UsuarioServico UsuarioServico *@
 @inject IJSRuntime JSRuntime
-@* @inject SessaoService SessaoService *@
-@inject TarefaService TarefaService
+@inject TarefaServico TarefaServico
 @implements IAsyncDisposable
 
 <PageTitle>Quadro de Tarefas</PageTitle>
 
-@* <h3>Quadro de Tarefas @if(UsuarioServico.BuscaPorId() != null) { <span>- Bem-vindo, @UsuarioServico.BuscaPorId()</span> }</h3> *@
+<h3>Quadro de Tarefas @* @if(UsuarioServico.BuscaPorId() != null) { <span>- Bem-vindo, @UsuarioServico.BuscaPorId()</span> } *@</h3>
 
 <div class="mb-3">
     <button class="btn btn-success" @onclick="NavegarParaCriacao">Nova Tarefa</button>
@@ -20,9 +18,9 @@
     <div class="board-column column-todo">
         <div class="column-header">A Fazer (TODO)</div>
         <div class="task-list"
-             ondragover="dragDropManager.dragOver(event)"
-             ondragleave="dragDropManager.dragLeave(event)"
-             ondrop="dragDropManager.drop(event, 'TODO', window.dotNetHelper)">
+        ondragover="dragDropManager.dragOver(event)"
+        ondragleave="dragDropManager.dragLeave(event)"
+        ondrop="dragDropManager.drop(event, '@Tarefa.Status.ToDo.ToString()', window.dotNetHelper)">
             @if (todoTasks == null)
             {
                 <p>Carregando...</p>
@@ -36,13 +34,13 @@
                 @foreach (var tarefa in todoTasks)
                 {
                     <div class="task-card"
-                         draggable="true"
-                         ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
+                    draggable="true"
+                    ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
                         <p>@tarefa.Criador.Nome</p>
                         <div class="task-actions">
-                            <span class="badge priority-@tarefa.Prioridade.ToLower()">@tarefa.Prioridade</span>
+                            <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
                             <div>
                                 <button class="btn btn-sm btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
                             </div>
@@ -56,9 +54,9 @@
     <div class="board-column column-doing">
         <div class="column-header">Em Andamento (DOING)</div>
         <div class="task-list"
-             ondragover="dragDropManager.dragOver(event)"
-             ondragleave="dragDropManager.dragLeave(event)"
-             ondrop="dragDropManager.drop(event, 'DOING', window.dotNetHelper)">
+        ondragover="dragDropManager.dragOver(event)"
+        ondragleave="dragDropManager.dragLeave(event)"
+        ondrop="dragDropManager.drop(event, '@Tarefa.Status.Doing.ToString()', window.dotNetHelper)">
             @if (doingTasks == null)
             {
                 <p>Carregando...</p>
@@ -72,13 +70,13 @@
                 @foreach (var tarefa in doingTasks)
                 {
                     <div class="task-card"
-                         draggable="true"
-                         ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
+                    draggable="true"
+                    ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
                         <p>@tarefa.Criador.Nome</p>
                         <div class="task-actions">
-                            <span class="badge priority-@tarefa.Prioridade.ToLower()">@tarefa.Prioridade</span>
+                            <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
                             <div>
                                 <button class="btn btn-sm btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
                             </div>
@@ -92,9 +90,9 @@
     <div class="board-column column-done">
         <div class="column-header">Concluídas (DONE)</div>
         <div class="task-list"
-             ondragover="dragDropManager.dragOver(event)"
-             ondragleave="dragDropManager.dragLeave(event)"
-             ondrop="dragDropManager.drop(event, 'DONE', window.dotNetHelper)">
+        ondragover="dragDropManager.dragOver(event)"
+        ondragleave="dragDropManager.dragLeave(event)"
+        ondrop="dragDropManager.drop(event, '@Tarefa.Status.Done.ToString()', window.dotNetHelper)">
             @if (doneTasks == null)
             {
                 <p>Carregando...</p>
@@ -108,13 +106,13 @@
                 @foreach (var tarefa in doneTasks)
                 {
                     <div class="task-card"
-                         draggable="true"
-                         ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
+                    draggable="true"
+                    ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
                         <p>@tarefa.Criador.Nome</p>
                         <div class="task-actions">
-                            <span class="badge priority-@tarefa.Prioridade.ToLower()">@tarefa.Prioridade</span>
+                            <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
                             <div>
                                 <button class="btn btn-sm btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
                             </div>
@@ -127,9 +125,9 @@
 </div>
 
 @code {
-    private List<TarefaTeste>? todoTasks;
-    private List<TarefaTeste>? doingTasks;
-    private List<TarefaTeste>? doneTasks;
+    private List<TarefaDTO>? todoTasks;
+    private List<TarefaDTO>? doingTasks;
+    private List<TarefaDTO>? doneTasks;
     private DotNetObjectReference<Board>? objRef;
 
     protected override async Task OnInitializedAsync()
@@ -148,41 +146,33 @@
 
     private async Task LoadTasksByStatus()
     {
-        todoTasks = await TarefaService.GetTarefasByStatusAsync("TODO");
-        doingTasks = await TarefaService.GetTarefasByStatusAsync("DOING");
-        doneTasks = await TarefaService.GetTarefasByStatusAsync("DONE");
+        todoTasks = await TarefaServico.BuscaPorStatus(Tarefa.Status.ToDo);
+        doingTasks = await TarefaServico.BuscaPorStatus(Tarefa.Status.Doing);
+        doneTasks = await TarefaServico.BuscaPorStatus(Tarefa.Status.Done);
     }
 
     [JSInvokable]
-    public async Task UpdateTaskStatus(string taskIdString, string newStatus)
+    public async Task AtualizaStatus(string id, string newStatus)
     {
-        if (int.TryParse(taskIdString, out int taskId))
-        {
-            var tarefa = await TarefaService.GetTarefaByIdAsync(taskId);
-            if (tarefa != null)
-            {
-                tarefa.Status = newStatus;
+        if (! int.TryParse(id, out int tarefaId))
+            return;
 
-                // Atualizar também o campo Concluida se o status for DONE
-                if (newStatus == "DONE")
-                {
-                    tarefa.Concluida = true;
-                }
-                else
-                {
-                    tarefa.Concluida = false;
-                }
+        var tarefa = await TarefaServico.BuscaPorId(tarefaId);
+        if (tarefa == null)
+            return;
+        
+        if (! Enum.TryParse(newStatus, out Tarefa.Status statusTarefa))
+            return;
 
-                await TarefaService.UpdateTarefaAsync(tarefa);
-                await LoadTasksByStatus();
-                StateHasChanged();
-            }
-        }
+        tarefa.Status = statusTarefa;
+        TarefaServico.Atualizar(tarefa);
+        await LoadTasksByStatus();
+        StateHasChanged();
     }
 
     private void NavegarParaCriacao()
     {
-        NavigationManager.NavigateTo("/tarefa/nova");
+        NavigationManager.NavigateTo("/tarefa/criar");
     }
 
     private void NavegarParaEdicao(int id)

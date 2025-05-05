@@ -54,7 +54,7 @@ window.dragDropManager = {
             taskList.classList.remove("drag-over");
             
             // Chamar método .NET para atualizar o status
-            dotNetHelper.invokeMethodAsync('UpdateTaskStatus', taskId, column);
+            dotNetHelper.invokeMethodAsync('AtualizaStatus', taskId, column);
             
             console.log(`Tarefa ${taskId} movida para ${column}`);
         }
