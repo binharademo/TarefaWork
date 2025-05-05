@@ -11,7 +11,6 @@ builder.Services.AddRazorComponents()
 builder.Services.AddServerSideBlazor()
     .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
-builder.Services.AddSingleton<TarefaService>();
 builder.Services.AddSingleton<UsuarioServico>();
 builder.Services.AddSingleton<TarefaServico>();
 builder.Services.AddHttpContextAccessor();
