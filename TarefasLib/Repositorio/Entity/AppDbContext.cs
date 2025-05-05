@@ -19,6 +19,8 @@ namespace TarefasLibrary.Repositorio.Entity
 
         public DbSet<Empresa> Empresas { get; set; }
 
+        public DbSet<Setor> Setores { get; set; }
+
         private readonly string _connectionString;
 
         public AppDbContext(string connectionString)
@@ -114,6 +116,20 @@ namespace TarefasLibrary.Repositorio.Entity
                         .IsRequired();
                 entity.Property(e => e.Cnpj)
                       .IsRequired();
+                entity.HasMany(e => e.Setores);
+            });
+
+            modelBuilder.Entity<Setor>(entity =>
+            {
+                entity.ToTable("Setores"); // Nome da tabela no banco de dados
+                entity.HasKey(s => s.Id);
+                entity.Property(s => s.Id)
+                      .ValueGeneratedOnAdd(); // autoincremento
+                entity.Property(s => s.Nome)
+                      .IsRequired();
+                entity.Property(s => s.Status)
+                      .IsRequired();
+
             });
 
         }

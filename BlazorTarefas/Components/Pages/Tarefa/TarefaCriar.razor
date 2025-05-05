@@ -2,6 +2,8 @@
 @using ApiRest.DTOs
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
+@inject UsuarioServico UsuarioServico
+@inject TarefaServico TarefaServico
 
 <PageTitle>Nova Tarefa</PageTitle>
 
@@ -24,6 +26,29 @@
             <option value="Baixa">Baixa</option>
             <option value="Média">Média</option>
             <option value="Alta">Alta</option>
+        </InputSelect>
+    </div>
+    <div class="form-group mb-3">
+        <label>Criador</label>       
+        <InputSelect class="form-control" @bind-Value="tarefa.CriadorId">
+            @foreach (var usuario in usuarios)
+        {
+                <option value="@usuario.Id">@usuario.Nome</option>
+        }
+        </InputSelect>
+    </div>
+    <div class="form-group mb-3">
+        <label>Prazo</label>
+        <InputDate class="form-control" @bind-Value="tarefa.Prazo" />
+        <ValidationMessage For="() => tarefa.Prazo" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Responsável</label>
+        <InputSelect class="form-control" @bind-Value="tarefa.ResponsavelId">
+            @foreach (var usuario in usuarios)
+            {
+                <option value="@usuario.Id">@usuario.Nome</option>
+            }
         </InputSelect>
     </div>
     <div class="form-check mb-3">
@@ -49,13 +74,22 @@
 
     private void SalvarTarefa()
     {
-        // TarefaServico.Salvar(tarefa);
+        TarefaServico.Adicionar(tarefa);
         NavigationManager.NavigateTo("/tarefa/listar");
     }
 
     private void Cancelar()
     {
         NavigationManager.NavigateTo("/tarefa/listar");
+    }
+
+
+    private List<UsuarioDTO>? usuarios;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a lista de usuarios ao inicializar a página
+        usuarios = await UsuarioServico.BuscaTodos();
     }
 }
  *@

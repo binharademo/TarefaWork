@@ -25,10 +25,27 @@ namespace BlazorTarefas.Servicos
             return Task.FromResult(usuario);
         }   
 
+        public Boolean Atualizar(UsuarioDTO usuario)
+        {
+            var usuarioExistente = _usuario.FirstOrDefault(t => t.Id == usuario.Id);
+            if (usuarioExistente != null)
+            {
+                usuarioExistente.Nome = usuario.Nome;
+                usuarioExistente.Senha = usuario.Senha;
+                usuarioExistente.FuncaoUsuario = usuario.FuncaoUsuario;
+                usuarioExistente.SetorUsuario = usuario.SetorUsuario;
+                return(true);
+            }
+            return (false);
+        }
+
         public Task<List<UsuarioDTO>> BuscaTodos()
         {
             return Task.FromResult(_usuario);
         }
+
+        public async Task<UsuarioDTO> BuscaPorId(int id) =>
+            _usuario.FirstOrDefault(t => t.Id == id);
 
         public Task Remover(int id)
         {

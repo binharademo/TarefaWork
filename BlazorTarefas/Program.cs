@@ -13,6 +13,7 @@ builder.Services.AddServerSideBlazor()
 
 builder.Services.AddSingleton<TarefaService>();
 builder.Services.AddSingleton<UsuarioServico>();
+builder.Services.AddSingleton<TarefaServico>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

@@ -44,6 +44,44 @@ namespace Tests_Tarefas.RepositorioEntity
         }
 
         [Fact]
+        public void ListarComentarios()
+        {
+            var tarefa = new Tarefa("Testebuscar", Tarefa.Status.ToDo,
+               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti),
+               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti),
+               DateTime.Now.AddDays(5), "Descricao",
+               Tarefa.Prioridade.Alta);
+
+            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
+            usuarioRepositorio.InicializarBancoDados();
+            usuarioRepositorio.Cadastrar(usuario);
+
+            var tarefaRepositorio = new TarefaRepositorio(connectionString);
+            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
+            tarefaRepositorio.InicializarBancoDados();
+            comentarioRepositorio.InicializarBancoDados();
+            tarefaRepositorio.Salvar(tarefa);
+
+            var comentario1 = new Comentario("teste 000001", DateTime.Now, tarefa.Id, usuario.Id);
+            var comentario2 = new Comentario("teste 000002", DateTime.Now, tarefa.Id, usuario.Id);
+            var resultado1 = comentarioRepositorio.Cadastrar(comentario1);
+            var resultado2 = comentarioRepositorio.Cadastrar(comentario2);
+
+            // Act
+            var resultado = comentarioRepositorio.BuscarPorTarefa(tarefa.Id);
+
+            // Assert
+            Assert.NotNull(resultado);
+            Assert.True(resultado.Any());
+            Assert.Equal(2, resultado.Count);
+            Assert.Equal(comentario1.TarefaId, resultado[0].TarefaId);
+            Assert.Equal(comentario1.UsuarioId, resultado[1].UsuarioId);
+            Assert.Equal(comentario2.TarefaId, resultado[0].TarefaId);
+            Assert.Equal(comentario2.UsuarioId, resultado[1].UsuarioId);
+        }
+
+        [Fact]
         public void DeletarComentario()
         {
             // Arrange
@@ -100,11 +138,11 @@ namespace Tests_Tarefas.RepositorioEntity
             tarefaRepositorio.Salvar(tarefa);
             var comentario = new Comentario("teste editar", DateTime.Now, tarefa.Id, usuario.Id);
             var resultado1 = comentarioRepositorio.Cadastrar(comentario);
-            
+
 
             // Act
             comentario.Descricao = "editar testes";
-            bool resultadoEditar =comentarioRepositorio.Editar(comentario);
+            bool resultadoEditar = comentarioRepositorio.Editar(comentario);
             // Assert
             Assert.True(resultadoEditar);
 
