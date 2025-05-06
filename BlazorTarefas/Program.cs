@@ -1,5 +1,8 @@
 using BlazorTarefas.Components;
 using BlazorTarefas.Servicos;
+using Microsoft.AspNetCore.Components.Server.Circuits;
+using Microsoft.EntityFrameworkCore;
+using TarefasLibrary.Repositorio.Entity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +13,7 @@ builder.Services.AddRazorComponents()
 builder.Services
     .AddHttpClient<UsuarioServico>(client =>
     {
-        // a URL base da sua API, incluindo o ì/î
+        // a URL base da sua API, incluindo o ‚Äú/‚Äù
         client.BaseAddress = new Uri("https://localhost:50504/");
     });
 
@@ -21,10 +24,12 @@ builder.Services
         client.BaseAddress = new Uri("https://localhost:50504/");
     });
 
-// Registrar serviÁos da aplicaÁ„o
+// Registrar servi√ßos da aplica√ß√£o
 //builder.Services.AddScoped<UsuarioServico>();
 //builder.Services.AddScoped<TarefaServico>();
 builder.Services.AddHttpContextAccessor();
+
+// Add Session support
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
@@ -33,12 +38,20 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+// Add DbContext
+//string connectionString = "Data Source=tarefas.db";
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseSqlite(connectionString));
+
+// Add services
+builder.Services.AddSingleton<UsuarioServico>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
@@ -47,6 +60,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseSession();
+
+// Initialize database with seed data - commented out for now to get the app running
+// We'll implement this in a middleware or background service later
+// InitSeed.InicializarBancoDeDados(app.Services).Wait();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -1,0 +1,42 @@
+﻿@page "/empresa/criar"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject EmpresaServico EmpresaServico
+
+<PageTitle>Nova Empresa</PageTitle>
+
+<h1>Novo Empresa</h1>
+
+<EditForm Model="empresa" OnValidSubmit="SalvarEmpresa" FormName="novaEmpresaForm">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-3">
+        <label>Nome</label>
+        <InputText class="form-control" @bind-Value="empresa.Nome" />
+        <ValidationMessage For="() => empresa.Nome" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Cnpj</label>
+        <InputText class="form-control" @bind-Value="empresa.Cnpj" />
+        <ValidationMessage For="() => empresa.Cnpj" />
+    </div>
+
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+</EditForm>
+
+@code {
+    private CriarEmpresaDTO empresa = new();
+
+    private async Task SalvarEmpresa()
+    {
+        await EmpresaServico.Adicionar(empresa);
+        NavigationManager.NavigateTo("/empresa/listar");
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/empresa/listar");
+    }
+
+}

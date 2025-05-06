@@ -1,0 +1,67 @@
+﻿@page "/setor/criar"
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject SetorServico SetorServico
+@inject EmpresaServico EmpresaServico
+
+<PageTitle>Novo Setor</PageTitle>
+
+<h1>Novo Setor</h1>
+
+<EditForm Model="setor" OnValidSubmit="SalvarSetor" FormName="novoSetorForm">
+    <DataAnnotationsValidator />
+    <div class="form-group mb-3">
+        <label>Nome</label>
+        <InputText class="form-control" @bind-Value="setor.Nome" />
+        <ValidationMessage For="() => setor.Nome" />
+    </div>
+    <div class="form-group mb-3">
+        <label>Empresa</label>
+        <InputSelect class="form-control" @bind-Value="setor.EmpresaId">
+            @foreach (var empresa in empresas)
+            {
+                <option value="@empresa.Id">@empresa.Nome</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group mb-3">
+        <label>Status</label>
+        <InputRadioGroup @bind-Value="setor.Status">
+            <div class="form-check">
+                <InputRadio class="form-check-input" Value="true" />
+                <label class="form-check-label">Ativo</label>
+            </div>
+            <div class="form-check">
+                <InputRadio class="form-check-input" Value="false" />
+                <label class="form-check-label">Inativo</label>
+            </div>
+        </InputRadioGroup>
+        <ValidationMessage For="() => setor.Status" />
+    </div>
+    <button type="submit" class="btn btn-success">Salvar</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+</EditForm>
+
+@code {
+    private CriarSetorDTO setor = new() { Status = true } ;
+
+    private async Task SalvarSetor()
+    {
+        await SetorServico.Adicionar(setor);
+        NavigationManager.NavigateTo("/setor/listar");
+    }
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/setor/listar");
+    }
+
+    private List<EmpresaDTO>? empresas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a lista de usuarios ao inicializar a página
+        empresas = await EmpresaServico.BuscaTodos();
+    }
+}

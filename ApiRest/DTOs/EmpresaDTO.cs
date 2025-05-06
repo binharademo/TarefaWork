@@ -14,7 +14,10 @@ namespace ApiRest.DTOs
             Nome = empresa.Nome;
             Cnpj = empresa.Cnpj;
         }
+
+        public EmpresaDTO() { }
     }
+
 
     public class CriarEmpresaDTO
     {

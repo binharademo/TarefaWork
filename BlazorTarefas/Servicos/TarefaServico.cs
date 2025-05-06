@@ -51,5 +51,9 @@ namespace BlazorTarefas.Servicos
         //    return Task.CompletedTask;
         //}
 
+        public Task<List<TarefaDTO>> BuscaPorStatus(Tarefa.Status status ) =>
+         Task.FromResult(_tarefa.Where(t => t.Status == status).ToList());
+
+
     }
 }

@@ -1,0 +1,76 @@
+﻿@page "/empresa/listar"
+@rendermode InteractiveServer
+@inject EmpresaServico EmpresaServico
+@inject NavigationManager NavigationManager
+
+<PageTitle>Lista de Empresas</PageTitle>
+
+<h3>Lista de Empresas</h3>
+
+@if (empresas == null)
+{
+    <p>Carregando...</p>
+}
+else if (!empresas.Any())
+{
+    <p>Nenhuma empresa encontrada.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Cnpj</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var empresa in empresas)
+            {
+                <tr>
+                    <td>@empresa.Id</td>
+                    <td>@empresa.Nome</td>
+                    <td>@empresa.Cnpj</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(empresa.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => RemoverSetor(empresa.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <button class="btn btn-success" @onclick="NavegarParaCriacao">Nova Empresa</button>
+</div>
+
+@code {
+    private List<EmpresaDTO>? empresas;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a lista de empresas ao inicializar a página
+        empresas = await EmpresaServico.BuscaTodos();
+    }
+
+    private void NavegarParaCriacao()
+    {
+        // Navega para a página de criação
+        NavigationManager.NavigateTo("/empresa/criar");
+    }
+
+    private void NavegarParaEdicao(int id)
+    {
+        // Navega para a página de edição com o ID como parâmetro
+        NavigationManager.NavigateTo($"/empresa/editar/{id}");
+    }
+
+    private async Task RemoverSetor(int id)
+    {
+        // Deleta a empresa e atualiza a lista
+        await EmpresaServico.Remover(id);
+        empresas = await EmpresaServico.BuscaTodos();
+    }
+}
