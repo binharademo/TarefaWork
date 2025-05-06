@@ -37,7 +37,6 @@ else
                     <td>@usuario.FuncaoUsuario</td>
                     <td>
                         <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(usuario.Id)">Editar</button>
-                        <button class="btn btn-danger" @onclick="() => RemoverUsuario(usuario.Id)">Excluir</button>
                     </td>
                 </tr>
             }
@@ -55,7 +54,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         // Carrega a lista de usuarios ao inicializar a página
-        usuarios = await UsuarioServico.BuscaTodos();
+        usuarios = await UsuarioServico.BuscaTodosAsync();
     }
 
     private void NavegarParaCriacao()
@@ -70,10 +69,4 @@ else
         NavigationManager.NavigateTo($"/usuario/editar/{id}");
     }
 
-    private async Task RemoverUsuario(int id)
-    {
-        // Deleta a tarefa e atualiza a lista
-        await UsuarioServico.Remover(id);
-        usuarios = await UsuarioServico.BuscaTodos();
-    }
 }

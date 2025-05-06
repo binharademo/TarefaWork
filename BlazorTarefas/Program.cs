@@ -7,9 +7,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+builder.Services
+    .AddHttpClient<UsuarioServico>(client =>
+    {
+        // a URL base da sua API, incluindo o “/”
+        client.BaseAddress = new Uri("https://localhost:50504/");
+    });
+
+// idem para TarefaServico, se precisar
+builder.Services
+    .AddHttpClient<TarefaServico>(client =>
+    {
+        client.BaseAddress = new Uri("https://localhost:50504/");
+    });
+
 // Registrar serviços da aplicação
-builder.Services.AddSingleton<UsuarioServico>();
-builder.Services.AddSingleton<TarefaServico>();
+//builder.Services.AddScoped<UsuarioServico>();
+//builder.Services.AddScoped<TarefaServico>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>

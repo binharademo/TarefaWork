@@ -1,67 +1,55 @@
 ﻿using ApiRest.DTOs;
+using System.Net.Http;
 using TarefasLibrary.Modelo;
 
 namespace BlazorTarefas.Servicos
 {
     public class TarefaServico
     {
-        private List<TarefaDTO> _tarefa = new List<TarefaDTO>();
-        private readonly UsuarioServico _usuario;
-        private int _nextId = 1;
+        private readonly HttpClient _httpClient;
+        //private readonly UsuarioServico _usuario;
+        //private int _nextId = 1;
 
-        public TarefaServico(UsuarioServico usuario)
+        public TarefaServico(HttpClient httpClient)
         {
-            _usuario = usuario;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task <Boolean> Adicionar(CriarTarefaDTO tarefa)
-        {
-            var criador = await _usuario.BuscaPorId(tarefa.CriadorId);
-            var responsavel = await _usuario.BuscaPorId(tarefa.ResponsavelId);
-            _tarefa.Add(new TarefaDTO
-            {
-                Id = _nextId++,
-                Titulo = tarefa.Titulo,
-                Status = tarefa.Status,
-                Criador = criador,
-                Responsavel = responsavel,
-                Prazo = tarefa.Prazo,
-                Descricao = tarefa.Descricao,
-                PrioridadeTarefa = tarefa.PrioridadeTarefa
+        //public TarefaServico(UsuarioServico usuario)
+        //{
+        //    _usuario = usuario;
+        //}
 
-            });
-            return true;
+        public async Task <TarefaDTO> Adicionar(CriarTarefaDTO tarefa)
+        {
+            var response = await _httpClient.PostAsJsonAsync("tarefa", tarefa);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<TarefaDTO>();
         }
 
-        public Boolean Atualizar(TarefaDTO tarefa)
+        public async Task <bool> Atualizar(int id, TarefaDTO tarefa)
         {
-            var tarefaExistente = _tarefa.FirstOrDefault(t => t.Id == tarefa.Id);
-            if (tarefaExistente != null)
-            {
-                tarefaExistente.Titulo = tarefa.Titulo;
-                tarefaExistente.Status = tarefa.Status;
-                tarefaExistente.Prazo = tarefa.Prazo;
-                tarefaExistente.Descricao = tarefa.Descricao;
-                tarefaExistente.PrioridadeTarefa = tarefa.PrioridadeTarefa;
-                return (true);
-            }
-            return (false);
+            var response = await _httpClient.PutAsJsonAsync($"tarefa/{id}", tarefa);
+            return response.IsSuccessStatusCode;
         }
 
-        public Task<List<TarefaDTO>> BuscaTodos()
+
+        public async Task<List<TarefaDTO>> BuscaTodos()
         {
-            return Task.FromResult(_tarefa);
+            return await _httpClient.GetFromJsonAsync<List<TarefaDTO>>("tarefa")
+                   ?? new List<TarefaDTO>();
         }
 
-        public Task<TarefaDTO?> BuscaPorId(int id) =>
-            Task.FromResult(_tarefa.FirstOrDefault(t => t.Id == id));
-
-        public Task Remover(int id)
+        public async Task<TarefaDTO?> BuscaPorId(int id)
         {
-            var tarefa = _tarefa.FirstOrDefault(t => t.Id == id);
-            if (tarefa != null) _tarefa.Remove(tarefa);
-            return Task.CompletedTask;
+            return await _httpClient.GetFromJsonAsync<TarefaDTO?>($"tarefa/{id}");
         }
+        //public Task Remover(int id)
+        //{
+        //    var tarefa = _tarefa.FirstOrDefault(t => t.Id == id);
+        //    if (tarefa != null) _tarefa.Remove(tarefa);
+        //    return Task.CompletedTask;
+        //}
 
     }
 }

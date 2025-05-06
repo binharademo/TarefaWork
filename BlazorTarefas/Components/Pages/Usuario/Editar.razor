@@ -64,23 +64,29 @@
     protected override async Task OnInitializedAsync()
     {
         // Carrega a tarefa pelo ID passado na URL
-        usuario = await UsuarioServico.BuscaPorId(Id);
+        usuario = await UsuarioServico.BuscaPorIdAsync(Id);
     }
 
-    private void SalvarUsuario()
+    private async Task SalvarUsuario()
     {
-        var resultado = UsuarioServico.Atualizar(usuario);
+        // monta o DTO de atualização a partir do UsuarioDTO carregado
+        var dto = new AtualizarUsuarioDTO
+            {
+                Nome = usuario.Nome,
+                Senha = usuario.Senha,
+                FuncaoUsuario = usuario.FuncaoUsuario,
+                SetorUsuario = usuario.SetorUsuario
+            };
+
+        // chama o serviço passando o id e o DTO certo
+        var resultado = await UsuarioServico.AtualizarAsync(usuario.Id, dto);
 
         if (resultado)
-        {
-            // Se a atualização for bem-sucedida, navega para a lista de usuários
             NavigationManager.NavigateTo("/usuario/listar");
-        }
         else
-        {
             NavigationManager.NavigateTo("/erro");
-        }
     }
+
     private void Cancelar()
     {
         // Cancela e volta para a lista

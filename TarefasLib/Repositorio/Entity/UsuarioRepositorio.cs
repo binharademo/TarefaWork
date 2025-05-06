@@ -9,7 +9,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio.Entity
 {
-    public class UsuarioRepositorio : IRepositorio<Usuario>
+    public class UsuarioRepositorio : IUsuarioRepositorio<Usuario>
     {
         private readonly string _connectionString;
         public UsuarioRepositorio(string connectionString)
@@ -60,7 +60,6 @@ namespace TarefasLibrary.Repositorio.Entity
 
         }
 
-
         public List<Usuario> Listar()
         {
             using var context = new AppDbContext(_connectionString);
@@ -81,6 +80,16 @@ namespace TarefasLibrary.Repositorio.Entity
             {
                 return false;
             }
+        }
+
+        public List<Usuario> Listar(Usuario.Setor setor)
+        {
+            throw new NotImplementedException();
+        }
+
+        public List<Usuario> Listar(Usuario.Funcao funcao)
+        {
+            throw new NotImplementedException();
         }
     }
 }

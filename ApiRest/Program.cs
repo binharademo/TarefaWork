@@ -9,8 +9,23 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<ITarefaRepositorio, TarefaMemoriaRepositorio>();
-builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>, UsuarioMemoriaRepositorio>();
+builder.Services.AddSingleton<ITarefaRepositorio, TarefaRepositorio>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connStr = configuration.GetConnectionString("DefaultConnection")
+                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada");
+    return new TarefaRepositorio(connStr);
+});
+//builder.Services.AddSingleton<IRepositorio<Usuario>, UsuarioRepositorio>();
+
+builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connStr = configuration.GetConnectionString("DefaultConnection")
+                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada");
+    return new UsuarioRepositorio(connStr);
+});
+
 builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
 builder.Services.AddSingleton<IRepositorio<Empresa>, EmpresaMemoriaRepositorio>();
 

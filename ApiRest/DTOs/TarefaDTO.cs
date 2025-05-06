@@ -7,9 +7,9 @@ namespace ApiRest.DTOs
         public int Id { get; set; }
         public string Titulo { get; set; }
         public Tarefa.Status Status { get; set; }
-        public UsuarioDTO Criador { get; set; }
-        public UsuarioDTO Responsavel { get; set; }
-        public List<UsuarioDTO> Membros { get; set; } = new List<UsuarioDTO>();
+        public int CriadorId { get; set; }
+        public int ResponsavelId { get; set; }
+        //public List<UsuarioDTO> Membros { get; set; } = new List<UsuarioDTO>();
         public string Descricao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime Prazo { get; set; }
@@ -21,27 +21,15 @@ namespace ApiRest.DTOs
             Id = tarefa.Id;
             Titulo = tarefa.Titulo;
             Status = tarefa.StatusTarefa;
-            Criador = new UsuarioDTO
-            {
-                Id = tarefa.Criador.Id,
-                Nome = tarefa.Criador.Nome,
-                FuncaoUsuario = tarefa.Criador.FuncaoUsuario,
-                SetorUsuario = tarefa.Criador.SetorUsuario
-            };
-            Responsavel = new UsuarioDTO
-            {
-                Id = tarefa.Responsavel.Id,
-                Nome = tarefa.Responsavel.Nome,
-                FuncaoUsuario = tarefa.Responsavel.FuncaoUsuario,
-                SetorUsuario = tarefa.Responsavel.SetorUsuario
-            };
-            Membros = tarefa.Membros.Select(m => new UsuarioDTO
-            {
-                Id = m.Id,
-                Nome = m.Nome,
-                FuncaoUsuario = m.FuncaoUsuario,
-                SetorUsuario = m.SetorUsuario
-            }).ToList();
+            CriadorId = tarefa.CriadorId;
+            ResponsavelId = tarefa.ResponsavelId;
+            //Membros = tarefa.Membros.Select(m => new UsuarioDTO
+            //{
+            //    Id = m.Id,
+            //    Nome = m.Nome,
+            //    FuncaoUsuario = m.FuncaoUsuario,
+            //    SetorUsuario = m.SetorUsuario
+            //}).ToList();
             Descricao = tarefa.Descricao;
             DataCriacao = tarefa.DataCriacao;
             Prazo = tarefa.Prazo;
@@ -57,9 +45,9 @@ namespace ApiRest.DTOs
         public int Id { get; set; }
         public string Titulo { get; set; }
         public Tarefa.Status Status { get; set; }
-        public UsuarioBasicoDTO Criador { get; set; }
-        public UsuarioBasicoDTO Responsavel { get; set; }
-        public List<UsuarioBasicoDTO> Membros { get; set; } = new List<UsuarioBasicoDTO>();
+        public int CriadorId { get; set; }
+        public int ResponsavelId { get; set; }
+        //public List<int> Membros { get; set; } = new List<int>();
         public string Descricao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime Prazo { get; set; }
@@ -73,21 +61,9 @@ namespace ApiRest.DTOs
             Id = tarefa.Id;
             Titulo = tarefa.Titulo;
             Status = tarefa.StatusTarefa;
-            Criador = new UsuarioBasicoDTO
-            {
-                Id = tarefa.Criador.Id,
-                Nome = tarefa.Criador.Nome,
-            };
-            Responsavel = new UsuarioBasicoDTO
-            {
-                Id = tarefa.Responsavel.Id,
-                Nome = tarefa.Responsavel.Nome,
-            };
-            Membros = tarefa.Membros.Select(m => new UsuarioBasicoDTO
-            {
-                Id = m.Id,
-                Nome = m.Nome,
-            }).ToList();
+            CriadorId = tarefa.CriadorId;
+            ResponsavelId = tarefa.ResponsavelId;
+            //Membros = tarefa.Membros;
             Descricao = tarefa.Descricao;
             DataCriacao = tarefa.DataCriacao;
             Prazo = tarefa.Prazo;
