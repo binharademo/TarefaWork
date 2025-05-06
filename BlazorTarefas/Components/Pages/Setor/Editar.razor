@@ -1,0 +1,79 @@
+﻿@page "/setor/editar/{id:int}"
+@rendermode InteractiveServer
+@inject SetorServico SetorServico
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar Setor</PageTitle>
+
+<h3>Editar</h3>
+
+@if (setor == null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <EditForm Model="setor" OnValidSubmit="SalvarSetor" FormName="editarSetorForm">
+
+        <DataAnnotationsValidator />
+        <div class="form-group mb-3">
+            <label>Nome</label>
+            <InputText class="form-control" @bind-Value="setor.Nome" />
+            <ValidationMessage For="() => setor.Nome" />
+        </div>
+        <div class="form-group mb-3">
+            <label>Status</label>
+            <InputRadioGroup @bind-Value="setor.Status">
+                <div class="form-check">
+                    <InputRadio class="form-check-input" Value="true" />
+                    <label class="form-check-label">Ativo</label>
+                </div>
+                <div class="form-check">
+                    <InputRadio class="form-check-input" Value="false" />
+                    <label class="form-check-label">Inativo</label>
+                </div>
+            </InputRadioGroup>
+            <ValidationMessage For="() => setor.Status" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+    </EditForm>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private SetorDTO setor = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a tarefa pelo ID passado na URL
+        setor = await SetorServico.BuscaPorId(Id);
+    }
+
+    private void SalvarSetor()
+    {
+        var resultado = SetorServico.Atualizar(setor);
+
+        if (resultado)
+        {
+            // Se a atualização for bem-sucedida, navega para a lista de setores
+            NavigationManager.NavigateTo("/setor/listar");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/erro");
+        }
+       
+    }
+    private void Cancelar()
+    {
+        // Cancela e volta para a lista
+        NavigationManager.NavigateTo("/setor");
+    }
+}
+

@@ -10,6 +10,7 @@ builder.Services.AddRazorComponents()
 // Registrar serviços da aplicação
 builder.Services.AddSingleton<UsuarioServico>();
 builder.Services.AddSingleton<TarefaServico>();
+builder.Services.AddSingleton<SetorServico>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
