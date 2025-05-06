@@ -10,7 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Add HttpContextAccessor
+// Registrar servi�os da aplica��o
+builder.Services.AddSingleton<UsuarioServico>();
 builder.Services.AddHttpContextAccessor();
 
 // Add Session support
