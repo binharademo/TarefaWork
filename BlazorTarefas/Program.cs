@@ -12,6 +12,8 @@ builder.Services.AddRazorComponents()
 
 // Registrar servi�os da aplica��o
 builder.Services.AddSingleton<UsuarioServico>();
+builder.Services.AddSingleton<TarefaServico>();
+builder.Services.AddSingleton<SetorServico>();
 builder.Services.AddHttpContextAccessor();
 
 // Add Session support
