@@ -1,20 +1,28 @@
 ﻿using ApiRest.DTOs;
+using TarefasLibrary.Modelo;
 
 namespace BlazorTarefas.Servicos
 {
     public class SetorServico
     {
         private List<SetorDTO> _setor = new List<SetorDTO>();
+        private readonly EmpresaServico _empresa;
         private int _nextId = 1;
+
+        public SetorServico(EmpresaServico empresa)
+        {
+            _empresa = empresa;
+        }
 
         public async Task<Boolean> Adicionar(CriarSetorDTO setor)
         {
+            var empresa = await _empresa.BuscaPorId(setor.EmpresaId);
             _setor.Add(new SetorDTO
             {
                 Id = _nextId++,
                 Nome = setor.Nome,
                 Status = setor.Status,
-                EmpresaId = 1
+                Empresa = empresa
             });
             return true;
         }

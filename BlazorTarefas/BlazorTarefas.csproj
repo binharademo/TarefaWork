@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Components\Pages\NovaPasta\**" />
-    <Content Remove="Components\Pages\NovaPasta\**" />
-    <EmbeddedResource Remove="Components\Pages\NovaPasta\**" />
-    <None Remove="Components\Pages\NovaPasta\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\ApiRest\ApiRest.csproj" />
     <ProjectReference Include="..\TarefasLib\TarefasLibrary.csproj" />
   </ItemGroup>

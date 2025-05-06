@@ -14,6 +14,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddSingleton<UsuarioServico>();
 builder.Services.AddSingleton<TarefaServico>();
 builder.Services.AddSingleton<SetorServico>();
+builder.Services.AddSingleton<EmpresaServico>();
 builder.Services.AddHttpContextAccessor();
 
 // Add Session support
@@ -26,9 +27,9 @@ builder.Services.AddSession(options =>
 });
 
 // Add DbContext
-string connectionString = "Data Source=tarefas.db";
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(connectionString));
+//string connectionString = "Data Source=tarefas.db";
+//builder.Services.AddDbContext<AppDbContext>(options =>
+//    options.UseSqlite(connectionString));
 
 // Add services
 builder.Services.AddSingleton<UsuarioServico>();

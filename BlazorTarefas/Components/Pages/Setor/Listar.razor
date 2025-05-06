@@ -33,7 +33,7 @@ else
                     <td>@setor.Id</td>
                     <td>@setor.Nome</td>
                     <td>@(setor.Status ? "Ativo" : "Inativo")</td>
-                    <td>@setor.EmpresaId</td>
+                    <td>@setor.Empresa.Nome</td>
                     <td>
                         <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(setor.Id)">Editar</button>
                         <button class="btn btn-danger" @onclick="() => RemoverSetor(setor.Id)">Excluir</button>
