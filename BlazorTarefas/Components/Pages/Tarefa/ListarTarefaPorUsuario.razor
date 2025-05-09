@@ -1,0 +1,120 @@
+﻿@page "/tarefa/listarporusuario"
+@rendermode InteractiveServer
+@inject IJSRuntime JsRuntime
+@inject UsuarioServico UsuarioServico
+@inject TarefaServico TarefaServico
+@inject NavigationManager NavigationManager
+
+<h3>Listar Tarefa por Usuario</h3>
+
+<div class="form-group mb-3">
+    <label>Usuário</label>
+    <InputSelect class="form-control" @bind-Value="usuarioId">
+        @foreach (var usuario in usuarios)
+        {
+            <option value="@usuario.Id">@usuario.Nome</option>
+        }
+    </InputSelect>
+</div>
+
+<button type="button" class="btn btn-success" @onclick="Buscar">Buscar</button>
+
+
+@if (tarefas == null)
+{
+}
+else if (!tarefas.Any())
+{
+    <p>Nenhuma tarefa encontrada.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Titulo</th>
+                <th>Status</th>
+                <th>Criador</th>
+                <th>Responsavel</th>
+                <th>Prazo</th>
+                <th>Prioridade</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tarefa in tarefas)
+            {
+                <tr>
+                    <td>@tarefa.Id</td>
+                    <td>@tarefa.Titulo</td>
+                    <td>@tarefa.Status</td>
+                    <td>@tarefa.CriadorId</td>
+                    <td>@tarefa.ResponsavelId</td>
+                    <td>@tarefa.Prazo</td>
+                    <td>@tarefa.PrioridadeTarefa</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<TarefaDTO>? tarefas;
+    private List<UsuarioDTO> usuarios = new List<UsuarioDTO>(); 
+    private int usuarioId;
+    private bool isLoading;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var resultado = await UsuarioServico.BuscaTodosAsync();
+            if (resultado != null)
+            {
+                usuarios = resultado;
+            }
+
+            if (!usuarios.Any())
+            {
+                errorMessage = "Nenhum usuário cadastrado";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Erro ao carregar usuários: {ex.Message}";
+            usuarios = new List<UsuarioDTO>(); // Garante que não será null
+        }
+    }
+
+    private async Task Buscar()
+    {
+        if (usuarioId <= 0)
+        {
+            errorMessage = "Selecione um usuário válido";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = null;
+        tarefas = null;
+
+        try
+        {
+            tarefas = await TarefaServico.BuscaPorUsuario(usuarioId);
+
+            if (tarefas == null || !tarefas.Any())
+            {
+                errorMessage = "Nenhuma tarefa encontrada para este usuário";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Erro ao buscar tarefas: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
