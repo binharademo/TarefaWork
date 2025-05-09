@@ -1,23 +1,19 @@
-﻿using ApiRest.DTOs;
-using TarefasLibrary.Modelo;
+﻿using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
+using ApiRest.DTOs;
 
 namespace BlazorTarefas.Servicos
 {
     public class UsuarioServico
     {
-        private List<UsuarioDTO> _usuario = new List<UsuarioDTO>();
-        private int _nextId = 1;
+        private readonly HttpClient _httpClient;
 
-        public Task Adicionar(CriarUsuarioDTO usuario)
+        public UsuarioServico(HttpClient httpClient)
         {
-            _usuario.Add(new UsuarioDTO
-            {
-                Id = _nextId++,
-                Nome = usuario.Nome,
-                FuncaoUsuario = usuario.FuncaoUsuario,
-                SetorUsuario = usuario.SetorUsuario
-            });
-            return Task.CompletedTask;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
         //public Task<UsuarioDTO> BuscaPorId(int id)
         //{
@@ -25,33 +21,28 @@ namespace BlazorTarefas.Servicos
         //    return Task.FromResult(usuario);
         //}   
 
-        public Boolean Atualizar(UsuarioDTO usuario)
+        public async Task<List<UsuarioDTO>> BuscaTodosAsync()
         {
-            var usuarioExistente = _usuario.FirstOrDefault(t => t.Id == usuario.Id);
-            if (usuarioExistente != null)
-            {
-                usuarioExistente.Nome = usuario.Nome;
-                usuarioExistente.Senha = usuario.Senha;
-                usuarioExistente.FuncaoUsuario = usuario.FuncaoUsuario;
-                usuarioExistente.SetorUsuario = usuario.SetorUsuario;
-                return(true);
-            }
-            return (false);
+            return await _httpClient.GetFromJsonAsync<List<UsuarioDTO>>("usuario")
+                   ?? new List<UsuarioDTO>();
         }
 
-        public Task<List<UsuarioDTO>> BuscaTodos()
+        public async Task<UsuarioDTO?> BuscaPorIdAsync(int id)
         {
-            return Task.FromResult(_usuario);
+            return await _httpClient.GetFromJsonAsync<UsuarioDTO?>($"usuario/{id}");
         }
 
-        public async Task<UsuarioDTO> BuscaPorId(int id) =>
-            _usuario.FirstOrDefault(t => t.Id == id);
-
-        public Task Remover(int id)
+        public async Task<UsuarioDTO?> AdicionarAsync(CriarUsuarioDTO usuario)
         {
-            var usuario = _usuario.FirstOrDefault(t => t.Id == id);
-            if (usuario != null) _usuario.Remove(usuario);
-            return Task.CompletedTask;
+            var response = await _httpClient.PostAsJsonAsync("usuario", usuario);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<UsuarioDTO>();
+        }
+
+        public async Task<bool> AtualizarAsync(int id, AtualizarUsuarioDTO usuario)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"usuario/{id}", usuario);
+            return response.IsSuccessStatusCode;
         }
 
     }

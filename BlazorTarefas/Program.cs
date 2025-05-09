@@ -10,11 +10,23 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Registrar servi�os da aplica��o
-builder.Services.AddSingleton<UsuarioServico>();
-builder.Services.AddSingleton<TarefaServico>();
-builder.Services.AddSingleton<SetorServico>();
-builder.Services.AddSingleton<EmpresaServico>();
+builder.Services
+    .AddHttpClient<UsuarioServico>(client =>
+    {
+        // a URL base da sua API, incluindo o “/”
+        client.BaseAddress = new Uri("http://localhost:5139/");
+    });
+
+// idem para TarefaServico, se precisar
+builder.Services
+    .AddHttpClient<TarefaServico>(client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:5139/");
+    });
+
+// Registrar serviços da aplicação
+//builder.Services.AddScoped<UsuarioServico>();
+//builder.Services.AddScoped<TarefaServico>();
 builder.Services.AddHttpContextAccessor();
 
 // Add Session support
@@ -32,7 +44,6 @@ builder.Services.AddSession(options =>
 //    options.UseSqlite(connectionString));
 
 // Add services
-builder.Services.AddSingleton<UsuarioServico>();
 
 var app = builder.Build();
 

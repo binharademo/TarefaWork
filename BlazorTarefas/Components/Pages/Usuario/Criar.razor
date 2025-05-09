@@ -50,7 +50,7 @@
 
     private void SalvarUsuario()
     {
-        UsuarioServico.Adicionar(usuario);
+        UsuarioServico.AdicionarAsync(usuario);
         NavigationManager.NavigateTo("/usuario/listar");
     }
 

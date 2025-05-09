@@ -39,6 +39,20 @@ namespace TarefasLibrary.Modelo
             Descricao = descricao;
             PrioridadeTarefa = PrioridadeTarefa;
         }
+
+        public Tarefa(string titulo, Tarefa.Status status, int criador, int responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        {
+            // TODO: Reutilizar código do construtor anterior para evitar duplicação (DRY - Don't Repeat Yourself)
+
+            Titulo = titulo;
+            StatusTarefa = status;
+            CriadorId = criador;
+            ResponsavelId = responsavel;
+            Prazo = prazo;
+            DataCriacao = dataCriacao ?? DateAndTime.Now;
+            Descricao = descricao;
+            PrioridadeTarefa = PrioridadeTarefa;
+        }
         public Tarefa() { }
 
         // TODO: Considerar tornar as propriedades imutáveis (init-only) para garantir integridade dos dados
@@ -62,6 +76,9 @@ namespace TarefasLibrary.Modelo
 
         public Prioridade PrioridadeTarefa { get; set; }
         public Status StatusTarefa { get; set; }
+
+        public int CriadorId { get; set; }
+        public int ResponsavelId { get; set; }
 
         public enum Status
         {

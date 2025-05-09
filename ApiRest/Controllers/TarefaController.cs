@@ -63,8 +63,8 @@ public class TarefaController : ControllerBase
         var tarefa = new Tarefa(
             titulo: tarefaDTO.Titulo,
             status: tarefaDTO.Status,
-            criador: criador,
-            responsavel: responsavel,
+            criador: tarefaDTO.CriadorId,
+            responsavel: tarefaDTO.ResponsavelId,
             prazo: tarefaDTO.Prazo,
             descricao: tarefaDTO.Descricao,
             prioridade: tarefaDTO.PrioridadeTarefa
