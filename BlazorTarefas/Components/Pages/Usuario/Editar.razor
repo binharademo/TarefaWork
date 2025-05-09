@@ -14,7 +14,7 @@
 {
     <EditForm Model="usuario" OnValidSubmit="SalvarUsuario" FormName="editarUsuarioForm">
 
-         <DataAnnotationsValidator />
+        <DataAnnotationsValidator />
         <div class="form-group mb-3">
             <label>Nome</label>
             <InputText class="form-control" @bind-Value="usuario.Nome" />
@@ -90,7 +90,7 @@
     private void Cancelar()
     {
         // Cancela e volta para a lista
-        NavigationManager.NavigateTo("/tarefas");
+        NavigationManager.NavigateTo("/usuario/listar");
     }
 }
 

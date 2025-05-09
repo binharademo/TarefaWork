@@ -1,5 +1,6 @@
 ﻿@page "/tarefa/listar"
 @rendermode InteractiveServer
+@inject IJSRuntime JsRuntime
 @inject UsuarioServico UsuarioServico
 @inject TarefaServico TarefaServico
 @inject NavigationManager NavigationManager
@@ -18,13 +19,6 @@ else if (!tarefas.Any())
 }
 else
 {
-@*     Titulo = tarefa.Titulo,
-    Status = tarefa.Status,
-    Criador = criador,
-    Responsavel = responsavel,
-    Prazo = tarefa.Prazo,
-    Descricao = tarefa.Descricao,
-    PrioridadeTarefa = tarefa.PrioridadeTarefa *@
     <table class="table">
         <thead>
             <tr>
@@ -49,8 +43,8 @@ else
                     <td>@tarefa.Prazo</td>
                     <td>@tarefa.PrioridadeTarefa</td>
                     <td>
-@*                         <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(usuario.Id)">Editar</button>
-                        <button class="btn btn-danger" @onclick="() => RemoverUsuario(usuario.Id)">Excluir</button> *@
+                        <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => RemoverUsuario(tarefa.Id)">Excluir</button>
                     </td>
                 </tr>
             }
@@ -59,7 +53,7 @@ else
 }
 
 <div>
-@*     <button class="btn btn-success" @onclick="NavegarParaCriacao">Novo Usuário</button> *@
+    <button class="btn btn-success" @onclick="NavegarParaCriacao">Nova Tarefa</button>
 </div>
 
 @code {
@@ -71,22 +65,24 @@ else
         tarefas = await TarefaServico.BuscaTodos();
     }
 
-    // private void NavegarParaCriacao()
-    // {
-    //     // Navega para a página de criação
-    //     NavigationManager.NavigateTo("/usuario/criar");
-    // }
+    private void NavegarParaCriacao()
+    {
+        // Navega para a página de criação
+        NavigationManager.NavigateTo("/tarefa/criar");
+    }
 
-    // private void NavegarParaEdicao(int id)
-    // {
-    //     // Navega para a página de edição com o ID como parâmetro
-    //     NavigationManager.NavigateTo($"/usuario/editar/{id}");
-    // }
+    private void NavegarParaEdicao(int id)
+    {
+        // Navega para a página de edição com o ID como parâmetro
+        NavigationManager.NavigateTo($"/tarefa/editar/{id}");
+    }
 
-    // private async Task RemoverUsuario(int id)
-    // {
-    //     // Deleta a tarefa e atualiza a lista
-    //     await UsuarioServico.Remover(id);
-    //     tarefas = await UsuarioServico.BuscaTodos();
-    // }
+    private async Task RemoverUsuario(int id)
+    {
+        // Deleta a tarefa e atualiza a lista
+        await JsRuntime.InvokeVoidAsync("alert", "Não implementado!"); // Alert
+
+        // await UsuarioServico.Remover(id);
+        tarefas = await TarefaServico.BuscaTodos();
+    }
 }
