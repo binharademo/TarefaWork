@@ -9,7 +9,7 @@
 DIRETORIO_TEMP="/tmp/aplicacao_dotnet"
 DIRETORIO_DESTINO="/var/www/dotnet"
 NOME_SERVICO="dotnet-app"
-ARQUIVO_ZIP="/tmp/aplicacao_dotnet.zip"
+ARQUIVO_ZIP="aplicacao_dotnet.zip"
 
 # Função para exibir mensagens formatadas
 exibir_mensagem() {
@@ -52,7 +52,7 @@ mkdir -p "$DIRETORIO_TEMP"
 # Descompactar o arquivo ZIP
 exibir_mensagem "Descompactando arquivo ZIP..."
 unzip -o "$ARQUIVO_ZIP" -d "$DIRETORIO_TEMP"
-if [ $? -ne 0 ]; then
+if [ $? -gt 1 ]; then
     exibir_mensagem "Falha ao descompactar o arquivo ZIP." "ERRO"
     exit 1
 fi
@@ -88,6 +88,7 @@ exibir_mensagem "Arquivo principal da aplicação: $NOME_ARQUIVO_PRINCIPAL" "INF
 
 # Atualizar o arquivo de serviço do systemd com o nome correto do arquivo principal
 exibir_mensagem "Atualizando o arquivo de serviço do systemd..."
+
 cat > "/etc/systemd/system/$NOME_SERVICO.service" <<EOF
 [Unit]
 Description=Aplicação .NET Core
@@ -95,7 +96,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=$DIRETORIO_DESTINO
-ExecStart=/usr/bin/dotnet $DIRETORIO_DESTINO/$NOME_ARQUIVO_PRINCIPAL
+ExecStart=/usr/bin/dotnet $DIRETORIO_DESTINO/BlazorTarefas.dll
 Restart=always
 # Reiniciar o serviço após 10 segundos se falhar
 RestartSec=10

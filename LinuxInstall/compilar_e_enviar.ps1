@@ -15,10 +15,10 @@ param(
     [string]$Senha,
     
     [Parameter(Mandatory=$false)]
-    [string]$CaminhoProjeto = "c:\Projetos\workshop\repo-binhara-azuris\TarefaWork",
+    [string]$CaminhoProjeto = ".\",
     
     [Parameter(Mandatory=$false)]
-    [string]$DiretorioPublicacao = "c:\Projetos\workshop\repo-binhara-azuris\TarefaWork\publicacao"
+    [string]$DiretorioPublicacao = ".\publicacao"
 )
 
 # Função para exibir mensagens com formatação
@@ -66,8 +66,8 @@ if (-not (Test-Path $DiretorioPublicacao)) {
 }
 
 # Navegar para o diretório do projeto
-Escrever-Mensagem "Navegando para o diretório do projeto: $CaminhoProjeto"
-Set-Location $CaminhoProjeto
+#Escrever-Mensagem "Navegando para o diretório do projeto: $CaminhoProjeto"
+#Set-Location $CaminhoProjeto
 
 # Limpar publicações anteriores
 Escrever-Mensagem "Limpando diretório de publicação anterior..."
@@ -138,33 +138,34 @@ try {
     $sessaoSSH = New-SSHSession -ComputerName $ServidorIP -Credential $credencial -AcceptKey
     
     # Enviar o arquivo
-    Set-SCPFile -ComputerName $ServidorIP -Credential $credencial -LocalFile $arquivoZip -RemotePath "/tmp/"
-    
-    # Executar comandos remotos para descompactar e configurar
-    Escrever-Mensagem "Descompactando e configurando a aplicação no servidor..."
-    $comandos = @(
-        "sudo rm -rf /tmp/aplicacao_temp",
-        "mkdir -p /tmp/aplicacao_temp",
-        "unzip -o /tmp/aplicacao_dotnet.zip -d /tmp/aplicacao_temp",
-        "sudo systemctl stop dotnet-app.service",
-        "sudo rm -rf /var/www/dotnet/*",
-        "sudo cp -r /tmp/aplicacao_temp/* /var/www/dotnet/",
-        "sudo chown -R www-data:www-data /var/www/dotnet",
-        "sudo chmod -R 755 /var/www/dotnet",
-        "sudo systemctl start dotnet-app.service",
-        "sudo systemctl status dotnet-app.service",
-        "rm -rf /tmp/aplicacao_temp",
-        "rm /tmp/aplicacao_dotnet.zip"
-    )
-    
-    foreach ($comando in $comandos) {
-        Escrever-Mensagem "Executando: $comando"
-        $resultado = Invoke-SSHCommand -SessionId $sessaoSSH.SessionId -Command $comando
-        if ($resultado.ExitStatus -ne 0) {
-            Escrever-Mensagem "Falha ao executar o comando: $comando" "ERRO"
-            Escrever-Mensagem "Saída: $($resultado.Output)" "ERRO"
-        }
-    }
+    Set-SCPItem -ComputerName $ServidorIP -Credential $credencial -Path $arquivoZip -Destination "./"
+    Set-SCPItem -ComputerName $ServidorIP -Credential $credencial -Path LinuxInstall\configurar_e_iniciar.sh -Destination "./"
+
+ #   # Executar comandos remotos para descompactar e configurar
+ #   Escrever-Mensagem "Descompactando e configurando a aplicação no servidor..."
+ #   $comandos = @(
+ #       "sudo rm -rf /tmp/aplicacao_temp",
+ #       "mkdir -p /tmp/aplicacao_temp",
+ #       "unzip -o /tmp/aplicacao_dotnet.zip -d /tmp/aplicacao_temp",
+ #       "sudo systemctl stop dotnet-app.service",
+ #       "sudo rm -rf /var/www/dotnet/*",
+ #       "sudo cp -r /tmp/aplicacao_temp/* /var/www/dotnet/",
+ #       "sudo chown -R www-data:www-data /var/www/dotnet",
+ #       "sudo chmod -R 755 /var/www/dotnet",
+ #       "sudo systemctl start dotnet-app.service",
+#        "sudo systemctl status dotnet-app.service",
+#        "rm -rf /tmp/aplicacao_temp",
+#        "rm /tmp/aplicacao_dotnet.zip"
+#    )
+#    
+#    foreach ($comando in $comandos) {
+#        Escrever-Mensagem "Executando: $comando"
+#        $resultado = Invoke-SSHCommand -SessionId $sessaoSSH.SessionId -Command $comando
+#        if ($resultado.ExitStatus -ne 0) {
+#            Escrever-Mensagem "Falha ao executar o comando: $comando" "ERRO"
+#            Escrever-Mensagem "Saída: $($resultado.Output)" "ERRO"
+#        }
+#    }
     
     # Encerrar a sessão SSH
     Remove-SSHSession -SessionId $sessaoSSH.SessionId | Out-Null
