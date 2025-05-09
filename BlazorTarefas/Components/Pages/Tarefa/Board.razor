@@ -38,7 +38,7 @@
                     ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
-                        <p>@tarefa.Criador.Nome</p>
+                        <p>@tarefa.CriadorId</p>
                         <div class="task-actions">
                             <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
                             <div>
@@ -74,7 +74,7 @@
                     ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
-                        <p>@tarefa.Criador.Nome</p>
+                        <p>@tarefa.CriadorId</p>
                         <div class="task-actions">
                             <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
                             <div>
@@ -110,7 +110,7 @@
                     ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
                         <h5>@tarefa.Titulo</h5>
                         <p>@tarefa.Descricao</p>
-                        <p>@tarefa.Criador.Nome</p>
+                        <p>@tarefa.CriadorId</p>
                         <div class="task-actions">
                             <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
                             <div>
@@ -165,7 +165,7 @@
             return;
 
         tarefa.Status = statusTarefa;
-        TarefaServico.Atualizar(tarefa);
+        TarefaServico.Atualizar(tarefa.Id, tarefa);
         await LoadTasksByStatus();
         StateHasChanged();
     }

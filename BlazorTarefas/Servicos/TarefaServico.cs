@@ -7,6 +7,7 @@ namespace BlazorTarefas.Servicos
     public class TarefaServico
     {
         private readonly HttpClient _httpClient;
+        private List<TarefaDTO> _tarefa = new List<TarefaDTO>();
         //private readonly UsuarioServico _usuario;
         //private int _nextId = 1;
 
@@ -15,10 +16,6 @@ namespace BlazorTarefas.Servicos
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        //public TarefaServico(UsuarioServico usuario)
-        //{
-        //    _usuario = usuario;
-        //}
 
         public async Task <TarefaDTO> Adicionar(CriarTarefaDTO tarefa)
         {
