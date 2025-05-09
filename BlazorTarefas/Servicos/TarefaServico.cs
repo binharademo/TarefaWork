@@ -56,6 +56,9 @@ namespace BlazorTarefas.Servicos
         public Task<TarefaDTO?> BuscaPorId(int id) =>
             Task.FromResult(_tarefa.FirstOrDefault(t => t.Id == id));
 
+        public Task<List<TarefaDTO>> BuscaPorUsuario(int id) =>
+            Task.FromResult(_tarefa.Where(t => t.Criador.Id == id || t.Responsavel.Id == id).ToList());
+
         public Task Remover(int id)
         {
             var tarefa = _tarefa.FirstOrDefault(t => t.Id == id);
