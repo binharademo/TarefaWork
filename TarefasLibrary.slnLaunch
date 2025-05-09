@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "Debug_Blazor",
+    "Projects": [
+      {
+        "Path": "ApiRest\\ApiRest.csproj",
+        "Action": "Start",
+        "DebugTarget": "ApiRest"
+      },
+      {
+        "Path": "BlazorTarefas\\BlazorTarefas.csproj",
+        "Action": "Start",
+        "DebugTarget": "BlazorTarefas"
+      }
+    ]
+  }
+]
