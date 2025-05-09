@@ -1,0 +1,78 @@
+﻿@page "/setor/listar"
+@rendermode InteractiveServer
+@inject SetorServico SetorServico
+@inject NavigationManager NavigationManager
+
+<PageTitle>Lista de Setores</PageTitle>
+
+<h3>Lista de Setores</h3>
+
+@if (setores == null)
+{
+    <p>Carregando...</p>
+}
+else if (!setores.Any())
+{
+    <p>Nenhum setor encontrado.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Status</th>
+                <th>Empresa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var setor in setores)
+            {
+                <tr>
+                    <td>@setor.Id</td>
+                    <td>@setor.Nome</td>
+                    <td>@(setor.Status ? "Ativo" : "Inativo")</td>
+                    <td>@setor.Empresa.Nome</td>
+                    <td>
+                        <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(setor.Id)">Editar</button>
+                        <button class="btn btn-danger" @onclick="() => RemoverSetor(setor.Id)">Excluir</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    <button class="btn btn-success" @onclick="NavegarParaCriacao">Novo Setor</button>
+</div>
+
+@code {
+    private List<SetorDTO>? setores;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a lista de setores ao inicializar a página
+        setores = await SetorServico.BuscaTodos();
+    }
+
+    private void NavegarParaCriacao()
+    {
+        // Navega para a página de criação
+        NavigationManager.NavigateTo("/setor/criar");
+    }
+
+    private void NavegarParaEdicao(int id)
+    {
+        // Navega para a página de edição com o ID como parâmetro
+        NavigationManager.NavigateTo($"/setor/editar/{id}");
+    }
+
+    private async Task RemoverSetor(int id)
+    {
+        // Deleta a tarefa e atualiza a lista
+        await SetorServico.Remover(id);
+        setores = await SetorServico.BuscaTodos();
+    }
+}

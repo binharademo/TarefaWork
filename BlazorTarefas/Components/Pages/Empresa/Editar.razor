@@ -1,0 +1,72 @@
+﻿@page "/empresa/editar/{id:int}"
+@rendermode InteractiveServer
+@inject EmpresaServico EmpresaServico
+@inject NavigationManager NavigationManager
+
+<PageTitle>Editar Empresa</PageTitle>
+
+<h3>Editar</h3>
+
+@if (empresa == null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <EditForm Model="empresa" OnValidSubmit="SalvarEmpresa" FormName="editarEmpresaForm">
+
+        <DataAnnotationsValidator />
+        <div class="form-group mb-3">
+            <label>Nome</label>
+            <InputText class="form-control" @bind-Value="empresa.Nome" />
+            <ValidationMessage For="() => empresa.Nome" />
+        </div>
+        <DataAnnotationsValidator />
+        <div class="form-group mb-3">
+            <label>Cnpj</label>
+            <InputText class="form-control" @bind-Value="empresa.Cnpj" />
+            <ValidationMessage For="() => empresa.Cnpj" />
+        </div>
+   
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
+
+    </EditForm>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private EmpresaDTO empresa = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Carrega a tarefa pelo ID passado na URL
+        empresa = await EmpresaServico.BuscaPorId(Id);
+    }
+
+    private void SalvarEmpresa()
+    {
+        var resultado = EmpresaServico.Atualizar(empresa);
+
+        if (resultado)
+        {
+            // Se a atualização for bem-sucedida, navega para a lista de setores
+            NavigationManager.NavigateTo("/empresa/listar");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/erro");
+        }
+
+    }
+    private void Cancelar()
+    {
+        // Cancela e volta para a lista
+        NavigationManager.NavigateTo("/empresa");
+    }
+}
+

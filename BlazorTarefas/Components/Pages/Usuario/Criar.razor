@@ -7,7 +7,7 @@
 
 <h1>Novo Usuário</h1>
 
-<EditForm Model="usuario" OnValidSubmit="SalvarTarefa" FormName="novoUsuarioForm">
+<EditForm Model="usuario" OnValidSubmit="SalvarUsuario" FormName="novoUsuarioForm">
     <DataAnnotationsValidator />
     <div class="form-group mb-3">
         <label>Nome</label>
@@ -48,7 +48,7 @@
 @code {
     private CriarUsuarioDTO usuario = new();
 
-    private void SalvarTarefa()
+    private void SalvarUsuario()
     {
         UsuarioServico.Adicionar(usuario);
         NavigationManager.NavigateTo("/usuario/listar");
