@@ -60,21 +60,44 @@ chown -R www-data:www-data /var/www/dotnet
 chmod -R 755 /var/www/dotnet
 
 # Criar um arquivo de configuração Nginx para a aplicação .NET
-echo "Criando arquivo de configuração Nginx para a aplicação .NET..."
+echo "Criando arquivo de configuração Nginx para a aplicação Blazor..."
 cat > /etc/nginx/sites-available/dotnet-app <<EOF
 server {
     listen 80;
     server_name _;  # Substitua pelo seu domínio ou IP
+    access_log  /var/log/nginx/app.access.log;
+    error_log /var/log/nginx/app.error.log;
     
     location / {
-        proxy_pass http://localhost:5000;  # Porta padrão do Kestrel
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection keep-alive;
-        proxy_set_header Host \$host;
-        proxy_cache_bypass \$http_upgrade;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_pass http://localhost:53101;  # Porta da aplicacao Blazor
+        #proxy_http_version 1.1;
+        #proxy_set_header Upgrade \$http_upgrade;
+        #proxy_set_header Connection keep-alive;
+        #proxy_set_header Host \$host;
+        #proxy_cache_bypass \$http_upgrade;
+        #proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        #proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+EOF
+
+echo "Criando arquivo de configuração Nginx para a aplicação ApiRest..."
+cat > /etc/nginx/sites-available/dotnet-app <<EOF
+server {
+    listen 53011;
+    server_name _;  # Substitua pelo seu domínio ou IP
+    access_log  /var/log/nginx/app.access.log;
+    error_log /var/log/nginx/app.error.log;
+    
+    location / {
+        proxy_pass http://localhost:53111;  # Porta da aplicacao ApiRest
+        #proxy_http_version 1.1;
+        #proxy_set_header Upgrade \$http_upgrade;
+        #proxy_set_header Connection keep-alive;
+        #proxy_set_header Host \$host;
+        #proxy_cache_bypass \$http_upgrade;
+        #proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        #proxy_set_header X-Forwarded-Proto \$scheme;
     }
 }
 EOF

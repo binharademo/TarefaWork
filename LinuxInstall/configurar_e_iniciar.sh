@@ -9,6 +9,7 @@
 DIRETORIO_TEMP="/tmp/aplicacao_dotnet"
 DIRETORIO_DESTINO="/var/www/dotnet"
 NOME_SERVICO="dotnet-app"
+NOME_SERVICO_API="dotnet-api"
 ARQUIVO_ZIP="aplicacao_dotnet.zip"
 
 # Função para exibir mensagens formatadas
@@ -105,6 +106,29 @@ SyslogIdentifier=dotnet-app
 User=www-data
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=http://127.0.0.1:53101
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > "/etc/systemd/system/$NOME_SERVICO_API.service" <<EOF
+[Unit]
+Description=Aplicação .NET Core
+After=network.target
+
+[Service]
+WorkingDirectory=$DIRETORIO_DESTINO
+ExecStart=/usr/bin/dotnet $DIRETORIO_DESTINO/ApiRest.dll
+Restart=always
+# Reiniciar o serviço após 10 segundos se falhar
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-app
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=http://127.0.0.1:53111
 
 [Install]
 WantedBy=multi-user.target
@@ -117,14 +141,17 @@ systemctl daemon-reload
 # Habilitar o serviço para iniciar na inicialização do sistema
 exibir_mensagem "Habilitando o serviço para iniciar na inicialização do sistema..."
 systemctl enable "$NOME_SERVICO"
+systemctl enable "$NOME_SERVICO_API"
 
 # Iniciar o serviço
 exibir_mensagem "Iniciando o serviço..."
 systemctl start "$NOME_SERVICO"
+systemctl start "$NOME_SERVICO_API"
 
 # Verificar o status do serviço
 exibir_mensagem "Verificando o status do serviço..."
 systemctl status "$NOME_SERVICO"
+systemctl status "$NOME_SERVICO_API"
 
 # Verificar se o serviço está em execução
 if systemctl is-active --quiet "$NOME_SERVICO"; then
