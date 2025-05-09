@@ -14,14 +14,14 @@ builder.Services
     .AddHttpClient<UsuarioServico>(client =>
     {
         // a URL base da sua API, incluindo o “/”
-        client.BaseAddress = new Uri("https://localhost:50504/");
+        client.BaseAddress = new Uri("http://localhost:5139/");
     });
 
 // idem para TarefaServico, se precisar
 builder.Services
     .AddHttpClient<TarefaServico>(client =>
     {
-        client.BaseAddress = new Uri("https://localhost:50504/");
+        client.BaseAddress = new Uri("http://localhost:5139/");
     });
 
 // Registrar serviços da aplicação
@@ -44,7 +44,6 @@ builder.Services.AddSession(options =>
 //    options.UseSqlite(connectionString));
 
 // Add services
-builder.Services.AddSingleton<UsuarioServico>();
 
 var app = builder.Build();
 
