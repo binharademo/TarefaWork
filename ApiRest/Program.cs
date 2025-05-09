@@ -27,7 +27,14 @@ builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>>(sp =>
 });
 
 builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
-builder.Services.AddSingleton<IRepositorio<Empresa>, EmpresaMemoriaRepositorio>();
+
+builder.Services.AddSingleton<IRepositorio<Empresa>>(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+    var connStr = configuration.GetConnectionString("DefaultConnection")
+                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada");
+    return new EmpresaRepositorio(connStr);
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

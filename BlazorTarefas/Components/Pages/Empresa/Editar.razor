@@ -22,11 +22,6 @@ else
             <ValidationMessage For="() => empresa.Nome" />
         </div>
         <DataAnnotationsValidator />
-        <div class="form-group mb-3">
-            <label>Cnpj</label>
-            <InputText class="form-control" @bind-Value="empresa.Cnpj" />
-            <ValidationMessage For="() => empresa.Cnpj" />
-        </div>
    
 
         <button type="submit" class="btn btn-success">Salvar</button>
@@ -48,9 +43,9 @@ else
         empresa = await EmpresaServico.BuscaPorId(Id);
     }
 
-    private void SalvarEmpresa()
+    private async Task SalvarEmpresa()
     {
-        var resultado = EmpresaServico.Atualizar(empresa);
+        var resultado = await EmpresaServico.Atualizar(empresa.Id, empresa);
 
         if (resultado)
         {
@@ -66,7 +61,7 @@ else
     private void Cancelar()
     {
         // Cancela e volta para a lista
-        NavigationManager.NavigateTo("/empresa");
+        NavigationManager.NavigateTo("/empresa/listar");
     }
 }
 

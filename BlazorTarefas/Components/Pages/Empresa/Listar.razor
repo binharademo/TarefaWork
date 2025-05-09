@@ -34,7 +34,7 @@ else
                     <td>@empresa.Cnpj</td>
                     <td>
                         <button class="btn btn-primary" @onclick="() => NavegarParaEdicao(empresa.Id)">Editar</button>
-                        <button class="btn btn-danger" @onclick="() => RemoverSetor(empresa.Id)">Excluir</button>
+@*                         <button class="btn btn-danger" @onclick="() => RemoverSetor(empresa.Id)">Excluir</button> *@
                     </td>
                 </tr>
             }
@@ -67,10 +67,10 @@ else
         NavigationManager.NavigateTo($"/empresa/editar/{id}");
     }
 
-    private async Task RemoverSetor(int id)
-    {
-        // Deleta a empresa e atualiza a lista
-        await EmpresaServico.Remover(id);
-        empresas = await EmpresaServico.BuscaTodos();
-    }
+    // private async Task RemoverSetor(int id)
+    // {
+    //     // Deleta a empresa e atualiza a lista
+    //     await EmpresaServico.Remover(id);
+    //     empresas = await EmpresaServico.BuscaTodos();
+    // }
 }
