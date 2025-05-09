@@ -1,107 +1,108 @@
-﻿@* @page "/tarefa/editar/{id:int}" *@
-@* @using ApiRest.DTOs *@
-@* @rendermode InteractiveServer *@
-@* @inject NavigationManager NavigationManager *@
-@* @inject UsuarioServico UsuarioServico *@
-@* @inject TarefaServico TarefaServico *@
+﻿@page "/tarefa/editar/{id:int}"
+@using ApiRest.DTOs
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@inject UsuarioServico UsuarioServico
+@inject TarefaServico TarefaServico
 
-@* <PageTitle>Editar Tarefa</PageTitle> *@
+<PageTitle>Editar Tarefa</PageTitle>
 
-@* <h1>Editar Tarefa</h1> *@
+<h1>Editar Tarefa</h1>
 
-@* @if (tarefa == null) *@
-@* { *@
-@*     <p>Carregando...</p> *@
-@* }else *@
-@* { *@
-@*     <EditForm Model="tarefa" OnValidSubmit="AtualizarTarefa" FormName="editarTarefaForm"> *@
-@*         <DataAnnotationsValidator /> *@
-@*         <div class="form-group mb-3"> *@
-@*             <label>Título</label> *@
-@*             <InputText class="form-control" @bind-Value="tarefa.Titulo" /> *@
-@*             <ValidationMessage For="() => tarefa.Titulo" /> *@
-@*         </div> *@
-@*         <div class="form-group mb-3"> *@
-@*             <label>Descrição</label> *@
-@*             <InputTextArea class="form-control" @bind-Value="tarefa.Descricao" /> *@
-@*         </div> *@
-@*         <div class="form-group mb-3"> *@
-@*             <label>Prioridade</label> *@
-@*             <InputSelect class="form-control" @bind-Value="tarefa.PrioridadeTarefa"> *@
-@*                 <option value="Baixa">Baixa</option> *@
-@*                 <option value="Média">Média</option> *@
-@*                 <option value="Alta">Alta</option> *@
-@*             </InputSelect> *@
-@*         </div> *@
-@*         <div class="form-group mb-3"> *@
-@*             <label>Prazo</label> *@
-@*             <InputDate class="form-control" @bind-Value="tarefa.Prazo" /> *@
-@*             <ValidationMessage For="() => tarefa.Prazo" /> *@
-@*         </div> *@
-@*         <div class="form-group mb-3"> *@
-@*             <label>Responsável</label> *@
-@*             <InputSelect class="form-control" @bind-Value="Responsavel"> *@
-@*                 @foreach (var usuario in usuarios) *@
-@*                 { *@
-@*                     <option value="@usuario.Id">@usuario.Nome</option> *@
-@*                 } *@
-@*             </InputSelect> *@
-@*         </div> *@
-@*         <div class="form-check mb-3"> *@
-@*             <label>Status</label><br /> *@
+@if (tarefa == null || usuarios == null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <EditForm Model="tarefa" OnValidSubmit="AtualizarTarefa" FormName="editarTarefaForm">
+        <DataAnnotationsValidator />
+        <div class="form-group mb-3">
+            <label>Título</label>
+            <InputText class="form-control" @bind-Value="tarefa.Titulo" />
+            <ValidationMessage For="() => tarefa.Titulo" />
+        </div>
+        <div class="form-group mb-3">
+            <label>Descrição</label>
+            <InputTextArea class="form-control" @bind-Value="tarefa.Descricao" />
+        </div>
+        <div class="form-group mb-3">
+            <label>Prioridade</label>
+            <InputSelect class="form-control" @bind-Value="tarefa.PrioridadeTarefa">
+                <option value="Baixa">Baixa</option>
+                <option value="Média">Média</option>
+                <option value="Alta">Alta</option>
+            </InputSelect>
+        </div>
+        <div class="form-group mb-3">
+            <label>Prazo</label>
+            <InputDate class="form-control" @bind-Value="tarefa.Prazo" />
+            <ValidationMessage For="() => tarefa.Prazo" />
+        </div>
+        <div class="form-group mb-3">
+            <label>Responsável</label>
+            <InputSelect class="form-control" @bind-Value="tarefa.ResponsavelId">
+                @foreach (var usuario in usuarios)
+                {
+                    <option value="@usuario.Id">@usuario.Nome</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="form-check mb-3">
+            <label>Status</label><br />
 
-@*             <InputRadioGroup @bind-Value="tarefa.Status"> *@
-@*                 <InputRadio Value="Tarefa.Status.ToDo" id="todo" /> *@
-@*                 <label for="todo" class="me-3">Pendente</label> *@
+            <InputRadioGroup @bind-Value="tarefa.Status">
+                <InputRadio Value="Tarefa.Status.ToDo" id="todo" />
+                <label for="todo" class="me-3">Pendente</label>
 
-@*                 <InputRadio Value="Tarefa.Status.Doing" id="doing" /> *@
-@*                 <label for="doing" class="me-3">Em andamento</label> *@
+                <InputRadio Value="Tarefa.Status.Doing" id="doing" />
+                <label for="doing" class="me-3">Em andamento</label>
+            </InputRadioGroup>
+        </div>
 
-@*             </InputRadioGroup> *@
-@*         </div> *@
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
 
-@*         <button type="submit" class="btn btn-success">Salvar</button> *@
-@*         <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button> *@
+    </EditForm>
+}
 
-@*     </EditForm> *@
-@* } *@
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public int Responsavel { get; set; }
 
-@* @code { *@
-@*     [Parameter] *@
-@*     public int Id { get; set; } *@
-@*     public int Responsavel { get; set; } *@
+    private TarefaDTO? tarefa = new();
+    private List<UsuarioDTO> usuarios;
 
-@*     private TarefaDTO? tarefa = new(); *@
-@*     private List<UsuarioDTO>? usuarios; *@
 
-@*     protected override async Task OnInitializedAsync() *@
-@*     { *@
-@*         // Carrega a lista de usuarios ao inicializar a página *@
-@*         tarefa = await TarefaServico.BuscaPorId(Id); *@
-@*         if (tarefa == null) *@
-@*             NavigationManager.NavigateTo("/erro"); *@
+    protected override async Task OnInitializedAsync()
+    {
        
-@*         Responsavel = tarefa.Responsavel.Id; *@
+        tarefa = await TarefaServico.BuscaPorId(Id);
+        if (tarefa == null)
+            NavigationManager.NavigateTo("/erro");
 
-@*         // Carrega a lista de usuarios ao inicializar a página *@
-@*         usuarios = await UsuarioServico.BuscaTodos(); *@
-@*     } *@
+        Responsavel = tarefa.ResponsavelId;
 
-@*     private async void AtualizarTarefa() *@
-@*     { *@
-@*         tarefa.Responsavel =  await UsuarioServico.BuscaPorIdAsync(Responsavel); *@
-@*         var resultado = TarefaServico.Atualizar(tarefa); *@
+        
+        usuarios = await UsuarioServico.BuscaTodosAsync();
+    }
 
-@*         if (resultado) *@
-@*             NavigationManager.NavigateTo("/tarefa/listar"); *@
-@*         else *@
-@*             NavigationManager.NavigateTo("/erro"); *@
-@*     } *@
+    private async Task AtualizarTarefa()
+    {
+        tarefa.ResponsavelId = Responsavel;
+        var resultado = await TarefaServico.Atualizar(tarefa.Id, tarefa);
 
-@*     private void Cancelar() *@
-@*     { *@
-@*         NavigationManager.NavigateTo("/tarefa/listar"); *@
-@*     } *@
+        if (resultado)
+            NavigationManager.NavigateTo("/tarefa/listar");
+        else
+            NavigationManager.NavigateTo("/erro");
+    }
 
 
-@* } *@
+
+    private void Cancelar()
+    {
+        NavigationManager.NavigateTo("/tarefa/listar");
+    }
+}
