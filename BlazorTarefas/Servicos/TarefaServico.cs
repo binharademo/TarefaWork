@@ -48,6 +48,28 @@ namespace BlazorTarefas.Servicos
         //    return Task.CompletedTask;
         //}
 
+        public async Task<List<TarefaDTO>> BuscaPorUsuario(int usuarioId)
+        {
+            try
+            {
+                // Busca todas as tarefas da API
+                var todasTarefas = await BuscaTodos();
+
+                // Filtra as tarefas onde o usuário é o responsável OU o criador
+                return todasTarefas?
+                    .Where(t =>
+                        (t.ResponsavelId != null && t.ResponsavelId == usuarioId) ||
+                        (t.CriadorId != null && t.CriadorId == usuarioId))
+                    .ToList() ?? new List<TarefaDTO>();
+            }
+            catch (Exception ex)
+            {
+                // Log do erro (em produção, use um logger adequado)
+                Console.WriteLine($"Erro ao buscar tarefas por usuário: {ex.Message}");
+                return new List<TarefaDTO>();
+            }
+        }
+
         public Task<List<TarefaDTO>> BuscaPorStatus(Tarefa.Status status ) =>
          Task.FromResult(_tarefa.Where(t => t.Status == status).ToList());
 

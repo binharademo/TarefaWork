@@ -49,8 +49,8 @@ else
                     <td>@tarefa.Id</td>
                     <td>@tarefa.Titulo</td>
                     <td>@tarefa.Status</td>
-                    <td>@tarefa.Criador.Nome</td>
-                    <td>@tarefa.Responsavel.Nome</td>
+                    <td>@tarefa.CriadorId</td>
+                    <td>@tarefa.ResponsavelId</td>
                     <td>@tarefa.Prazo</td>
                     <td>@tarefa.PrioridadeTarefa</td>
                 </tr>
@@ -61,22 +61,61 @@ else
 
 @code {
     private List<TarefaDTO>? tarefas;
-
-    private List<UsuarioDTO>? usuarios;
-
+    private List<UsuarioDTO> usuarios = new List<UsuarioDTO>(); 
     private int usuarioId;
+    private bool isLoading;
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
-        // Carrega a lista de usuarios ao inicializar a página
-        usuarios = await UsuarioServico.BuscaTodos();
+        try
+        {
+            var resultado = await UsuarioServico.BuscaTodosAsync();
+            if (resultado != null)
+            {
+                usuarios = resultado;
+            }
+
+            if (!usuarios.Any())
+            {
+                errorMessage = "Nenhum usuário cadastrado";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Erro ao carregar usuários: {ex.Message}";
+            usuarios = new List<UsuarioDTO>(); // Garante que não será null
+        }
     }
 
     private async Task Buscar()
     {
-        if (usuarioId > 0)  // Verifica se um usuário foi selecionado
+        if (usuarioId <= 0)
+        {
+            errorMessage = "Selecione um usuário válido";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = null;
+        tarefas = null;
+
+        try
         {
             tarefas = await TarefaServico.BuscaPorUsuario(usuarioId);
+
+            if (tarefas == null || !tarefas.Any())
+            {
+                errorMessage = "Nenhuma tarefa encontrada para este usuário";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Erro ao buscar tarefas: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 }
