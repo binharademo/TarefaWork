@@ -9,22 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-builder.Services.AddSingleton<ITarefaRepositorio, TarefaRepositorio>(sp =>
-{
-    var configuration = sp.GetRequiredService<IConfiguration>();
-    var connStr = configuration.GetConnectionString("DefaultConnection")
-                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada");
-    return new TarefaRepositorio(connStr);
-});
-//builder.Services.AddSingleton<IRepositorio<Usuario>, UsuarioRepositorio>();
+var _connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+    ?? throw new InvalidOperationException("Connection string não encontrada");
 
-builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>>(sp =>
-{
-    var configuration = sp.GetRequiredService<IConfiguration>();
-    var connStr = configuration.GetConnectionString("DefaultConnection")
-                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada");
-    return new UsuarioRepositorio(connStr);
-});
+builder.Services.AddSingleton<ITarefaRepositorio>(new TarefaRepositorio(_connectionString));
+builder.Services.AddSingleton<IUsuarioRepositorio>(new UsuarioRepositorio(_connectionString));
 
 builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
 builder.Services.AddSingleton<IRepositorio<Empresa>, EmpresaMemoriaRepositorio>();
@@ -32,6 +21,9 @@ builder.Services.AddSingleton<IRepositorio<Empresa>, EmpresaMemoriaRepositorio>(
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+using var context = new AppDbContext(_connectionString);
+context.Database.EnsureCreated();
 
 var app = builder.Build();
 
@@ -42,7 +34,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseAuthorization();
 

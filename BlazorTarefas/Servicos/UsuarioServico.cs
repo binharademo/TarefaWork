@@ -15,16 +15,11 @@ namespace BlazorTarefas.Servicos
         {
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
-        //public Task<UsuarioDTO> BuscaPorId(int id)
-        //{
-        //    var usuario = _usuario.FirstOrDefault(t => t.Id == id);
-        //    return Task.FromResult(usuario);
-        //}   
 
         public async Task<List<UsuarioDTO>> BuscaTodosAsync()
         {
             return await _httpClient.GetFromJsonAsync<List<UsuarioDTO>>("usuario")
-                   ?? new List<UsuarioDTO>();
+                ?? new List<UsuarioDTO>();
         }
 
         public async Task<UsuarioDTO?> BuscaPorIdAsync(int id)

@@ -5,9 +5,9 @@ namespace TarefasLibrary.Negocio
 {
     public class UsuarioServico : IUsuarioServico
     {
-        IUsuarioRepositorio<Usuario> _usuarioRepositorio;
+        IUsuarioRepositorio _usuarioRepositorio;
 
-        public UsuarioServico(IUsuarioRepositorio<Usuario> usuarioRepositorio)
+        public UsuarioServico(IUsuarioRepositorio usuarioRepositorio)
         {
             _usuarioRepositorio = usuarioRepositorio;
         }
