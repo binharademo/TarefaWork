@@ -17,6 +17,7 @@
 	<ItemGroup>
 		<Content Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
 		<Content Update="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
+		<Content Update="appsettings.Production.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="Never" />
 	</ItemGroup>
 
 </Project>

@@ -5,7 +5,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio
 {
-    public class UsuarioMemoriaRepositorio : IUsuarioRepositorio<Usuario>
+    public class UsuarioMemoriaRepositorio : IUsuarioRepositorio
     {
         private List<Usuario> ListaUsuarios = new List<Usuario>();
 

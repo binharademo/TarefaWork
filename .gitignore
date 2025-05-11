@@ -318,3 +318,5 @@ Thumbs.db
 Resource.designer.cs
 
 /publicacao
+/*.db
+/*.db-*

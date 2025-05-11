@@ -16,7 +16,7 @@ public class TarefaController : ControllerBase
     private readonly TarefaServico _tarefa;
     private readonly UsuarioServico _usuario;
 
-    public TarefaController(ILogger<TarefaController> logger, ITarefaRepositorio tarefa, IUsuarioRepositorio<Usuario> usuario)
+    public TarefaController(ILogger<TarefaController> logger, ITarefaRepositorio tarefa, IUsuarioRepositorio usuario)
     {
         _logger = logger;
         _tarefa = new TarefaServico(tarefa);

@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ApiRest\ApiRest.csproj" >
-			<ExcludeAssets>>contentfiles</ExcludeAssets>
+		<ProjectReference Include="..\ApiRest\ApiRest.csproj">
+			<ExcludeAssets>&gt;contentfiles</ExcludeAssets>
 		</ProjectReference>
 		<ProjectReference Include="..\TarefasLib\TarefasLibrary.csproj" />
 	</ItemGroup>
@@ -17,6 +17,7 @@
 	<ItemGroup>
 		<Content Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 		<Content Update="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+		<Content Update="appsettings.Production.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
 	</ItemGroup>
 
   <ItemGroup>
