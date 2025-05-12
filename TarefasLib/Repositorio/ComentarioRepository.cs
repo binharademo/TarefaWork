@@ -11,6 +11,13 @@ namespace TarefasLibrary.Repositorio
     // TODO: Implementar interface IRepository
     public class ComentarioRepository : IComentarioRepositorio
     {
+        private readonly string _connectionString;
+
+        public ComentarioRepository(string connectionString)
+        {
+            _connectionString = connectionString ?? throw new ArgumentNullException(nameof(connectionString));
+        }
+
         public List<Comentario> ListaComentario = new List<Comentario>();
         private int contadorIDs = 1;
 

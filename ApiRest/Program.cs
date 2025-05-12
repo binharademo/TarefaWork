@@ -13,10 +13,10 @@ var _connectionString = builder.Configuration.GetConnectionString("DefaultConnec
     ?? throw new InvalidOperationException("Connection string não encontrada");
 
 builder.Services.AddSingleton<ITarefaRepositorio>(new TarefaRepositorio(_connectionString));
-builder.Services.AddSingleton<IUsuarioRepositorio>(new UsuarioRepositorio(_connectionString));
+builder.Services.AddSingleton<IUsuarioRepositorio<Usuario>>(new UsuarioRepositorio(_connectionString));
 builder.Services.AddSingleton<IRepositorio<Empresa>>(new EmpresaRepositorio(_connectionString));
 
-builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
+builder.Services.AddSingleton<IComentarioRepositorio>(new ComentarioRepository(_connectionString));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
