@@ -9,6 +9,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "ReactPolicy",
+        policy =>
+        {
+            policy
+              .WithOrigins("http://localhost:53135")   // endereço do seu front
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+        });
+});
+
 var _connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
     ?? throw new InvalidOperationException("Connection string não encontrada");
 
@@ -27,10 +39,12 @@ context.Database.EnsureCreated();
 
 var app = builder.Build();
 
+app.UseCors("ReactPolicy");
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 
