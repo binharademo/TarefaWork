@@ -162,7 +162,7 @@ namespace Tests_Tarefas
             DateTime dataCriacao = new DateTime(2025, 04, 01);
             Comentario comentario01 = new Comentario("Teste Comentario", dataCriacao);
 
-            var repository = new ComentarioRepository();
+            var repository = new ComentarioMemoriaRepository();
             var service = new ComentarioServices(repository);
 
             //act
@@ -184,7 +184,7 @@ namespace Tests_Tarefas
             Comentario comentario1 = new Comentario("ola", data1);
             Comentario comentario2 = new Comentario("oiii", data2);
 
-            var repository = new ComentarioRepository();
+            var repository = new ComentarioMemoriaRepository();
             var service = new ComentarioServices(repository);
 
             // Act

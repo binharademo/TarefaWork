@@ -16,7 +16,7 @@ builder.Services.AddSingleton<ITarefaRepositorio>(new TarefaRepositorio(_connect
 builder.Services.AddSingleton<IUsuarioRepositorio>(new UsuarioRepositorio(_connectionString));
 builder.Services.AddSingleton<IRepositorio<Empresa>>(new EmpresaRepositorio(_connectionString));
 
-builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
+builder.Services.AddSingleton<IComentarioRepositorio>(new ComentarioRepositorio(_connectionString));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
