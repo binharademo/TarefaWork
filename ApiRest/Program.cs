@@ -14,16 +14,9 @@ var _connectionString = builder.Configuration.GetConnectionString("DefaultConnec
 
 builder.Services.AddSingleton<ITarefaRepositorio>(new TarefaRepositorio(_connectionString));
 builder.Services.AddSingleton<IUsuarioRepositorio>(new UsuarioRepositorio(_connectionString));
+builder.Services.AddSingleton<IRepositorio<Empresa>>(new EmpresaRepositorio(_connectionString));
 
 builder.Services.AddSingleton<IComentarioRepositorio, ComentarioRepository>();
-
-builder.Services.AddSingleton<IRepositorio<Empresa>>(sp =>
-{
-    var configuration = sp.GetRequiredService<IConfiguration>();
-    var connStr = configuration.GetConnectionString("DefaultConnection")
-                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' não encontrada");
-    return new EmpresaRepositorio(connStr);
-});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -35,11 +28,11 @@ context.Database.EnsureCreated();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 //app.UseHttpsRedirection();
 
