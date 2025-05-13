@@ -1,0 +1,52 @@
+/* Estilos personalizados para o menu lateral */
+.sidebar {
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.nav-section {
+    margin-bottom: 1rem;
+}
+
+.section-header {
+    font-weight: bold;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.nav-link:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    transform: translateX(5px);
+}
+
+.nav-link.active {
+    background-color: rgba(13, 110, 253, 0.2);
+    font-weight: bold;
+}
+
+.nav-link i {
+    margin-right: 8px;
+}
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 640px) {
+    .sidebar {
+        position: fixed;
+        width: 80%;
+        height: 100%;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+}
