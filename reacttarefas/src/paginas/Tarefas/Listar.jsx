@@ -78,6 +78,13 @@ function Listar() {
         return new Date(data).toLocaleDateString('pt-BR');
     };
 
+    const converterParaSegundos = (tempoStr) => {
+        if (!tempoStr || typeof tempoStr !== 'string') return 0;
+        const [hh, mm] = tempoStr.split(':').map(Number);
+        if (isNaN(hh) || isNaN(mm)) return 0;
+        return hh * 3600 + mm * 60;
+    };
+
     const formatarTempo = (tempo) => {
         if (!tempo) return '00:00';
         const horas = Math.floor(tempo / 3600).toString().padStart(2, '0');
@@ -156,7 +163,7 @@ function Listar() {
                                         />
                                     </TableCell>
                                     <TableCell>
-                                        {formatarTempo(tarefa.tempoTotal)}
+                                        {formatarTempo(converterParaSegundos(tarefa.tempoTotal))}
                                     </TableCell>
                                     <TableCell>
                                         <IconButton>

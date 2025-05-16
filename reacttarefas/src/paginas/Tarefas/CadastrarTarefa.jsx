@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Box,
@@ -34,6 +34,7 @@ function CadastroTarefa() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [usuarios, setUsuarios] = useState([]);
 
     // Estados do formulário
     const [formData, setFormData] = useState({
@@ -46,6 +47,25 @@ function CadastroTarefa() {
         status: 2, // 2 = Pendente (valor padrão)
         prioridadeTarefa: 0 // 0 = Baixa
     });
+    useEffect(() => {
+        async function fetchUsuarios() {
+            try {
+                const response = await fetch('http://localhost:53011/Usuario');
+                if (!response.ok) {
+                    throw new Error('Erro ao carregar usuários');
+                }
+                const data = await response.json();
+                setUsuarios(Array.isArray(data) ? data : [data]);
+            } catch (err) {
+                console.error('Erro ao buscar usuários:', err);
+            }
+        }
+
+        fetchUsuarios();
+    }, []);
+
+        
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -97,7 +117,7 @@ function CadastroTarefa() {
             }
 
             setSuccess(true);
-            setTimeout(() => navigate('/listar-tarefas'), 2000);
+            setTimeout(() => navigate('/tarefa/listar'), 2000);
         } catch (err) {
             setError(err.message);
         } finally {
@@ -106,7 +126,7 @@ function CadastroTarefa() {
     };
 
     const handleCancel = () => {
-        navigate('/listar-tarefas');
+        navigate('/tarefa/listar');
     };
 
     return (
@@ -156,16 +176,25 @@ function CadastroTarefa() {
                             </Grid>
 
                             <Grid item xs={12} sm={6}>
-                                <TextField
-                                    fullWidth
-                                    label="ID do Responsável"
-                                    name="responsavelId"
-                                    type="number"
-                                    value={formData.responsavelId}
-                                    onChange={handleChange}
-                                    required
-                                />
+                                <FormControl fullWidth required>
+                                    <InputLabel>Responsável</InputLabel>
+                                    <Select
+                                        name="responsavelId"
+                                        value={formData.responsavelId}
+                                        onChange={handleChange}
+                                        label="Responsável"
+                                    >
+                                        {usuarios.map((usuario) => (
+                                            <MenuItem key={usuario.id} value={usuario.id}>
+                                                {usuario.nome} — {usuario.funcaoUsuario === 0 ? 'Dev' :
+                                                    usuario.funcaoUsuario === 1 ? 'Analista' :
+                                                        usuario.funcaoUsuario === 2 ? 'Marketing' : 'Outro'}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
                             </Grid>
+
 
                             <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth>
