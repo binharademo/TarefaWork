@@ -21,7 +21,7 @@
         <div class="task-list"
         ondragover="dragDropManager.dragOver(event)"
         ondragleave="dragDropManager.dragLeave(event)"
-        ondrop="dragDropManager.drop(event, 0, window.dotNetHelper)">
+        ondrop="dragDropManager.drop(event, '0', window.dotNetHelper)">
             @if (todoTasks == null)
             {
                 <p>Carregando...</p>
@@ -57,7 +57,7 @@
         <div class="task-list"
         ondragover="dragDropManager.dragOver(event)"
         ondragleave="dragDropManager.dragLeave(event)"
-        ondrop="dragDropManager.drop(event, 1, window.dotNetHelper)">
+        ondrop="dragDropManager.drop(event, '1', window.dotNetHelper)">
             @if (doingTasks == null)
             {
                 <p>Carregando...</p>
@@ -93,7 +93,7 @@
         <div class="task-list"
         ondragover="dragDropManager.dragOver(event)"
         ondragleave="dragDropManager.dragLeave(event)"
-        ondrop="dragDropManager.drop(event, 2, window.dotNetHelper)">
+        ondrop="dragDropManager.drop(event, '2', window.dotNetHelper)">
             @if (doneTasks == null)
             {
                 <p>Carregando...</p>
@@ -172,8 +172,6 @@
     {
         try
         {
-            Console.WriteLine("Carregando tarefas do servidor...");
-
             // Faz uma requisição GET para a API
             var response = await Http.GetAsync("Tarefa");
 
@@ -182,7 +180,6 @@
             {
                 // Lê o conteúdo da resposta
                 var content = await response.Content.ReadAsStringAsync();
-                Console.WriteLine($"Resposta da API: {content}");
 
                 // Converte o JSON para uma lista de TarefaDTO
                 return await response.Content.ReadFromJsonAsync<List<TarefaDTO>>() ?? new List<TarefaDTO>();
@@ -201,20 +198,21 @@
     }
 
     [JSInvokable]
-    public async Task AtualizaStatus(TarefaDTO tarefa, int newStatus)
+    public async Task AtualizaStatus(string id, string newStatus)
     {
-        int statusAntigo = tarefa.Status;
+        if (!int.TryParse(id, out int tarefaId))
+            return;
+        if (!int.TryParse(newStatus, out int newStatusId))
+            return;
 
-        tarefa.Status = newStatus;
-        var response = await Http.PutAsJsonAsync($"tarefa/{tarefa.Id}", tarefa);
+        var response = await Http.PutAsync($"tarefa/{tarefaId}/status/{newStatusId}", null);
         if (response.IsSuccessStatusCode)
         {
-            Console.WriteLine($"Tarefa {tarefa.Id} atualizada com sucesso.");
+            Console.WriteLine($"Tarefa {tarefaId} atualizada com sucesso.");
         }
         else
         {
-            Console.WriteLine($"Erro ao atualizar tarefa {tarefa.Id}: {response.StatusCode}");
-            tarefa.Status = statusAntigo; // Reverte o status se a atualização falhar
+            Console.WriteLine($"Erro ao atualizar tarefa {tarefaId}: {response.StatusCode}");
         }
 
         await LoadTasksByStatus();
@@ -223,12 +221,12 @@
 
     private void NavegarParaCriacao()
     {
-        NavigationManager.NavigateTo("/tarefa/criar");
+        NavigationManager.NavigateTo("/tarefa?action=new");
     }
 
     private void NavegarParaEdicao(int id)
     {
-        NavigationManager.NavigateTo($"/tarefa/editar/{id}");
+        NavigationManager.NavigateTo($"/tarefa?action=edit&id={id}");
     }
 
     async ValueTask IAsyncDisposable.DisposeAsync()
