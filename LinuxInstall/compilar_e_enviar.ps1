@@ -1,4 +1,4 @@
-# Script para compilar e enviar a aplicação .NET para o servidor Linux
+﻿# Script para compilar e enviar a aplicação .NET para o servidor Linux
 # Data: 05/05/2025
 # Descrição: Este script compila a aplicação .NET, cria um pacote de publicação
 #            e envia para o servidor Linux usando SCP.
@@ -20,6 +20,9 @@ param(
     [Parameter(Mandatory=$false)]
     [string]$DiretorioPublicacao = ".\publicacao"
 )
+$OutputEncoding = [Console]::InputEncoding = [Console]::OutputEncoding = New-Object System.Text.UTF8Encoding
+
+$arquivoZip = "aplicacao_dotnet.zip"
 
 # Função para exibir mensagens com formatação
 function Escrever-Mensagem {
@@ -93,7 +96,7 @@ if ($LASTEXITCODE -ne 0) {
 
 # Publicar o projeto para o diretório de publicação
 Escrever-Mensagem "Publicando o projeto para: $DiretorioPublicacao"
-dotnet publish --configuration Release --output $DiretorioPublicacao --self-contained false --runtime linux-x64
+dotnet publish --configuration Release --output $DiretorioPublicacao --runtime linux-x64
 if ($LASTEXITCODE -ne 0) {
     Escrever-Mensagem "Falha ao publicar o projeto." "ERRO"
     exit 1
@@ -114,7 +117,8 @@ if (-not (Test-Path $arquivoZip)) {
     exit 1
 }
 
-# Converter a senha para SecureString
+
+# Converter a senha para SecureString 
 $senhaSegura = ConvertTo-SecureString $Senha -AsPlainText -Force
 $credencial = New-Object System.Management.Automation.PSCredential ($Usuario, $senhaSegura)
 
@@ -141,31 +145,73 @@ try {
     Set-SCPItem -ComputerName $ServidorIP -Credential $credencial -Path $arquivoZip -Destination "./"
     Set-SCPItem -ComputerName $ServidorIP -Credential $credencial -Path LinuxInstall\configurar_e_iniciar.sh -Destination "./"
 
- #   # Executar comandos remotos para descompactar e configurar
- #   Escrever-Mensagem "Descompactando e configurando a aplicação no servidor..."
- #   $comandos = @(
- #       "sudo rm -rf /tmp/aplicacao_temp",
- #       "mkdir -p /tmp/aplicacao_temp",
- #       "unzip -o /tmp/aplicacao_dotnet.zip -d /tmp/aplicacao_temp",
- #       "sudo systemctl stop dotnet-app.service",
- #       "sudo rm -rf /var/www/dotnet/*",
- #       "sudo cp -r /tmp/aplicacao_temp/* /var/www/dotnet/",
- #       "sudo chown -R www-data:www-data /var/www/dotnet",
- #       "sudo chmod -R 755 /var/www/dotnet",
- #       "sudo systemctl start dotnet-app.service",
-#        "sudo systemctl status dotnet-app.service",
-#        "rm -rf /tmp/aplicacao_temp",
-#        "rm /tmp/aplicacao_dotnet.zip"
-#    )
-#    
-#    foreach ($comando in $comandos) {
-#        Escrever-Mensagem "Executando: $comando"
-#        $resultado = Invoke-SSHCommand -SessionId $sessaoSSH.SessionId -Command $comando
-#        if ($resultado.ExitStatus -ne 0) {
-#            Escrever-Mensagem "Falha ao executar o comando: $comando" "ERRO"
-#            Escrever-Mensagem "Saída: $($resultado.Output)" "ERRO"
-#        }
-#    }
+    # Executar comandos remotos para descompactar e configurar
+    Escrever-Mensagem "Descompactando e configurando a aplicação no servidor..."
+    $comandos = @(
+        "sudo rm -rf /tmp/aplicacao_temp",
+        "sudo rm /tmp/aplicacao_dotnet.zip"
+        "mkdir -p /tmp/aplicacao_temp"
+        "cp aplicacao_dotnet.zip /tmp/",
+        "unzip -q -o /tmp/aplicacao_dotnet.zip -d /tmp/aplicacao_temp",
+        "sudo systemctl stop dotnet-app.service",
+        "sudo systemctl stop dotnet-api.service",
+        "sudo find /var/www/dotnet/ -maxdepth 1 -mindepth 1 ! -name '*.db' -exec rm -Rf {} +",
+        "sudo mv /tmp/aplicacao_temp/* /var/www/dotnet/",
+        "sudo chown -R www-data:www-data /var/www/dotnet",
+        "sudo chmod -R 755 /var/www/dotnet",
+        "sudo systemctl start dotnet-app.service",
+        "sudo systemctl is-active dotnet-app.service",
+        "sudo systemctl start dotnet-api.service",
+        "sudo systemctl is-active dotnet-api.service",
+        "sudo rm -rf /tmp/aplicacao_temp",
+        "sudo rm /tmp/aplicacao_dotnet.zip"
+    )
+
+#$cmds = 'sudo rm -rf /tmp/aplicacao_temp', 'sudo ls /var/www/dotnet'
+#Invoke-SshCommand -SessionId $sessaoSSH.SessionId -Command ($cmds -join ';')    
+
+    $stream = $sessaoSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 100)
+#    $user = Invoke-SSHCommand $session -Command "whoami"
+#    $SSHusersName = $user.Output | Out-String
+#    $SSHusersName = $SSHusersName.Trim()
+    foreach ($comando in $comandos) {
+        Escrever-Mensagem "Executando: $comando"
+        
+        if ($comando.StartsWith("sudo ")){
+            $resultado = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "$comando && echo SUCCESS || echo FAILURE" -ExpectString "[sudo] password for $($Usuario):" -SecureAction $senhaSegura
+            Start-Sleep -Milliseconds 200  # Wait a bit for output to appear
+            $saida = $stream.Read()
+            
+            if (-not($saida -match "SUCCESS")) {
+                Escrever-Mensagem "$comando" "ERRO"
+                $linhasValidas = $saida -split '\r?\n' | Where-Object {
+                    # remove linhas em branco
+                    if ($_ -match '^\s*$') { return $false }
+                    # remove prompt do sudo
+                    if ($_ -match "^\[sudo\] password for $Usuario\:") { return $false }
+                    # remove eco do próprio comando (caso o shell o repita)
+                    if ($_ -eq $comando) { return $false }
+                    # opcional: remova as linhas SUCCESS/FAILURE
+                    if ($_ -match '^(SUCCESS|FAILURE)$') { return $false }
+                    # remove o shell prompt (ex.: usuario@servidor:~$)
+                    if ($_ -match '^[^@\s]+@[^:\s]+:[^$\r\n]+\$') { return $false }
+                    # caso contrário, mantém a linha
+                    return $true
+                }
+                $saida = $linhasValidas -join "`n"
+                Escrever-Mensagem "Saida: $saida" "ERRO"
+            }
+
+        } else {
+            $resultado = Invoke-SSHCommand -SessionId $sessaoSSH.SessionId -Command $comando
+            if ($resultado.ExitStatus -ne 0) {
+                if(-not($comando.StartsWith("unzip") -And $resultado.ExitStatus -eq 1)){
+                    Escrever-Mensagem "$comando" "ERRO"
+                    Escrever-Mensagem "ERRO: $($resultado.ExitStatus) - $($resultado.Output)" "ERRO"
+                }
+            }
+        }
+    }
     
     # Encerrar a sessão SSH
     Remove-SSHSession -SessionId $sessaoSSH.SessionId | Out-Null
@@ -177,8 +223,8 @@ try {
 }
 
 # Limpar arquivos temporários
-Escrever-Mensagem "Limpando arquivos temporários..."
-Remove-Item $arquivoZip -Force
+#Escrever-Mensagem "Limpando arquivos temporários..."
+#Remove-Item $arquivoZip -Force
 
 Escrever-Mensagem "Processo de compilação e deploy concluído com sucesso!" "SUCESSO"
 Escrever-Mensagem "A aplicação está disponível em: http://$ServidorIP/" "SUCESSO"
