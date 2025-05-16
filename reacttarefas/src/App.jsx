@@ -3,6 +3,8 @@ import './App.css'
 import CadastroUsuario from './paginas/Usuario/CadastroUsuario'
 import ListarUsuario from './paginas/Usuario/ListarUsuario'
 import CadastroTarefa from './paginas/Tarefas/CadastrarTarefa';
+import CadastroEmpresa from './paginas/Empresa/CadastrarEmpresa';
+import ListarEmpresa from './paginas/Empresa/ListarEmpresa';
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PersistentDrawerLeft from './components/Menu'
 import '@fontsource/roboto/300.css';
@@ -23,6 +25,8 @@ function App() {
                 <Route path="/listar" element={<ListarUsuario />} />
                   <Route path="/tarefa/listar" element={<Listar />} />
                   <Route path="/tarefa/cadastro" element={<CadastroTarefa />} />
+                  <Route path="/empresa/cadastro" element={<CadastroEmpresa />} />
+                  <Route path="/empresa/listar" element={<ListarEmpresa />} />
               </Routes>
         </PersistentDrawerLeft>
       </BrowserRouter>

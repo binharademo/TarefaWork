@@ -173,6 +173,25 @@ export default function PersistentDrawerLeft({ children }) {
                         </ListItemButton>
                     </ListItem>
                 </List>
+                <List>
+                    <h4>Empresas</h4>
+                    <ListItem key="CadastroEmpresa" disablePadding>
+                        <ListItemButton component={Link} to="/empresa/cadastro">
+                            <ListItemIcon>
+                                <PersonAddIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Cadastro" />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem key="ListarEmpresa" disablePadding>
+                        <ListItemButton component={Link} to="/empresa/listar">
+                            <ListItemIcon>
+                                <Diversity3Icon />
+                            </ListItemIcon>
+                            <ListItemText primary="Listar" />
+                        </ListItemButton>
+                    </ListItem>
+                </List>
             </Drawer>
             <Main open={open}>
                 <DrawerHeader />

@@ -1,18 +1,20 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-    Box,
     Button,
     TextField,
-    Typography,
-    Paper,
-    Grid,
     FormControl,
     InputLabel,
     Select,
     MenuItem,
-    CircularProgress,
-    Alert
+    Typography,
+    Container,
+    Paper,
+    Box,
+    Grid,
+    Alert,
+    InputAdornment,
+    CircularProgress
 } from '@mui/material';
 import {
     Save as SaveIcon,
@@ -22,7 +24,13 @@ import {
     KeyboardArrowDown as KeyboardArrowDownIcon,
     KeyboardArrowUp as KeyboardArrowUpIcon,
     KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon,
-    PlayCircle as PlayCircleIcon
+    PlayCircle as PlayCircleIcon,
+    Title as TitleIcon,
+    Description as DescriptionIcon,
+    Person as PersonIcon,
+    Schedule as ScheduleIcon,
+    Flag as FlagIcon,
+    AssignmentTurnedIn as AssignmentTurnedInIcon
 } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
@@ -47,25 +55,23 @@ function CadastroTarefa() {
         status: 2, // 2 = Pendente (valor padrão)
         prioridadeTarefa: 0 // 0 = Baixa
     });
+
     useEffect(() => {
         async function fetchUsuarios() {
             try {
                 const response = await fetch('http://localhost:53011/Usuario');
                 if (!response.ok) {
-                    throw new Error('Erro ao carregar usuários');
+                    throw new Error('Erro ao carregar usuarios');
                 }
                 const data = await response.json();
                 setUsuarios(Array.isArray(data) ? data : [data]);
             } catch (err) {
-                console.error('Erro ao buscar usuários:', err);
+                console.error('Erro ao buscar usuarios:', err);
             }
         }
 
         fetchUsuarios();
     }, []);
-
-        
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -124,27 +130,37 @@ function CadastroTarefa() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
-            <Box sx={{ p: 3, maxWidth: 800, margin: 'auto' }}>
-                <Paper elevation={3} sx={{ p: 3 }}>
-                    <Typography variant="h4" component="h1" gutterBottom>
-                        Cadastrar Nova Tarefa
-                    </Typography>
+            <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+                <Paper
+                    elevation={3}
+                    sx={{
+                        p: 4,
+                        borderRadius: 2,
+                        background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
+                    }}
+                >
+                    <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                        <AssignmentTurnedInIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
+                        <Typography variant="h4" component="h1" fontWeight="500" color="primary">
+                            Nova Tarefa
+                        </Typography>
+                    </Box>
 
                     {error && (
-                        <Alert severity="error" sx={{ mb: 2 }}>
+                        <Alert severity="error" sx={{ mb: 3 }}>
                             {error}
                         </Alert>
                     )}
 
                     {success && (
-                        <Alert severity="success" sx={{ mb: 2 }}>
+                        <Alert severity="success" sx={{ mb: 3 }}>
                             Tarefa criada com sucesso! Redirecionando...
                         </Alert>
                     )}
 
                     <form onSubmit={handleSubmit}>
-                        <Grid container spacing={2}>
-                            <Grid item size={12}>
+                        <Grid container spacing={3}>
+                            <Grid item xs={12}>
                                 <TextField
                                     fullWidth
                                     label="Título"
@@ -152,31 +168,34 @@ function CadastroTarefa() {
                                     value={formData.titulo}
                                     onChange={handleChange}
                                     required
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <TitleIcon color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
                                 />
                             </Grid>
 
-                            <Grid item size={12}>
-                                <TextField
-                                    fullWidth
-                                    label="Descrição"
-                                    name="descricao"
-                                    value={formData.descricao}
-                                    onChange={handleChange}
-                                    multiline
-                                    rows={4}
-                                    required
-                                />
-                            </Grid>
-
-                            <Grid item size={{ xs: 12, sm: 8 }}>
-                                <FormControl fullWidth required>
-                                    <InputLabel>Responsável</InputLabel>
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="responsavel-label">Responsável</InputLabel>
                                     <Select
+                                        labelId="responsavel-label"
                                         name="responsavelId"
                                         value={formData.responsavelId}
                                         onChange={handleChange}
                                         label="Responsável"
+                                        required
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <PersonIcon color="action" />
+                                            </InputAdornment>
+                                        }
                                     >
+                                        <MenuItem value="">Selecione um responsável</MenuItem>
                                         {usuarios.map((usuario) => (
                                             <MenuItem key={usuario.id} value={usuario.id}>
                                                 {usuario.nome} — {usuario.funcaoUsuario === 0 ? 'Dev' :
@@ -188,77 +207,156 @@ function CadastroTarefa() {
                                 </FormControl>
                             </Grid>
 
-                            <Grid item size={{ xs: 12, sm: 4 }}>
-                                <FormControl fullWidth required>
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth variant="outlined">
                                     <DateTimePicker
                                         label="Prazo"
                                         value={formData.prazo}
                                         onChange={handleDateChange}
-                                        renderInput={(params) => <TextField {...params} fullWidth required />}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                fullWidth
+                                                required
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    startAdornment: (
+                                                        <InputAdornment position="start">
+                                                            <ScheduleIcon color="action" />
+                                                            {params.InputProps?.startAdornment}
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        )}
                                         minDate={new Date()}
-                                        />
+                                    />
                                 </FormControl>
                             </Grid>
 
-                            <Grid item size={{ xs: 12, sm: 4 }}>
-                                <FormControl fullWidth variant="standard">
-                                    <InputLabel>Prioridade</InputLabel>
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="prioridade-label">Prioridade</InputLabel>
                                     <Select
+                                        labelId="prioridade-label"
                                         name="prioridadeTarefa"
                                         value={formData.prioridadeTarefa}
                                         onChange={handleChange}
                                         label="Prioridade"
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <FlagIcon color="action" />
+                                            </InputAdornment>
+                                        }
                                     >
-                                        <MenuItem value={2}><KeyboardDoubleArrowUpIcon color="error" /> Alta
+                                        <MenuItem value={2}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <KeyboardDoubleArrowUpIcon color="error" sx={{ mr: 1 }} /> Alta
+                                            </Box>
                                         </MenuItem>
-                                        <MenuItem value={1}><KeyboardArrowUpIcon color="primary" /> Média
+                                        <MenuItem value={1}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <KeyboardArrowUpIcon color="primary" sx={{ mr: 1 }} /> Média
+                                            </Box>
                                         </MenuItem>
-                                        <MenuItem value={0}><KeyboardArrowDownIcon color="success"/> Baixa
+                                        <MenuItem value={0}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <KeyboardArrowDownIcon color="success" sx={{ mr: 1 }} /> Baixa
+                                            </Box>
                                         </MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
 
-                            <Grid item size={{ xs: 12, sm: 4 }}>
-                                <FormControl fullWidth variant="standard">
-                                    <InputLabel>Status</InputLabel>
+                            <Grid item xs={12} md={6}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="status-label">Status</InputLabel>
                                     <Select
-                                        defaultValue={30}
-                                        inputProps={{
-                                            name: 'age',
-                                            id: 'uncontrolled-native',
-                                        }}
+                                        labelId="status-label"
+                                        id="status"
+                                        name="status"
+                                        value={formData.status}
+                                        onChange={handleChange}
+                                        label="Status"
+                                        startAdornment={
+                                            <InputAdornment position="start">
+                                                <AssignmentTurnedInIcon color="action" />
+                                            </InputAdornment>
+                                        }
                                     >
-                                        <MenuItem value={0}><CheckCircleIcon color="success"/>Concluído</MenuItem>
-                                        <MenuItem value={1}><PlayCircleIcon color="primary" />Em Andamento</MenuItem>
-                                        <MenuItem value={2}><PendingIcon color="action" />Pendente</MenuItem>
+                                        <MenuItem value={0}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <CheckCircleIcon color="success" sx={{ mr: 1 }} /> Concluído
+                                            </Box>
+                                        </MenuItem>
+                                        <MenuItem value={1}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <PlayCircleIcon color="primary" sx={{ mr: 1 }} /> Em Andamento
+                                            </Box>
+                                        </MenuItem>
+                                        <MenuItem value={2}>
+                                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                <PendingIcon color="action" sx={{ mr: 1 }} /> Pendente
+                                            </Box>
+                                        </MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
 
-                            <Grid item size={12} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                                <Button
+                            <Grid item xs={12} sx={{ mt: 2 }}>
+                                <TextField
+                                    fullWidth
+                                    label="Descrição"
+                                    name="descricao"
+                                    value={formData.descricao}
+                                    onChange={handleChange}
+                                    multiline
+                                    rows={6}
+                                    required
                                     variant="outlined"
-                                    color="error"
-                                    startIcon={<CancelIcon />}
-                                    onClick={handleCancel}
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <DescriptionIcon color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <Box
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'flex-end',
+                                        gap: 2,
+                                        mt: 3
+                                    }}
                                 >
-                                    Cancelar
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    startIcon={<SaveIcon />}
-                                    disabled={loading}
-                                >
-                                    {loading ? <CircularProgress size={24} /> : 'Salvar Tarefa'}
-                                </Button>
+                                    <Button
+                                        variant="outlined"
+                                        onClick={handleCancel}
+                                        startIcon={<CancelIcon />}
+                                        sx={{ px: 3 }}
+                                    >
+                                        Cancelar
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        color="primary"
+                                        startIcon={loading ? null : <SaveIcon />}
+                                        disabled={loading}
+                                        sx={{ px: 3 }}
+                                    >
+                                        {loading ? <CircularProgress size={24} /> : 'Salvar Tarefa'}
+                                    </Button>
+                                </Box>
                             </Grid>
                         </Grid>
                     </form>
                 </Paper>
-            </Box>
+            </Container>
         </LocalizationProvider>
     );
 }

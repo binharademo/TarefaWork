@@ -14,7 +14,6 @@ import {
     Alert,
     Box,
     Container,
-    Chip,
     Tooltip,
     IconButton,
     Divider
@@ -22,71 +21,47 @@ import {
 import {
     Add as AddIcon,
     Refresh as RefreshIcon,
-    Person as PersonIcon,
+    Business as BusinessIcon,
     Error as ErrorIcon
 } from '@mui/icons-material';
 
-function ListarUsuario() {
-    const [usuarios, setUsuarios] = useState([]);
+function ListarEmpresa() {
+    const [empresas, setEmpresas] = useState([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
     const navigate = useNavigate();
 
-    const fetchUsuarios = async () => {
+    const fetchEmpresas = async () => {
         setCarregando(true);
         setErro(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Usuario');
+            const response = await fetch('http://localhost:53011/Empresa');
             if (!response.ok) {
-                throw new Error('Erro ao carregar usuarios');
+                throw new Error('Erro ao carregar empresas');
             }
             const data = await response.json();
             console.log("Dados recebidos:", data);
-            setUsuarios(Array.isArray(data) ? data : [data]);
+            setEmpresas(Array.isArray(data) ? data : [data]);
         } catch (error) {
             setErro(error.message);
         } finally {
             setCarregando(false);
-            console.log(usuarios);
+            console.log(empresas);
         }
     };
 
     useEffect(() => {
-        fetchUsuarios();
+        fetchEmpresas();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
-        console.log("Estado usuarios atualizado:", usuarios);
-    }, [usuarios]);
+        console.log("Estado empresas atualizado:", empresas);
+    }, [empresas]);
 
-    const handleNovoUsuario = () => {
-        navigate('/');
-    };
-
-    const renderFuncao = (funcao) => {
-        switch (funcao) {
-            case 0:
-                return <Chip label="Dev" size="small" color="primary" />;
-            case 1:
-                return <Chip label="Analista" size="small" color="secondary" />;
-            case 2:
-                return <Chip label="Marketing" size="small" color="info" />;
-            default:
-                return <Chip label={funcao} size="small" />;
-        }
-    };
-
-    const renderSetor = (setor) => {
-        switch (setor) {
-            case 0:
-                return <Chip label="TI" size="small" color="success" />;
-            case 1:
-                return <Chip label="Marketing" size="small" color="warning" />;
-            default:
-                return <Chip label={setor} size="small" />;
-        }
+    const handleNovaEmpresa = () => {
+        navigate('/cadastrar-empresa');
     };
 
     if (carregando) {
@@ -101,7 +76,7 @@ function ListarUsuario() {
                 >
                     <CircularProgress size={60} thickness={4} />
                     <Typography variant="h6" mt={2} color="text.secondary">
-                        Carregando usuarios...
+                        Carregando empresas...
                     </Typography>
                 </Box>
             </Container>
@@ -120,9 +95,9 @@ function ListarUsuario() {
             >
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                     <Box display="flex" alignItems="center">
-                        <PersonIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
+                        <BusinessIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
                         <Typography variant="h4" component="h1" fontWeight="500" color="primary">
-                            Lista de Usuarios
+                            Lista de Empresas
                         </Typography>
                     </Box>
 
@@ -130,7 +105,7 @@ function ListarUsuario() {
                         <Tooltip title="Atualizar lista">
                             <IconButton
                                 color="primary"
-                                onClick={fetchUsuarios}
+                                onClick={fetchEmpresas}
                                 sx={{ mr: 1 }}
                             >
                                 <RefreshIcon />
@@ -140,7 +115,7 @@ function ListarUsuario() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={handleNovoUsuario}
+                            onClick={handleNovaEmpresa}
                             startIcon={<AddIcon />}
                             sx={{
                                 boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
@@ -148,7 +123,7 @@ function ListarUsuario() {
                                 px: 2
                             }}
                         >
-                            Novo Usuario
+                            Nova Empresa
                         </Button>
                     </Box>
                 </Box>
@@ -161,7 +136,7 @@ function ListarUsuario() {
                         sx={{ mb: 3 }}
                         icon={<ErrorIcon fontSize="inherit" />}
                         action={
-                            <Button color="inherit" size="small" onClick={fetchUsuarios}>
+                            <Button color="inherit" size="small" onClick={fetchEmpresas}>
                                 Tentar novamente
                             </Button>
                         }
@@ -170,7 +145,7 @@ function ListarUsuario() {
                     </Alert>
                 )}
 
-                {usuarios.length === 0 ? (
+                {empresas.length === 0 ? (
                     <Box
                         display="flex"
                         flexDirection="column"
@@ -180,20 +155,20 @@ function ListarUsuario() {
                         bgcolor="#f5f5f5"
                         borderRadius={2}
                     >
-                        <PersonIcon sx={{ fontSize: 64, color: '#bdbdbd', mb: 2 }} />
+                        <BusinessIcon sx={{ fontSize: 64, color: '#bdbdbd', mb: 2 }} />
                         <Typography variant="h6" color="text.secondary" gutterBottom>
-                            Nenhum usuario cadastrado
+                            Nenhuma empresa cadastrada
                         </Typography>
                         <Typography variant="body2" color="text.secondary" mb={2}>
-                            Clique no botao acima para adicionar um novo usuario
+                            Clique no botao acima para adicionar uma nova empresa
                         </Typography>
                         <Button
                             variant="outlined"
                             color="primary"
-                            onClick={handleNovoUsuario}
+                            onClick={handleNovaEmpresa}
                             startIcon={<AddIcon />}
                         >
-                            Adicionar Usuario
+                            Adicionar Empresa
                         </Button>
                     </Box>
                 ) : (
@@ -211,14 +186,13 @@ function ListarUsuario() {
                                 <TableRow>
                                     <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Nome</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Funcao</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Setor</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>CNPJ</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {usuarios.map((usuario) => (
+                                {empresas.map((empresa) => (
                                     <TableRow
-                                        key={usuario.id}
+                                        key={empresa.id}
                                         hover
                                         sx={{
                                             '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
@@ -230,10 +204,9 @@ function ListarUsuario() {
                                             }
                                         }}
                                     >
-                                        <TableCell>{usuario.id}</TableCell>
-                                        <TableCell sx={{ fontWeight: 500 }}>{usuario.nome}</TableCell>
-                                        <TableCell>{renderFuncao(usuario.funcaoUsuario)}</TableCell>
-                                        <TableCell>{renderSetor(usuario.setorUsuario)}</TableCell>
+                                        <TableCell>{empresa.id}</TableCell>
+                                        <TableCell sx={{ fontWeight: 500 }}>{empresa.nome}</TableCell>
+                                        <TableCell>{empresa.cnpj}</TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -243,7 +216,7 @@ function ListarUsuario() {
 
                 <Box display="flex" justifyContent="flex-end" mt={3}>
                     <Typography variant="body2" color="text.secondary">
-                        Total: {usuarios.length} usuario{usuarios.length !== 1 ? 's' : ''}
+                        Total: {empresas.length} empresa{empresas.length !== 1 ? 's' : ''}
                     </Typography>
                 </Box>
             </Paper>
@@ -251,4 +224,4 @@ function ListarUsuario() {
     );
 }
 
-export default ListarUsuario;
+export default ListarEmpresa;
