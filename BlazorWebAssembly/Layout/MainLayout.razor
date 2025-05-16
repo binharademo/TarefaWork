@@ -1,0 +1,21 @@
+@inherits LayoutComponentBase
+
+<div class="page">
+    <div class="sidebar" style="border-right: 2px solid #0d6efd;">
+        <NavMenu />
+    </div>
+
+    <main>
+        <div class="top-row px-4">
+            <span class="me-auto fw-bold">Gerenciador de Tarefas</span>
+            <a href="tarefa" class="btn btn-primary me-2">
+                <i class="bi bi-check2-square"></i> Tarefas
+            </a>
+            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">Sobre</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>

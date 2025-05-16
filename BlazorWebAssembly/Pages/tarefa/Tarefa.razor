@@ -1,0 +1,312 @@
+﻿@page "/tarefa"
+@inject HttpClient Http
+
+<PageTitle>Tarefas</PageTitle>
+
+<h3>Lista de Tarefas</h3>
+
+
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2><i class="bi bi-check2-square"></i> Gerenciador de Tarefas</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <button class="btn btn-success btn-lg" @onclick="() => MostrarCadastroTarefa()">
+                <i class="bi bi-plus-circle"></i> Cadastrar Nova Tarefa
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Seção de Listagem de Tarefas -->
+            <div id="taskList" class="card mb-4 @(mostrarTarefaNova ? "d-none" : "")">
+                <div class="card-header bg-primary text-white">
+                    <h4><i class="bi bi-list-ul"></i> Lista de Tarefas</h4>
+                </div>
+                <div class="card-body">
+                    @if (tarefas == null)
+                    {
+                        <p class="text-center"><i class="bi bi-hourglass-split"></i> Carregando...</p>
+                    }
+                    else if (tarefas.Count == 0)
+                    {
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle"></i> Nenhuma tarefa cadastrada. Clique em "Cadastrar Nova Tarefa" para começar.
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Titulo</th>
+                                        <th>Status</th>
+                                        <th>Criador</th>
+                                        <th>Responsavel</th>
+                                        <th>Prazo</th>
+                                        <th>Prioridade</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var tarefa in tarefas)
+                                    {
+                                        <tr>
+                                            <td>@tarefa.Id</td>
+                                            <td>@tarefa.Titulo</td>
+                                            <td>@tarefa.Status</td>
+                                            <td>@tarefa.CriadorId</td>
+                                            <td>@tarefa.ResponsavelId</td>
+                                            <td>@tarefa.Prazo</td>
+                                            <td>@tarefa.PrioridadeTarefa</td>
+                                            <td>
+                                                <button class="btn btn-primary" @onclick="() => EditarTarefa(tarefa.Id)">Editar</button>
+                                                @* <button class="btn btn-danger" @onclick="() => RemoverUsuario(tarefa.Id)">Excluir</button> *@
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <!-- Seção de Cadastro/Edição de Tarefa -->
+            <div id="taskForm" class="card @(mostrarTarefaNova || tarefaNova.Id != 0 ? "" : "d-none")">
+                <div class="card-header bg-success text-white">
+                    <h4>
+                        @if (tarefaNova.Id == 0)
+                        {
+                            <i class="bi bi-plus-circle"></i> <span>Cadastrar Nova Tarefa</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-pencil-square"></i> <span>Editar Tarefa</span>
+                        }
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="tarefaNova" OnValidSubmit="SalvarTarefa" FormName="novaTarefaForm">
+                        <DataAnnotationsValidator />
+                        <div class="form-group mb-3">
+                            <label>Título</label>
+                            <InputText class="form-control" @bind-Value="tarefaNova.Titulo" />
+                            <ValidationMessage For="() => tarefaNova.Titulo" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Descrição</label>
+                            <InputTextArea class="form-control" @bind-Value="tarefaNova.Descricao" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Prioridade</label>
+                            <InputSelect class="form-control" @bind-Value="tarefaNova.PrioridadeTarefa">
+                                <option value="0">Baixa</option>
+                                <option value="1">Média</option>
+                                <option value="2">Alta</option>
+                            </InputSelect>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Criador</label>
+                            <InputSelect class="form-control" @bind-Value="tarefaNova.CriadorId">
+                                @* @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+                                {
+                                    <option value="@usuario.Id">@usuario.Nome</option>
+                                } *@
+                                <option value="1">usuar 01</option>
+                                <option value="2">usuar 02</option>
+                            </InputSelect>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Prazo</label>
+                            <InputDate class="form-control" @bind-Value="tarefaNova.Prazo" />
+                            <ValidationMessage For="() => tarefaNova.Prazo" />
+                        </div>
+                        <div class="form-group mb-3">
+                            <label>Responsável</label>
+                            <InputSelect class="form-control" @bind-Value="tarefaNova.ResponsavelId">
+                                @* @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+                                {
+                                    <option value="@usuario.Id">@usuario.Nome</option>
+                                } *@
+                                <option value="1">usuar 01</option>
+                                <option value="2">usuar 02</option>
+                            </InputSelect>
+                        </div>
+                        <div class="form-check mb-3">
+                            <label>Status</label><br />
+
+                            <InputSelect class="form-control" @bind-Value="tarefaNova.Status">
+                                <option value="0">To Do</option>
+                                <option value="1">Doing</option>
+                                <option value="2">Done</option>
+                            </InputSelect>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Salvar</button>
+                        <button type="button" class="btn btn-secondary" @onclick="CancelaEditar">Cancelar</button>
+
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<TarefaDTO> tarefas = new List<TarefaDTO>();
+    private TarefaDTO tarefaNova = new TarefaDTO();
+    private bool mostrarTarefaNova = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CarregarListaTarefas();
+
+        // Verificar se há parâmetros na URL para mostrar o formulário de cadastro
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("action", out var action))
+        {
+            if (action == "new")
+            {
+                MostrarCadastroTarefa();
+                Console.WriteLine("MostrarCadastroTarefa...");
+            }
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        // Verificar se há parâmetros na URL para mostrar o formulário de cadastro
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("action", out var action))
+        {
+            if (action == "new")
+            {
+                MostrarCadastroTarefa();
+                Console.WriteLine("Tarefa OnParametersSet ...");
+            }
+        }
+    }
+
+    private async Task CarregarListaTarefas()
+    {
+        try
+        {
+            Console.WriteLine("Carregando tarefas do servidor...");
+
+            // Faz uma requisição GET para a API
+            var response = await Http.GetAsync("Tarefa");
+
+            // Verifica se a requisição foi bem-sucedida
+            if (response.IsSuccessStatusCode)
+            {
+                // Lê o conteúdo da resposta
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Resposta da API: {content}");
+
+                // Converte o JSON para uma lista de TarefaDTO
+                tarefas = await response.Content.ReadFromJsonAsync<List<TarefaDTO>>() ?? new List<TarefaDTO>();
+                Console.WriteLine($"Tarefas carregadas: {tarefas.Count}");
+            }
+            else
+            {
+                Console.WriteLine($"Erro ao carregar tarefas: {response.StatusCode}");
+                tarefas = new List<TarefaDTO>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar tarefas: {ex.Message}");
+            tarefas = new List<TarefaDTO>();
+        }
+    }
+
+    private async Task SalvarTarefa()
+    {
+        try
+        {
+            Console.WriteLine("Salvando tarefa...");
+
+            // Garantir que o título não esteja vazio
+            if (string.IsNullOrWhiteSpace(tarefaNova.Titulo))
+            {
+                tarefaNova.Titulo = "Nova Tarefa";
+            }
+
+            Console.WriteLine($"Dados da tarefa: Id={tarefaNova.Id}, Título={tarefaNova.Titulo}");
+
+            HttpResponseMessage response;
+            string requestUri = "Tarefa";
+
+            if (tarefaNova.Id == 0)
+            {
+                Console.WriteLine($"Enviando POST para {requestUri}");
+                response = await Http.PostAsJsonAsync(requestUri, tarefaNova);
+            }
+            else
+            {
+                requestUri = $"Tarefa/{tarefaNova.Id}";
+                Console.WriteLine($"Enviando PUT para {requestUri}");
+                response = await Http.PutAsJsonAsync(requestUri, tarefaNova);
+            }
+
+            // Log da resposta
+            Console.WriteLine($"Status da resposta: {response.StatusCode}");
+
+            // Verificar se a requisição foi bem-sucedida
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Tarefa salva com sucesso!");
+
+                // Recarregar a lista de tarefas
+                await CarregarListaTarefas();
+
+                // Limpar o formulário
+                mostrarTarefaNova = false;
+                tarefaNova = new TarefaDTO();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Erro ao salvar tarefa: {errorContent}");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao salvar tarefa: {ex.Message}");
+            if (ex.InnerException != null)
+            {
+                Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+            }
+        }
+    }
+
+    private async Task EditarTarefa(int id)
+    {
+        try
+        {
+            tarefaNova = await Http.GetFromJsonAsync<TarefaDTO>($"Tarefa/{id}");
+            mostrarTarefaNova = true;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error editing task: {ex.Message}");
+        }
+    }
+
+
+    private void MostrarCadastroTarefa()
+    {
+        mostrarTarefaNova = true;
+        tarefaNova = new TarefaDTO();
+    }
+
+    private void CancelaEditar()
+    {
+        mostrarTarefaNova = false;
+        tarefaNova = new TarefaDTO();
+    }
+}
