@@ -1,4 +1,5 @@
 ﻿@page "/tarefa"
+@using Microsoft.AspNetCore.WebUtilities
 @inject HttpClient Http
 
 <PageTitle>Tarefas</PageTitle>
@@ -112,12 +113,10 @@
                         <div class="form-group mb-3">
                             <label>Criador</label>
                             <InputSelect class="form-control" @bind-Value="tarefaNova.CriadorId">
-                                @* @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+                                @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
                                 {
                                     <option value="@usuario.Id">@usuario.Nome</option>
-                                } *@
-                                <option value="1">usuar 01</option>
-                                <option value="2">usuar 02</option>
+                                }
                             </InputSelect>
                         </div>
                         <div class="form-group mb-3">
@@ -128,12 +127,10 @@
                         <div class="form-group mb-3">
                             <label>Responsável</label>
                             <InputSelect class="form-control" @bind-Value="tarefaNova.ResponsavelId">
-                                @* @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+                                @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
                                 {
                                     <option value="@usuario.Id">@usuario.Nome</option>
-                                } *@
-                                <option value="1">usuar 01</option>
-                                <option value="2">usuar 02</option>
+                                }
                             </InputSelect>
                         </div>
                         <div class="form-check mb-3">
@@ -159,34 +156,98 @@
 @code {
     private List<TarefaDTO> tarefas = new List<TarefaDTO>();
     private TarefaDTO tarefaNova = new TarefaDTO();
+    private List<UsuarioDTO> usuarios = new List<UsuarioDTO>();
     private bool mostrarTarefaNova = false;
 
     protected override async Task OnInitializedAsync()
     {
+
+
+        await CarregarListaUsuarios();
         await CarregarListaTarefas();
 
         // Verificar se há parâmetros na URL para mostrar o formulário de cadastro
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("action", out var action))
         {
-            if (action == "new")
+            switch (action)
             {
-                MostrarCadastroTarefa();
-                Console.WriteLine("MostrarCadastroTarefa...");
+                case "new":
+                    Console.WriteLine("Cadastrar nova tarefa...");
+                    MostrarCadastroTarefa();
+                    break;
+
+                case "edit":
+                    if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var IdValue))
+                        break;
+
+                    Console.WriteLine($"Editar tarefa {IdValue}...");
+
+                    if (!int.TryParse(IdValue, out int Id))
+                        break;
+
+                    await EditarTarefa(Id);
+                    break;
             }
         }
     }
 
+
+    private async Task CarregarListaUsuarios()
+    {
+        try
+        {
+            Console.WriteLine("Carregando usuários do servidor...");
+
+            // Faz uma requisição GET para a API
+            var response = await Http.GetAsync("Usuario");
+
+            // Verifica se a requisição foi bem-sucedida
+            if (response.IsSuccessStatusCode)
+            {
+                // Lê o conteúdo da resposta
+                var content = await response.Content.ReadAsStringAsync();
+                Console.WriteLine($"Resposta da API: {content}");
+
+                // Converte o JSON para uma lista de TarefaDTO
+                usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
+                Console.WriteLine($"Usuarios carregados: {usuarios.Count}");
+            }
+            else
+            {
+                Console.WriteLine($"Erro ao carregar usuarios: {response.StatusCode}");
+                usuarios = new List<UsuarioDTO>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
+            usuarios = new List<UsuarioDTO>();
+        }
+    }
     protected override async Task OnParametersSetAsync()
     {
         // Verificar se há parâmetros na URL para mostrar o formulário de cadastro
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (Microsoft.AspNetCore.WebUtilities.QueryHelpers.ParseQuery(uri.Query).TryGetValue("action", out var action))
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("action", out var action))
         {
-            if (action == "new")
-            {
-                MostrarCadastroTarefa();
-                Console.WriteLine("Tarefa OnParametersSet ...");
+            switch(action){
+                case "new":
+                    Console.WriteLine("Cadastrar nova tarefa...");
+                    MostrarCadastroTarefa();
+                    break;
+
+                case "edit":
+                    if (!QueryHelpers.ParseQuery(uri.Query).TryGetValue("id", out var IdValue))
+                        break;
+
+                    Console.WriteLine($"Editar tarefa {IdValue}...");
+
+                    if (!int.TryParse(IdValue, out int Id))
+                        break;
+
+                    await EditarTarefa(Id);
+                    break;
             }
         }
     }
