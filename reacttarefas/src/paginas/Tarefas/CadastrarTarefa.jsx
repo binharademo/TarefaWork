@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+Ôªøimport React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Box,
@@ -11,22 +11,22 @@ import {
     InputLabel,
     Select,
     MenuItem,
-    Chip,
     CircularProgress,
     Alert
 } from '@mui/material';
 import {
     Save as SaveIcon,
     Cancel as CancelIcon,
-    LowPriority as LowPriorityIcon,
-    PriorityHigh as PriorityHighIcon,
     CheckCircle as CheckCircleIcon,
-    Pending as PendingIcon
+    Pending as PendingIcon,
+    KeyboardArrowDown as KeyboardArrowDownIcon,
+    KeyboardArrowUp as KeyboardArrowUpIcon,
+    KeyboardDoubleArrowUp as KeyboardDoubleArrowUpIcon,
+    PlayCircle as PlayCircleIcon
 } from '@mui/icons-material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import ptBR from 'date-fns/locale/pt-BR';
 
 function CadastroTarefa() {
@@ -36,15 +36,15 @@ function CadastroTarefa() {
     const [success, setSuccess] = useState(false);
     const [usuarios, setUsuarios] = useState([]);
 
-    // Estados do formul·rio
+    // Estados do formul√°rio
     const [formData, setFormData] = useState({
         titulo: '',
         descricao: '',
-        criadorId: 1, // ID do usu·rio logado (ajustar conforme sua autenticaÁ„o)
+        criadorId: 1, // ID do usu√°rio logado (ajustar conforme sua autentica√ß√£o)
         responsavelId: '',
         prazo: null,
         tempoTotal: null,
-        status: 2, // 2 = Pendente (valor padr„o)
+        status: 2, // 2 = Pendente (valor padr√£o)
         prioridadeTarefa: 0 // 0 = Baixa
     });
     useEffect(() => {
@@ -52,12 +52,12 @@ function CadastroTarefa() {
             try {
                 const response = await fetch('http://localhost:53011/Usuario');
                 if (!response.ok) {
-                    throw new Error('Erro ao carregar usu·rios');
+                    throw new Error('Erro ao carregar usu√°rios');
                 }
                 const data = await response.json();
                 setUsuarios(Array.isArray(data) ? data : [data]);
             } catch (err) {
-                console.error('Erro ao buscar usu·rios:', err);
+                console.error('Erro ao buscar usu√°rios:', err);
             }
         }
 
@@ -79,13 +79,6 @@ function CadastroTarefa() {
         setFormData(prev => ({
             ...prev,
             prazo: date
-        }));
-    };
-
-    const handleTimeChange = (time) => {
-        setFormData(prev => ({
-            ...prev,
-            tempoTotal: time ? time.getHours() * 3600 + time.getMinutes() * 60 : 0
         }));
     };
 
@@ -151,10 +144,10 @@ function CadastroTarefa() {
 
                     <form onSubmit={handleSubmit}>
                         <Grid container spacing={2}>
-                            <Grid item xs={12}>
+                            <Grid item size={12}>
                                 <TextField
                                     fullWidth
-                                    label="TÌtulo"
+                                    label="T√≠tulo"
                                     name="titulo"
                                     value={formData.titulo}
                                     onChange={handleChange}
@@ -162,10 +155,10 @@ function CadastroTarefa() {
                                 />
                             </Grid>
 
-                            <Grid item xs={12}>
+                            <Grid item size={12}>
                                 <TextField
                                     fullWidth
-                                    label="DescriÁ„o"
+                                    label="Descri√ß√£o"
                                     name="descricao"
                                     value={formData.descricao}
                                     onChange={handleChange}
@@ -175,18 +168,18 @@ function CadastroTarefa() {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} sm={6}>
+                            <Grid item size={{ xs: 12, sm: 8 }}>
                                 <FormControl fullWidth required>
-                                    <InputLabel>Respons·vel</InputLabel>
+                                    <InputLabel>Respons√°vel</InputLabel>
                                     <Select
                                         name="responsavelId"
                                         value={formData.responsavelId}
                                         onChange={handleChange}
-                                        label="Respons·vel"
+                                        label="Respons√°vel"
                                     >
                                         {usuarios.map((usuario) => (
                                             <MenuItem key={usuario.id} value={usuario.id}>
-                                                {usuario.nome} ó {usuario.funcaoUsuario === 0 ? 'Dev' :
+                                                {usuario.nome} ‚Äî {usuario.funcaoUsuario === 0 ? 'Dev' :
                                                     usuario.funcaoUsuario === 1 ? 'Analista' :
                                                         usuario.funcaoUsuario === 2 ? 'Marketing' : 'Outro'}
                                             </MenuItem>
@@ -195,9 +188,20 @@ function CadastroTarefa() {
                                 </FormControl>
                             </Grid>
 
+                            <Grid item size={{ xs: 12, sm: 4 }}>
+                                <FormControl fullWidth required>
+                                    <DateTimePicker
+                                        label="Prazo"
+                                        value={formData.prazo}
+                                        onChange={handleDateChange}
+                                        renderInput={(params) => <TextField {...params} fullWidth required />}
+                                        minDate={new Date()}
+                                        />
+                                </FormControl>
+                            </Grid>
 
-                            <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth>
+                            <Grid item size={{ xs: 12, sm: 4 }}>
+                                <FormControl fullWidth variant="standard">
                                     <InputLabel>Prioridade</InputLabel>
                                     <Select
                                         name="prioridadeTarefa"
@@ -205,62 +209,34 @@ function CadastroTarefa() {
                                         onChange={handleChange}
                                         label="Prioridade"
                                     >
-                                        <MenuItem value={0}>
-                                            <Chip icon={<LowPriorityIcon />} label="Baixa" />
+                                        <MenuItem value={2}><KeyboardDoubleArrowUpIcon color="error" /> Alta
                                         </MenuItem>
-                                        <MenuItem value={1}>
-                                            <Chip icon={<PriorityHighIcon />} label="MÈdia" color="warning" />
+                                        <MenuItem value={1}><KeyboardArrowUpIcon color="primary" /> M√©dia
                                         </MenuItem>
-                                        <MenuItem value={2}>
-                                            <Chip icon={<PriorityHighIcon />} label="Alta" color="error" />
+                                        <MenuItem value={0}><KeyboardArrowDownIcon color="success"/> Baixa
                                         </MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12} sm={6}>
-                                <DatePicker
-                                    label="Prazo"
-                                    value={formData.prazo}
-                                    onChange={handleDateChange}
-                                    renderInput={(params) => <TextField {...params} fullWidth required />}
-                                    minDate={new Date()}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12} sm={6}>
-                                <TimePicker
-                                    label="Tempo Estimado"
-                                    value={formData.tempoTotal ?
-                                        new Date().setHours(0, 0, 0, 0) + formData.tempoTotal * 1000 : null}
-                                    onChange={handleTimeChange}
-                                    renderInput={(params) => <TextField {...params} fullWidth />}
-                                />
-                            </Grid>
-
-                            <Grid item xs={12}>
-                                <FormControl fullWidth>
+                            <Grid item size={{ xs: 12, sm: 4 }}>
+                                <FormControl fullWidth variant="standard">
                                     <InputLabel>Status</InputLabel>
                                     <Select
-                                        name="status"
-                                        value={formData.status}
-                                        onChange={handleChange}
-                                        label="Status"
+                                        defaultValue={30}
+                                        inputProps={{
+                                            name: 'age',
+                                            id: 'uncontrolled-native',
+                                        }}
                                     >
-                                        <MenuItem value={0}>
-                                            <Chip icon={<CheckCircleIcon color="success" />} label="ConcluÌdo" />
-                                        </MenuItem>
-                                        <MenuItem value={1}>
-                                            <Chip icon={<PendingIcon color="warning" />} label="Em Andamento" />
-                                        </MenuItem>
-                                        <MenuItem value={2}>
-                                            <Chip icon={<PendingIcon color="error" />} label="Pendente" />
-                                        </MenuItem>
+                                        <MenuItem value={0}><CheckCircleIcon color="success"/>Conclu√≠do</MenuItem>
+                                        <MenuItem value={1}><PlayCircleIcon color="primary" />Em Andamento</MenuItem>
+                                        <MenuItem value={2}><PendingIcon color="action" />Pendente</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>
 
-                            <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+                            <Grid item size={12} sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
                                 <Button
                                     variant="outlined"
                                     color="error"

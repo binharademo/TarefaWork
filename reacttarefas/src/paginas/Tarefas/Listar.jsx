@@ -126,7 +126,7 @@ function Listar() {
                                 <TableCell>Prioridade</TableCell>
                                 <TableCell>Responsável</TableCell>
                                 <TableCell>Prazo</TableCell>
-                                <TableCell>Tempo Estimado</TableCell>
+                                <TableCell>Tempo total</TableCell>
                                 <TableCell>Ações</TableCell>
                             </TableRow>
                         </TableHead>
