@@ -9,6 +9,7 @@
 DIRETORIO_TEMP="/tmp/aplicacao_dotnet"
 DIRETORIO_DESTINO="/var/www/dotnet"
 NOME_SERVICO="dotnet-app"
+NOME_SERVICO_API="dotnet-api"
 ARQUIVO_ZIP="aplicacao_dotnet.zip"
 
 # Função para exibir mensagens formatadas
@@ -60,10 +61,11 @@ fi
 # Parar o serviço .NET se estiver em execução
 exibir_mensagem "Parando o serviço .NET se estiver em execução..."
 systemctl stop "$NOME_SERVICO" || true
+systemctl stop "$NOME_SERVICO_API" || true
 
-# Limpar o diretório de destino
+# Limpar o diretório de destino, mantendo arquivos de dados
 exibir_mensagem "Limpando o diretório de destino..."
-rm -rf "$DIRETORIO_DESTINO"/*
+find "$DIRETORIO_DESTINO"/ -maxdepth 1 -mindepth 1 ! -name '*.db' -exec rm -Rf {} +
 
 # Copiar os arquivos para o diretório de destino
 exibir_mensagem "Copiando arquivos para o diretório de destino..."
@@ -74,17 +76,6 @@ cp -r "$DIRETORIO_TEMP"/* "$DIRETORIO_DESTINO"/
 exibir_mensagem "Configurando permissões..."
 chown -R www-data:www-data "$DIRETORIO_DESTINO"
 chmod -R 755 "$DIRETORIO_DESTINO"
-
-# Verificar se o arquivo principal da aplicação existe
-ARQUIVO_PRINCIPAL=$(find "$DIRETORIO_DESTINO" -name "*.dll" | head -n 1)
-if [ -z "$ARQUIVO_PRINCIPAL" ]; then
-    exibir_mensagem "Não foi encontrado nenhum arquivo DLL no diretório de destino." "ERRO"
-    exit 1
-fi
-
-# Obter o nome do arquivo principal sem o caminho
-NOME_ARQUIVO_PRINCIPAL=$(basename "$ARQUIVO_PRINCIPAL")
-exibir_mensagem "Arquivo principal da aplicação: $NOME_ARQUIVO_PRINCIPAL" "INFO"
 
 # Atualizar o arquivo de serviço do systemd com o nome correto do arquivo principal
 exibir_mensagem "Atualizando o arquivo de serviço do systemd..."
@@ -105,6 +96,29 @@ SyslogIdentifier=dotnet-app
 User=www-data
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=http://127.0.0.1:53101
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+cat > "/etc/systemd/system/$NOME_SERVICO_API.service" <<EOF
+[Unit]
+Description=Aplicação .NET Core
+After=network.target
+
+[Service]
+WorkingDirectory=$DIRETORIO_DESTINO
+ExecStart=/usr/bin/dotnet $DIRETORIO_DESTINO/ApiRest.dll
+Restart=always
+# Reiniciar o serviço após 10 segundos se falhar
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-app
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=http://127.0.0.1:53111
 
 [Install]
 WantedBy=multi-user.target
@@ -117,20 +131,31 @@ systemctl daemon-reload
 # Habilitar o serviço para iniciar na inicialização do sistema
 exibir_mensagem "Habilitando o serviço para iniciar na inicialização do sistema..."
 systemctl enable "$NOME_SERVICO"
+systemctl enable "$NOME_SERVICO_API"
 
 # Iniciar o serviço
 exibir_mensagem "Iniciando o serviço..."
 systemctl start "$NOME_SERVICO"
+systemctl start "$NOME_SERVICO_API"
 
 # Verificar o status do serviço
 exibir_mensagem "Verificando o status do serviço..."
-systemctl status "$NOME_SERVICO"
+#systemctl status "$NOME_SERVICO"
+#systemctl status "$NOME_SERVICO_API"
 
 # Verificar se o serviço está em execução
 if systemctl is-active --quiet "$NOME_SERVICO"; then
-    exibir_mensagem "Serviço iniciado com sucesso!" "SUCESSO"
+    exibir_mensagem "$NOME_SERVICO iniciado com sucesso!" "SUCESSO"
 else
-    exibir_mensagem "Falha ao iniciar o serviço. Verifique os logs com: journalctl -u $NOME_SERVICO" "ERRO"
+    exibir_mensagem "$NOME_SERVICO Falha ao iniciar. Verifique os logs com: journalctl -u $NOME_SERVICO" "ERRO"
+    exit 1
+fi
+
+# Verificar se o serviço está em execução
+if systemctl is-active --quiet "$NOME_SERVICO_API"; then
+    exibir_mensagem "$NOME_SERVICO_API iniciado com sucesso!" "SUCESSO"
+else
+    exibir_mensagem "$NOME_SERVICO_API Falha ao iniciar. Verifique os logs com: journalctl -u $NOME_SERVICO_API" "ERRO"
     exit 1
 fi
 

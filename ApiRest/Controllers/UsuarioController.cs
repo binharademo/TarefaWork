@@ -15,7 +15,7 @@ public class UsuarioController : ControllerBase
     private readonly ILogger<UsuarioController> _logger;
     private readonly UsuarioServico _usuario;
 
-    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepositorio<Usuario> usuario)
+    public UsuarioController(ILogger<UsuarioController> logger, IUsuarioRepositorio usuario)
     {
         _logger = logger;
         _usuario = new UsuarioServico(usuario);

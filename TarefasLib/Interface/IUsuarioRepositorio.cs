@@ -2,9 +2,9 @@
 
 namespace TarefasLibrary.Interface
 {
-    public interface IUsuarioRepositorio<T> : IRepositorio<T>
+    public interface IUsuarioRepositorio : IRepositorio<Usuario>
     {
-        List<T> Listar(Usuario.Setor  setor);
-        List<T> Listar(Usuario.Funcao funcao);
+        List<Usuario> Listar(Usuario.Setor  setor);
+        List<Usuario> Listar(Usuario.Funcao funcao);
     }
 }

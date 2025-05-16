@@ -9,7 +9,7 @@ using TarefasLibrary.Modelo;
 
 namespace TarefasLibrary.Repositorio.Entity
 {
-    public class UsuarioRepositorio : IUsuarioRepositorio<Usuario>
+    public class UsuarioRepositorio : IUsuarioRepositorio
     {
         private readonly string _connectionString;
         public UsuarioRepositorio(string connectionString)

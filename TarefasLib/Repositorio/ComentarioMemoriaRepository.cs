@@ -9,7 +9,7 @@ using TarefasLibrary.Modelo;
 namespace TarefasLibrary.Repositorio
 {
     // TODO: Implementar interface IRepository
-    public class ComentarioRepository : IComentarioRepositorio
+    public class ComentarioMemoriaRepository : IComentarioRepositorio
     {
         public List<Comentario> ListaComentario = new List<Comentario>();
         private int contadorIDs = 1;

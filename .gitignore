@@ -318,3 +318,6 @@ Thumbs.db
 Resource.designer.cs
 
 /publicacao
+/*.db
+/*.db-*
+/aplicacao_dotnet.zip

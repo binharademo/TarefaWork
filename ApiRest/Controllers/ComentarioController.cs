@@ -15,7 +15,7 @@ public class ComentarioController : ControllerBase
     private readonly ComentarioServices _comentario;
     private readonly UsuarioServico _usuario;
 
-    public ComentarioController(ILogger<TarefaController> logger, ITarefaRepositorio tarefa, IComentarioRepositorio comentario, IUsuarioRepositorio<Usuario> usuario)
+    public ComentarioController(ILogger<TarefaController> logger, ITarefaRepositorio tarefa, IComentarioRepositorio comentario, IUsuarioRepositorio usuario)
     {
         _logger = logger;
         _tarefa = new TarefaServico(tarefa);

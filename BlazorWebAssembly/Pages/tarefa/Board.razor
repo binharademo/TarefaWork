@@ -1,0 +1,239 @@
+﻿@page "/tarefa/board"
+@inject HttpClient Http
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
+
+<PageTitle>Quadro de Tarefas</PageTitle>
+
+<script src="_framework/blazor.web.js"></script>
+<script src="js/dragdrop.js"></script>
+
+<h3>Quadro de Tarefas</h3>
+
+<div class="mb-3">
+    <button class="btn btn-success" @onclick="NavegarParaCriacao">Nova Tarefa</button>
+    <a href="/tarefas" class="btn btn-secondary">Ver Lista de Tarefas</a>
+</div>
+
+<div class="board-container">
+    <div class="board-column column-todo">
+        <div class="column-header">A Fazer (TODO)</div>
+        <div class="task-list"
+        ondragover="dragDropManager.dragOver(event)"
+        ondragleave="dragDropManager.dragLeave(event)"
+        ondrop="dragDropManager.drop(event, '0', window.dotNetHelper)">
+            @if (todoTasks == null)
+            {
+                <p>Carregando...</p>
+            }
+            else if (!todoTasks.Any())
+            {
+                <p class="text-muted">Nenhuma tarefa</p>
+            }
+            else
+            {
+                @foreach (var tarefa in todoTasks)
+                {
+                    <div class="task-card"
+                    draggable="true"
+                    ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
+                        <h5>@tarefa.Titulo</h5>
+                        <p>@tarefa.Descricao</p>
+                        <p>@tarefa.CriadorId</p>
+                        <div class="task-actions">
+                            <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
+                            <div>
+                                <button class="btn btn-sm btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="board-column column-doing">
+        <div class="column-header">Em Andamento (DOING)</div>
+        <div class="task-list"
+        ondragover="dragDropManager.dragOver(event)"
+        ondragleave="dragDropManager.dragLeave(event)"
+        ondrop="dragDropManager.drop(event, '1', window.dotNetHelper)">
+            @if (doingTasks == null)
+            {
+                <p>Carregando...</p>
+            }
+            else if (!doingTasks.Any())
+            {
+                <p class="text-muted">Nenhuma tarefa</p>
+            }
+            else
+            {
+                @foreach (var tarefa in doingTasks)
+                {
+                    <div class="task-card"
+                    draggable="true"
+                    ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
+                        <h5>@tarefa.Titulo</h5>
+                        <p>@tarefa.Descricao</p>
+                        <p>@tarefa.CriadorId</p>
+                        <div class="task-actions">
+                            <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
+                            <div>
+                                <button class="btn btn-sm btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="board-column column-done">
+        <div class="column-header">Concluídas (DONE)</div>
+        <div class="task-list"
+        ondragover="dragDropManager.dragOver(event)"
+        ondragleave="dragDropManager.dragLeave(event)"
+        ondrop="dragDropManager.drop(event, '2', window.dotNetHelper)">
+            @if (doneTasks == null)
+            {
+                <p>Carregando...</p>
+            }
+            else if (!doneTasks.Any())
+            {
+                <p class="text-muted">Nenhuma tarefa</p>
+            }
+            else
+            {
+                @foreach (var tarefa in doneTasks)
+                {
+                    <div class="task-card"
+                    draggable="true"
+                    ondragstart="dragDropManager.dragStart(event, '@tarefa.Id')">
+                        <h5>@tarefa.Titulo</h5>
+                        <p>@tarefa.Descricao</p>
+                        <p>@tarefa.CriadorId</p>
+                        <div class="task-actions">
+                            <span class="badge priority-@tarefa.PrioridadeTarefa">@tarefa.PrioridadeTarefa.ToString()</span>
+                            <div>
+                                <button class="btn btn-sm btn-primary" @onclick="() => NavegarParaEdicao(tarefa.Id)">Editar</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private List<TarefaDTO>? todoTasks;
+    private List<TarefaDTO>? doingTasks;
+    private List<TarefaDTO>? doneTasks;
+    private DotNetObjectReference<Board>? objRef;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadTasksByStatus();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            objRef = DotNetObjectReference.Create(this);
+            await JSRuntime.InvokeVoidAsync("dragDropManager.initializeDragDrop", objRef);
+        }
+    }
+
+    private async Task LoadTasksByStatus()
+    {
+        todoTasks = new();
+        doingTasks = new();
+        doneTasks = new();
+
+        foreach (var tarefa in await CarregarListaTarefas())
+        {
+            if (tarefa.Status == 0)
+            {
+                todoTasks.Add(tarefa);
+            }
+            else if (tarefa.Status == 1)
+            {
+                doingTasks.Add(tarefa);
+            }
+            else if (tarefa.Status == 2)
+            {
+                doneTasks.Add(tarefa);
+            }
+        }
+    }
+
+    private async Task<List<TarefaDTO>> CarregarListaTarefas()
+    {
+        try
+        {
+            // Faz uma requisição GET para a API
+            var response = await Http.GetAsync("Tarefa");
+
+            // Verifica se a requisição foi bem-sucedida
+            if (response.IsSuccessStatusCode)
+            {
+                // Lê o conteúdo da resposta
+                var content = await response.Content.ReadAsStringAsync();
+
+                // Converte o JSON para uma lista de TarefaDTO
+                return await response.Content.ReadFromJsonAsync<List<TarefaDTO>>() ?? new List<TarefaDTO>();
+            }
+            else
+            {
+                Console.WriteLine($"Erro ao carregar tarefas: {response.StatusCode}");
+                return new List<TarefaDTO>();
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Erro ao carregar tarefas: {ex.Message}");
+            return new List<TarefaDTO>();
+        }
+    }
+
+    [JSInvokable]
+    public async Task AtualizaStatus(string id, string newStatus)
+    {
+        if (!int.TryParse(id, out int tarefaId))
+            return;
+        if (!int.TryParse(newStatus, out int newStatusId))
+            return;
+
+        var response = await Http.PutAsync($"tarefa/{tarefaId}/status/{newStatusId}", null);
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine($"Tarefa {tarefaId} atualizada com sucesso.");
+        }
+        else
+        {
+            Console.WriteLine($"Erro ao atualizar tarefa {tarefaId}: {response.StatusCode}");
+        }
+
+        await LoadTasksByStatus();
+        StateHasChanged();
+    }
+
+    private void NavegarParaCriacao()
+    {
+        NavigationManager.NavigateTo("/tarefa?action=new");
+    }
+
+    private void NavegarParaEdicao(int id)
+    {
+        NavigationManager.NavigateTo($"/tarefa?action=edit&id={id}");
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (objRef != null)
+        {
+            objRef.Dispose();
+        }
+    }
+}
