@@ -12,7 +12,7 @@ namespace TarefasLibrary.Modelo
     public class Tarefa
     {
         // TODO: Validar parâmetros de entrada para evitar valores inválidos (SRP - Single Responsibility Principle)
-        public Tarefa(string titulo, Tarefa.Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(string titulo, Tarefa.Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Tarefa.Prioridade prioridade, DateTime? dataCriacao = null)
         {
             // TODO: Considerar usar Guard Clauses para validar os parâmetros
             Titulo = titulo;
@@ -26,7 +26,7 @@ namespace TarefasLibrary.Modelo
         }
 
         // TODO: Considerar usar o padrão Factory para criar instâncias de Tarefa (criação centralizada)
-        public Tarefa(int id, string titulo, Tarefa.Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(int id, string titulo, Tarefa.Status status, Usuario criador, Usuario responsavel, DateTime prazo, string descricao, Tarefa.Prioridade prioridade, DateTime? dataCriacao = null)
         {
             // TODO: Reutilizar código do construtor anterior para evitar duplicação (DRY - Don't Repeat Yourself)
             Id = id;
@@ -37,10 +37,10 @@ namespace TarefasLibrary.Modelo
             Prazo = prazo;
             DataCriacao = dataCriacao ?? DateAndTime.Now;
             Descricao = descricao;
-            PrioridadeTarefa = PrioridadeTarefa;
+            PrioridadeTarefa = prioridade;
         }
 
-        public Tarefa(string titulo, Tarefa.Status status, int criador, int responsavel, DateTime prazo, string descricao, Prioridade prioridade, DateTime? dataCriacao = null)
+        public Tarefa(string titulo, Tarefa.Status status, int criador, int responsavel, DateTime prazo, string descricao, Tarefa.Prioridade prioridade, DateTime? dataCriacao = null)
         {
             // TODO: Reutilizar código do construtor anterior para evitar duplicação (DRY - Don't Repeat Yourself)
 
@@ -51,7 +51,7 @@ namespace TarefasLibrary.Modelo
             Prazo = prazo;
             DataCriacao = dataCriacao ?? DateAndTime.Now;
             Descricao = descricao;
-            PrioridadeTarefa = PrioridadeTarefa;
+            PrioridadeTarefa = prioridade;
         }
         public Tarefa() { }
 
@@ -90,8 +90,8 @@ namespace TarefasLibrary.Modelo
         public enum Prioridade
         {
             Baixa,
-            Alta,
-            Urgente
+            Normal,
+            Alta
         }
 
         // TODO: Validar se o comentário não é nulo antes de adicionar

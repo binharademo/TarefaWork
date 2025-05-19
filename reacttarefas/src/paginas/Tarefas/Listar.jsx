@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Table,
@@ -17,7 +17,14 @@ import {
     Chip,
     IconButton,
     Tooltip,
-    Divider
+    Divider,
+    Menu,
+    MenuItem,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from '@mui/material';
 import {
     CheckCircle as CheckCircleIcon,
@@ -28,14 +35,51 @@ import {
     MoreVert as MoreVertIcon,
     Add as AddIcon,
     Refresh as RefreshIcon,
-    Assignment as AssignmentIcon
+    Assignment as AssignmentIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 
 function Listar() {
     const [tarefas, setTarefas] = useState([]);
+    const [usuarios, setUsuarios] = useState({});
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
     const navigate = useNavigate();
+
+    // Estados para gerenciar o menu de ações
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [tarefaSelecionada, setTarefaSelecionada] = useState(null);
+
+    // Estados para o diálogo de confirmação
+    const [dialogoAberto, setDialogoAberto] = useState(false);
+    const [carregandoExclusao, setCarregandoExclusao] = useState(false);
+
+    const fetchUsuarios = async () => {
+        try {
+            const response = await fetch('http://localhost:53011/Usuario');
+            if (!response.ok) {
+                throw new Error('Erro ao carregar usuários');
+            }
+            const data = await response.json();
+
+            // Transformar o array em um objeto de lookup por ID para acesso rápido
+            const usuariosMap = {};
+            if (Array.isArray(data)) {
+                data.forEach(usuario => {
+                    usuariosMap[usuario.id] = usuario.nome;
+                });
+            } else if (data && data.id) {
+                usuariosMap[data.id] = data.nome;
+            }
+
+            setUsuarios(usuariosMap);
+            console.log("Usuários carregados:", usuariosMap);
+        } catch (error) {
+            console.error("Erro ao carregar usuários:", error);
+        }
+    };
 
     const fetchTarefas = async () => {
         setCarregando(true);
@@ -53,26 +97,31 @@ function Listar() {
             setErro(error.message);
         } finally {
             setCarregando(false);
-            console.log(tarefas);
         }
     };
 
     useEffect(() => {
-        fetchTarefas();
+        // Primeiro carregamos os usuários e depois as tarefas
+        const carregarDados = async () => {
+            await fetchUsuarios();
+            await fetchTarefas();
+        };
+
+        carregarDados();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
-    useEffect(() => {
-        console.log("Estado tarefas atualizado:", tarefas);
-    }, [tarefas]);
 
     const handleNovaTarefa = () => {
         navigate('/tarefa/cadastro');
     };
 
+    const getNomeUsuario = (id) => {
+        return usuarios[id] || `Usuário ${id}`;
+    };
+
     const getStatusIcon = (status) => {
         switch (status) {
-            case 0: // Conclu�do
+            case 0: // Concluído
                 return <CheckCircleIcon color="success" />;
             case 1: // EmAndamento
                 return <WarningIcon color="warning" />;
@@ -87,8 +136,8 @@ function Listar() {
         switch (prioridade) {
             case 0: // Baixa
                 return <LowPriorityIcon color="info" />;
-            case 1: // M�dia
-                return <PriorityHighIcon color="warning" />;
+            case 1: // Média
+                return <PriorityHighIcon />;
             case 2: // Alta
                 return <PriorityHighIcon color="error" />;
             default:
@@ -112,6 +161,40 @@ function Listar() {
         const horas = Math.floor(tempo / 3600).toString().padStart(2, '0');
         const minutos = Math.floor((tempo % 3600) / 60).toString().padStart(2, '0');
         return `${horas}:${minutos}`;
+    };
+
+    // Handlers para o menu de ações
+    const handleAbrirMenu = (event, tarefa) => {
+        setAnchorEl(event.currentTarget);
+        setTarefaSelecionada(tarefa);
+    };
+
+    const handleFecharMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleEditarTarefa = () => {
+        if (tarefaSelecionada) {
+            navigate(`/tarefa/editar/${tarefaSelecionada.id}`);
+        }
+        handleFecharMenu();
+    };
+
+    const handleVisualizarTarefa = () => {
+        if (tarefaSelecionada) {
+            navigate(`/tarefa/visualizar/${tarefaSelecionada.id}`);
+        }
+        handleFecharMenu();
+        handleFecharMenu();
+    };
+
+    const handleConfirmarExclusao = () => {
+        setDialogoAberto(true);
+        handleFecharMenu();
+    };
+
+    const handleFecharDialogo = () => {
+        setDialogoAberto(false);
     };
 
     if (carregando) {
@@ -155,7 +238,10 @@ function Listar() {
                         <Tooltip title="Atualizar lista">
                             <IconButton
                                 color="primary"
-                                onClick={fetchTarefas}
+                                onClick={async () => {
+                                    await fetchUsuarios();
+                                    await fetchTarefas();
+                                }}
                                 sx={{ mr: 1 }}
                             >
                                 <RefreshIcon />
@@ -210,7 +296,7 @@ function Listar() {
                             Nenhuma tarefa cadastrada
                         </Typography>
                         <Typography variant="body2" color="text.secondary" mb={2}>
-                            Clique no botao acima para adicionar uma nova tarefa
+                            Clique no botão acima para adicionar uma nova tarefa
                         </Typography>
                         <Button
                             variant="outlined"
@@ -235,12 +321,13 @@ function Listar() {
                             <TableHead sx={{ bgcolor: '#f5f5f5' }}>
                                 <TableRow>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Titulo</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Título</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Prioridade</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Responsavel</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Criador</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Responsável</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Prazo</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Tempo total</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>Acoes</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Ações</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -259,7 +346,7 @@ function Listar() {
                                         }}
                                     >
                                         <TableCell>
-                                            <Tooltip title={['Conclu�do', 'Em Andamento', 'Pendente'][tarefa.status]}>
+                                            <Tooltip title={['Concluído', 'Em Andamento', 'Pendente'][tarefa.status]}>
                                                 {getStatusIcon(tarefa.status)}
                                             </Tooltip>
                                         </TableCell>
@@ -271,13 +358,20 @@ function Listar() {
                                             </Typography>
                                         </TableCell>
                                         <TableCell>
-                                            <Tooltip title={['Baixa', 'M�dia', 'Alta'][tarefa.prioridadeTarefa]}>
+                                            <Tooltip title={['Baixa', 'Normal', 'Alta'][tarefa.prioridadeTarefa]}>
                                                 {getPrioridadeIcon(tarefa.prioridadeTarefa)}
                                             </Tooltip>
                                         </TableCell>
                                         <TableCell>
                                             <Chip
-                                                label={`ID: ${tarefa.responsavelId}`}
+                                                label={getNomeUsuario(tarefa.criadorId)}
+                                                size="small"
+                                                sx={{ fontWeight: 500 }}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={getNomeUsuario(tarefa.responsavelId)}
                                                 size="small"
                                                 sx={{ fontWeight: 500 }}
                                             />
@@ -293,7 +387,11 @@ function Listar() {
                                             {formatarTempo(converterParaSegundos(tarefa.tempoTotal))}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton size="small">
+                                            <IconButton
+                                                size="small"
+                                                onClick={(e) => handleAbrirMenu(e, tarefa)}
+                                                aria-label="Opções da tarefa"
+                                            >
                                                 <MoreVertIcon />
                                             </IconButton>
                                         </TableCell>
@@ -310,6 +408,31 @@ function Listar() {
                     </Typography>
                 </Box>
             </Paper>
+
+            {/* Menu de ações da tarefa */}
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleFecharMenu}
+                keepMounted
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                <MenuItem onClick={handleEditarTarefa}>
+                    <EditIcon fontSize="small" sx={{ mr: 1 }} color="primary" />
+                    Editar
+                </MenuItem>
+                <MenuItem onClick={handleVisualizarTarefa}>
+                    <VisibilityIcon fontSize="small" sx={{ mr: 1 }} color="action" />
+                    Visualizar
+                </MenuItem>
+            </Menu>
         </Container>
     );
 }

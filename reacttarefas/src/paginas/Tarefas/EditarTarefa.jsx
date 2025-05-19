@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     Button,
     TextField,
@@ -30,16 +30,19 @@ import {
     Person as PersonIcon,
     Schedule as ScheduleIcon,
     Flag as FlagIcon,
-    AssignmentTurnedIn as AssignmentTurnedInIcon
+    AssignmentTurnedIn as AssignmentTurnedInIcon,
+    Edit as EditIcon
 } from '@mui/icons-material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import ptBR from 'date-fns/locale/pt-BR';
 
-function CadastroTarefa() {
+function EditarTarefa() {
     const navigate = useNavigate();
+    const { id } = useParams(); // Obter o ID da tarefa da URL
     const [loading, setLoading] = useState(false);
+    const [loadingData, setLoadingData] = useState(true);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
     const [usuarios, setUsuarios] = useState([]);
@@ -48,30 +51,51 @@ function CadastroTarefa() {
     const [formData, setFormData] = useState({
         titulo: '',
         descricao: '',
-        criadorId: 1, // ID do usuário logado (ajustar conforme sua autenticação)
+        criadorId: '', 
         responsavelId: '',
         prazo: null,
         tempoTotal: null,
-        status: 2, // 2 = Pendente (valor padrão)
-        prioridadeTarefa: 0 // 0 = Baixa
+        status: '',
+        prioridadeTarefa: ''
     });
 
     useEffect(() => {
-        async function fetchUsuarios() {
+        async function fetchData() {
             try {
-                const response = await fetch('http://localhost:53011/Usuario');
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar usuarios');
+                const tarefaResponse = await fetch(`http://localhost:53011/Tarefa/${id}`);
+                if (!tarefaResponse.ok) {
+                    throw new Error('Erro ao carregar tarefa');
                 }
-                const data = await response.json();
-                setUsuarios(Array.isArray(data) ? data : [data]);
+                const tarefaData = await tarefaResponse.json();
+
+                // Buscar usuários
+                const usuariosResponse = await fetch('http://localhost:53011/Usuario');
+                if (!usuariosResponse.ok) {
+                    throw new Error('Erro ao carregar usuários');
+                }
+                const usuariosData = await usuariosResponse.json();
+                setUsuarios(Array.isArray(usuariosData) ? usuariosData : [usuariosData]);
+
+                setFormData({
+                    titulo: tarefaData.titulo,
+                    descricao: tarefaData.descricao,
+                    criadorId: tarefaData.criadorId,
+                    responsavelId: tarefaData.responsavelId,
+                    prazo: tarefaData.prazo ? new Date(tarefaData.prazo) : null,
+                    tempoTotal: tarefaData.tempoTotal,
+                    status: tarefaData.status,
+                    prioridadeTarefa: tarefaData.prioridadeTarefa
+                });
             } catch (err) {
-                console.error('Erro ao buscar usuarios:', err);
+                console.error('Erro ao buscar dados:', err);
+                setError('Erro ao carregar os dados da tarefa. Por favor, tente novamente.');
+            } finally {
+                setLoadingData(false);
             }
         }
 
-        fetchUsuarios();
-    }, []);
+        fetchData();
+    }, [id]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -94,17 +118,19 @@ function CadastroTarefa() {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Tarefa', {
-                method: 'POST',
+            const response = await fetch(`http://localhost:53011/Tarefa/${id}`, {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    Id: parseInt(id),
                     Titulo: formData.titulo,
                     Descricao: formData.descricao,
                     CriadorId: formData.criadorId,
                     ResponsavelId: formData.responsavelId,
                     Prazo: formData.prazo,
+                    TempoTotal: formData.tempoTotal,
                     Status: formData.status,
                     PrioridadeTarefa: formData.prioridadeTarefa
                 })
@@ -112,7 +138,7 @@ function CadastroTarefa() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao criar tarefa');
+                throw new Error(errorData.message || 'Erro ao atualizar tarefa');
             }
 
             setSuccess(true);
@@ -128,6 +154,15 @@ function CadastroTarefa() {
         navigate('/tarefa/listar');
     };
 
+    if (loadingData) {
+        return (
+            <Container maxWidth="md" sx={{ mt: 4, mb: 4, display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+                <CircularProgress />
+                <Typography variant="h6" sx={{ ml: 2 }}>Carregando dados da tarefa...</Typography>
+            </Container>
+        );
+    }
+
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={ptBR}>
             <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
@@ -140,9 +175,9 @@ function CadastroTarefa() {
                     }}
                 >
                     <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                        <AssignmentTurnedInIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
+                        <EditIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
                         <Typography variant="h4" component="h1" fontWeight="500" color="primary">
-                            Nova Tarefa
+                            Editar Tarefa
                         </Typography>
                     </Box>
 
@@ -154,7 +189,7 @@ function CadastroTarefa() {
 
                     {success && (
                         <Alert severity="success" sx={{ mb: 3 }}>
-                            Tarefa criada com sucesso! Redirecionando...
+                            Tarefa atualizada com sucesso! Redirecionando...
                         </Alert>
                     )}
 
@@ -323,7 +358,7 @@ function CadastroTarefa() {
                                     }}
                                 />
                             </Grid>
-
+                            
                             <Grid item xs={12}>
                                 <Box
                                     sx={{
@@ -349,7 +384,7 @@ function CadastroTarefa() {
                                         disabled={loading}
                                         sx={{ px: 3 }}
                                     >
-                                        {loading ? <CircularProgress size={24} /> : 'Salvar Tarefa'}
+                                        {loading ? <CircularProgress size={24} /> : 'Salvar Alterações'}
                                     </Button>
                                 </Box>
                             </Grid>
@@ -361,4 +396,4 @@ function CadastroTarefa() {
     );
 }
 
-export default CadastroTarefa;
+export default EditarTarefa;
