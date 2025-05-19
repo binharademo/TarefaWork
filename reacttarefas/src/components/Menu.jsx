@@ -20,6 +20,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import Diversity3Icon from '@mui/icons-material/Diversity3';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Link } from 'react-router-dom'; // Adicione esta importação
 
 const drawerWidth = 240;
@@ -135,9 +136,18 @@ export default function PersistentDrawerLeft({ children }) {
                 </DrawerHeader>
                 <Divider />
                 <List>
+                    <h4>Dashboard</h4>
+                    <ListItem key="BoardTarefas" disablePadding>
+                        <ListItemButton component={Link} to="/">
+                            <ListItemIcon>
+                                <DashboardIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Board" />
+                        </ListItemButton>
+                    </ListItem>
                     <h4>Usuarios</h4>
                     <ListItem key="CadastroUsuario" disablePadding>
-                        <ListItemButton component={Link} to="/">
+                        <ListItemButton component={Link} to="/usuario/cadastro">
                             <ListItemIcon>
                                 <PersonAddIcon />
                             </ListItemIcon>
@@ -145,7 +155,7 @@ export default function PersistentDrawerLeft({ children }) {
                         </ListItemButton>
                     </ListItem>
                     <ListItem key="ListarUsuario" disablePadding>
-                        <ListItemButton component={Link} to="/listar">
+                        <ListItemButton component={Link} to="/usuario/listar">
                             <ListItemIcon>
                                 <Diversity3Icon />
                             </ListItemIcon>

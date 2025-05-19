@@ -61,7 +61,7 @@ function ListarEmpresa() {
     }, [empresas]);
 
     const handleNovaEmpresa = () => {
-        navigate('/cadastrar-empresa');
+        navigate('/empresa/cadastro');
     };
 
     if (carregando) {

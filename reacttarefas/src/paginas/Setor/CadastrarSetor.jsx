@@ -18,9 +18,9 @@ import {
     Badge as BadgeIcon
 } from '@mui/icons-material';
 
-function CadastroEmpresa() {
+function CadastroSetor() {
     const navigate = useNavigate();
-    const [empresa, setEmpresa] = useState({
+    const [setor, setSetor] = useState({
         nome: '',
         cnpj: ''
     });
@@ -28,7 +28,7 @@ function CadastroEmpresa() {
 
     const handleChange = e => {
         const { name, value } = e.target;
-        setEmpresa(prev => ({ ...prev, [name]: value }));
+        setSetor(prev => ({ ...prev, [name]: value }));
     };
 
     const formatCNPJ = (value) => {
@@ -54,11 +54,11 @@ function CadastroEmpresa() {
         setEmpresa(prev => ({ ...prev, cnpj: formattedCNPJ }));
     };
 
-    const salvarEmpresa = async e => {
+    const salvarSetor = async e => {
         e.preventDefault();
         setError(null);
         try {
-            const response = await fetch('http://localhost:53011/Empresa', {
+            const response = await fetch('http://localhost:53011/Setor', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

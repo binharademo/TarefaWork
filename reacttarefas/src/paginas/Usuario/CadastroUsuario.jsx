@@ -64,7 +64,7 @@ function CadastroUsuario() {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Erro ao criar usuário');
             }
-            navigate('/listar');
+            navigate('/usuario/listar');
         } catch (err) {
             console.error('Erro ao salvar usuário:', err);
             setError('Falha ao salvar usuário. Tente novamente.');
@@ -72,7 +72,7 @@ function CadastroUsuario() {
     };
 
     const cancelar = () => {
-        navigate('/listar');
+        navigate('/usuario/listar');
     };
 
     return (

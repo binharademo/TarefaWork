@@ -62,7 +62,7 @@ function ListarUsuario() {
     }, [usuarios]);
 
     const handleNovoUsuario = () => {
-        navigate('/');
+        navigate('/usuario/cadastro');
     };
 
     const renderFuncao = (funcao) => {

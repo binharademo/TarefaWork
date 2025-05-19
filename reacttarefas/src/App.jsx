@@ -12,6 +12,8 @@ import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Listar from './paginas/Tarefas/Listar'
+import Board from './paginas/Board/Board';
+import BoardTarefas from './paginas/Board/Board';
 
 
 function App() {
@@ -20,9 +22,10 @@ function App() {
   return (
       <BrowserRouter>
         <PersistentDrawerLeft>
-            <Routes>
-                <Route path="/" element={<CadastroUsuario />} />
-                <Route path="/listar" element={<ListarUsuario />} />
+              <Routes>
+                  <Route path="/" element={<BoardTarefas />} />
+                  <Route path="/usuario/cadastro" element={<CadastroUsuario />} />
+                  <Route path="/usuario/listar" element={<ListarUsuario />} />
                   <Route path="/tarefa/listar" element={<Listar />} />
                   <Route path="/tarefa/cadastro" element={<CadastroTarefa />} />
                   <Route path="/empresa/cadastro" element={<CadastroEmpresa />} />
