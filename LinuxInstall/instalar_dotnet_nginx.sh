@@ -64,7 +64,7 @@ echo "Criando arquivo de configuração Nginx para a aplicação Blazor..."
 cat > /etc/nginx/sites-available/dotnet-app <<EOF
 server {
     listen 80;
-    server_name _;  # Substitua pelo seu domínio ou IP
+    server_name 192.168.0.39;  # Substitua pelo seu domínio ou IP
     access_log  /var/log/nginx/app.access.log;
     error_log /var/log/nginx/app.error.log;
     
@@ -82,12 +82,12 @@ server {
 EOF
 
 echo "Criando arquivo de configuração Nginx para a aplicação ApiRest..."
-cat > /etc/nginx/sites-available/dotnet-app <<EOF
+cat > /etc/nginx/sites-available/dotnet-api <<EOF
 server {
     listen 53011;
-    server_name _;  # Substitua pelo seu domínio ou IP
-    access_log  /var/log/nginx/app.access.log;
-    error_log /var/log/nginx/app.error.log;
+    server_name 192.168.0.39:53011;  # Substitua pelo seu domínio ou IP
+    access_log  /var/log/nginx/api.access.log;
+    error_log /var/log/nginx/api.error.log;
     
     location / {
         proxy_pass http://localhost:53111;  # Porta da aplicacao ApiRest
@@ -100,6 +100,34 @@ server {
         #proxy_set_header X-Forwarded-Proto \$scheme;
     }
 }
+EOF
+
+echo "Criando arquivo de configuração Nginx para a aplicação WebAssembly..."
+cat > /etc/nginx/sites-available/dotnet-webAssembly <<EOF
+limit_req_zone $http_x_forwarded_for zone=webassembly:20m rate=100r/s; # you missed line like this
+server {
+    listen 8083;
+    server_name 192.168.0.39;  # Substitua pelo seu domínio ou IP
+    access_log  /var/log/nginx/webassembly.access.log;
+    error_log /var/log/nginx/webAssembly.error.log;
+
+
+    location / {
+        root /var/www/dotnet/wwwroot;
+        limit_req zone=webassembly burst=60 nodelay;
+        try_files $uri $uri/ index.html =404;
+        include /etc/nginx/mime.types;
+        types {
+                application/wasm wasm;
+        }
+        default_type application/octet-stream;
+
+        location /_framework/ {
+                gzip_static on;
+        }
+    }
+}
+
 EOF
 
 # Ativar o site
@@ -117,14 +145,15 @@ systemctl restart nginx
 
 # Criar um serviço systemd para a aplicação .NET
 echo "Criando um serviço systemd para a aplicação .NET..."
-cat > /etc/systemd/system/dotnet-app.service <<EOF
+
+cat > "/etc/systemd/system/dotnet-app.service" <<EOF
 [Unit]
 Description=Aplicação .NET Core
 After=network.target
 
 [Service]
 WorkingDirectory=/var/www/dotnet
-ExecStart=/usr/bin/dotnet /var/www/dotnet/TarefaWork.dll
+ExecStart=/usr/bin/dotnet /var/www/dotnet/BlazorTarefas.dll
 Restart=always
 # Reiniciar o serviço após 10 segundos se falhar
 RestartSec=10
@@ -133,18 +162,42 @@ SyslogIdentifier=dotnet-app
 User=www-data
 Environment=ASPNETCORE_ENVIRONMENT=Production
 Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=http://127.0.0.1:53101
 
 [Install]
 WantedBy=multi-user.target
 EOF
 
-# Recarregar o systemd para reconhecer o novo serviço
-echo "Recarregando o systemd..."
+cat > "/etc/systemd/system/dotnet-api.service" <<EOF
+[Unit]
+Description=Aplicação .NET Core
+After=network.target
+
+[Service]
+WorkingDirectory=/var/www/dotnet
+ExecStart=/usr/bin/dotnet /var/www/dotnet/ApiRest.dll
+Restart=always
+# Reiniciar o serviço após 10 segundos se falhar
+RestartSec=10
+KillSignal=SIGINT
+SyslogIdentifier=dotnet-app
+User=www-data
+Environment=ASPNETCORE_ENVIRONMENT=Production
+Environment=DOTNET_PRINT_TELEMETRY_MESSAGE=false
+Environment=ASPNETCORE_URLS=http://127.0.0.1:53111
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Recarregar o systemd
+exibir_mensagem "Recarregando o systemd..."
 systemctl daemon-reload
 
 # Habilitar o serviço para iniciar na inicialização do sistema
-echo "Habilitando o serviço para iniciar na inicialização do sistema..."
-systemctl enable dotnet-app.service
+exibir_mensagem "Habilitando o serviço para iniciar na inicialização do sistema..."
+systemctl enable "dotnet-app"
+systemctl enable "dotnet-api"
 
 echo "Instalação e configuração concluídas com sucesso!"
 echo "Para iniciar a aplicação após o deploy, execute: systemctl start dotnet-app.service"

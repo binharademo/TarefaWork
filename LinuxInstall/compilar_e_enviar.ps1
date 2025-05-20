@@ -144,75 +144,33 @@ try {
     # Enviar o arquivo
     Set-SCPItem -ComputerName $ServidorIP -Credential $credencial -Path $arquivoZip -Destination "./"
     Set-SCPItem -ComputerName $ServidorIP -Credential $credencial -Path LinuxInstall\configurar_e_iniciar.sh -Destination "./"
-
-    # Executar comandos remotos para descompactar e configurar
-    Escrever-Mensagem "Descompactando e configurando a aplicação no servidor..."
-    $comandos = @(
-        "sudo rm -rf /tmp/aplicacao_temp",
-        "sudo rm /tmp/aplicacao_dotnet.zip"
-        "mkdir -p /tmp/aplicacao_temp"
-        "cp aplicacao_dotnet.zip /tmp/",
-        "unzip -q -o /tmp/aplicacao_dotnet.zip -d /tmp/aplicacao_temp",
-        "sudo systemctl stop dotnet-app.service",
-        "sudo systemctl stop dotnet-api.service",
-        "sudo find /var/www/dotnet/ -maxdepth 1 -mindepth 1 ! -name '*.db' -exec rm -Rf {} +",
-        "sudo mv /tmp/aplicacao_temp/* /var/www/dotnet/",
-        "sudo chown -R www-data:www-data /var/www/dotnet",
-        "sudo chmod -R 755 /var/www/dotnet",
-        "sudo systemctl start dotnet-app.service",
-        "sudo systemctl is-active dotnet-app.service",
-        "sudo systemctl start dotnet-api.service",
-        "sudo systemctl is-active dotnet-api.service",
-        "sudo rm -rf /tmp/aplicacao_temp",
-        "sudo rm /tmp/aplicacao_dotnet.zip"
-    )
-
-#$cmds = 'sudo rm -rf /tmp/aplicacao_temp', 'sudo ls /var/www/dotnet'
-#Invoke-SshCommand -SessionId $sessaoSSH.SessionId -Command ($cmds -join ';')    
-
-    $stream = $sessaoSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 100)
-#    $user = Invoke-SSHCommand $session -Command "whoami"
-#    $SSHusersName = $user.Output | Out-String
-#    $SSHusersName = $SSHusersName.Trim()
-    foreach ($comando in $comandos) {
-        Escrever-Mensagem "Executando: $comando"
-        
-        if ($comando.StartsWith("sudo ")){
-            $resultado = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "$comando && echo SUCCESS || echo FAILURE" -ExpectString "[sudo] password for $($Usuario):" -SecureAction $senhaSegura
-            Start-Sleep -Milliseconds 200  # Wait a bit for output to appear
-            $saida = $stream.Read()
-            
-            if (-not($saida -match "SUCCESS")) {
-                Escrever-Mensagem "$comando" "ERRO"
-                $linhasValidas = $saida -split '\r?\n' | Where-Object {
-                    # remove linhas em branco
-                    if ($_ -match '^\s*$') { return $false }
-                    # remove prompt do sudo
-                    if ($_ -match "^\[sudo\] password for $Usuario\:") { return $false }
-                    # remove eco do próprio comando (caso o shell o repita)
-                    if ($_ -eq $comando) { return $false }
-                    # opcional: remova as linhas SUCCESS/FAILURE
-                    if ($_ -match '^(SUCCESS|FAILURE)$') { return $false }
-                    # remove o shell prompt (ex.: usuario@servidor:~$)
-                    if ($_ -match '^[^@\s]+@[^:\s]+:[^$\r\n]+\$') { return $false }
-                    # caso contrário, mantém a linha
-                    return $true
-                }
-                $saida = $linhasValidas -join "`n"
-                Escrever-Mensagem "Saida: $saida" "ERRO"
-            }
-
-        } else {
-            $resultado = Invoke-SSHCommand -SessionId $sessaoSSH.SessionId -Command $comando
-            if ($resultado.ExitStatus -ne 0) {
-                if(-not($comando.StartsWith("unzip") -And $resultado.ExitStatus -eq 1)){
-                    Escrever-Mensagem "$comando" "ERRO"
-                    Escrever-Mensagem "ERRO: $($resultado.ExitStatus) - $($resultado.Output)" "ERRO"
-                }
-            }
-        }
-    }
     
+    $stream = $sessaoSSH.Session.CreateShellStream("PS-SSH", 0, 0, 0, 0, 100)
+    
+    Escrever-Mensagem "Executando publicação (./configurar_e_iniciar.sh)"
+    $resultado = Invoke-SSHStreamExpectSecureAction -ShellStream $stream -Command "sudo ./configurar_e_iniciar.sh && echo SUCCESS || echo FAILURE" -ExpectString "[sudo] password for $($Usuario):" -SecureAction $senhaSegura
+    Start-Sleep -Milliseconds 2000  # Wait a bit for output to appear
+    $saida = $stream.Read()
+            
+    if (-not($saida -match "SUCCESS")) {
+        $linhasValidas = $saida -split '\r?\n' | Where-Object {
+            # remove linhas em branco
+            if ($_ -match '^\s*$') { return $false }
+            # remove prompt do sudo
+            if ($_ -match "^\[sudo\] password for $Usuario\:") { return $false }
+            # remove eco do próprio comando (caso o shell o repita)
+            if ($_ -eq "sudo ./configurar_e_iniciar.sh") { return $false }
+            # opcional: remova as linhas SUCCESS/FAILURE
+            if ($_ -match '^(SUCCESS|FAILURE)$') { return $false }
+            # remove o shell prompt (ex.: usuario@servidor:~$)
+            if ($_ -match '^[^@\s]+@[^:\s]+:[^$\r\n]+\$') { return $false }
+            # caso contrário, mantém a linha
+            return $true
+        }
+        $saida = $linhasValidas -join "`n"
+        Escrever-Mensagem "Saida: $saida" "ERRO"
+    }
+        
     # Encerrar a sessão SSH
     Remove-SSHSession -SessionId $sessaoSSH.SessionId | Out-Null
     
@@ -223,8 +181,8 @@ try {
 }
 
 # Limpar arquivos temporários
-#Escrever-Mensagem "Limpando arquivos temporários..."
-#Remove-Item $arquivoZip -Force
+Escrever-Mensagem "Limpando arquivos temporários..."
+Remove-Item $arquivoZip -Force
 
 Escrever-Mensagem "Processo de compilação e deploy concluído com sucesso!" "SUCESSO"
 Escrever-Mensagem "A aplicação está disponível em: http://$ServidorIP/" "SUCESSO"
