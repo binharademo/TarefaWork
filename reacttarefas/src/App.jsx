@@ -2,6 +2,7 @@ import { useState } from 'react'
 import './App.css'
 import CadastroUsuario from './paginas/Usuario/CadastroUsuario'
 import ListarUsuario from './paginas/Usuario/ListarUsuario'
+import EditarUsuario from './paginas/Usuario/EditarUsuario'
 import CadastroTarefa from './paginas/Tarefas/CadastrarTarefa';
 import EditarTarefa from './paginas/Tarefas/EditarTarefa';
 import VisualizarTarefa from './paginas/Tarefas/VisualizarTarefa';
@@ -27,6 +28,7 @@ function App() {
                     <Route path="/" element={<BoardTarefas />} />
                     <Route path="/usuario/cadastro" element={<CadastroUsuario />} />
                     <Route path="/usuario/listar" element={<ListarUsuario />} />
+                    <Route path="/usuario/editar/:id" element={<EditarUsuario />} />
                     <Route path="/tarefa/listar" element={<Listar />} />
                     <Route path="/tarefa/cadastro" element={<CadastroTarefa />} />
                     <Route path="/empresa/cadastro" element={<CadastroEmpresa />} />

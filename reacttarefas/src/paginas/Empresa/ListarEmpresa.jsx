@@ -91,23 +91,6 @@ function ListarEmpresa() {
         handleFecharMenu();
     };
 
-    //const handleExcluirTarefa = () => {
-    //    if (tarefaSelecionada) {
-    //        navigate(`/tarefa/visualizar/${empresaSelecionada.id}`);
-    //    }
-    //    handleFecharMenu();
-    //    handleFecharMenu();
-    //};
-
-    //const handleConfirmarExclusao = () => {
-    //    setDialogoAberto(true);
-    //    handleFecharMenu();
-    //};
-
-    //const handleFecharDialogo = () => {
-    //    setDialogoAberto(false);
-    //};
-
     if (carregando) {
         return (
             <Container maxWidth="lg">
@@ -292,10 +275,6 @@ function ListarEmpresa() {
                     <EditIcon fontSize="small" sx={{ mr: 1 }} color="primary" />
                     Editar
                 </MenuItem>
-                {/*<MenuItem onClick={handleExcluirEmpresa}>*/}
-                {/*    <DeleteIcon fontSize="small" sx={{ mr: 1 }} color="action" />*/}
-                {/*    Excluir*/}
-                {/*</MenuItem>*/}
             </Menu>
         </Container>
     );
