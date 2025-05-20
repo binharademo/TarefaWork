@@ -33,6 +33,9 @@ namespace TarefasLibrary.Modelo
             Nome = nome;
             Status = true;
         }
+
+        public Setor() { }
+
     }
 }
 
