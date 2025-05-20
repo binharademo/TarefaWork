@@ -91,7 +91,8 @@ namespace TarefasLibrary.Modelo
         {
             Baixa,
             Normal,
-            Alta
+            Alta,
+            Urgente
         }
 
         // TODO: Validar se o comentário não é nulo antes de adicionar
