@@ -27,9 +27,9 @@ namespace ApiRest.DTOs
 
     public class CriarSetorDTO
     {
-        public int Id;
-        public string Nome;
-        public bool Status;
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public bool Status { get; set; }
         public int EmpresaId { get; set; }
 
 
@@ -37,9 +37,12 @@ namespace ApiRest.DTOs
 
     public class AlterarSetorDTO
     {
-        public int Id;
-        public string Nome;
-        public bool Status;
+        public int Id { get; set; }
+
+        public string Nome { get; set; }
+
+        public bool Status { get; set; }
+
         public int EmpresaId { get; set; }
 
     }
