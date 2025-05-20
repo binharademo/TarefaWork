@@ -1,0 +1,191 @@
+﻿@page "/tarefa"
+@page "/tarefa/lista"
+@inject HttpClient Http
+
+<PageTitle>Lista de Tarefas</PageTitle>
+
+<h3>Lista de Tarefas</h3>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+	<MudGrid>
+		<MudItem xs="6">
+			<MudText Typo="Typo.h4">
+				<MudIcon Icon="@Icons.Material.Filled.CheckBox" /> Gerenciador de Tarefas
+			</MudText>
+		</MudItem>
+		<MudItem xs="6" Class="d-flex justify-end">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+					   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+				Cadastrar Nova Tarefa
+			</MudButton>
+		</MudItem>
+	</MudGrid>
+
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudText Typo="Typo.h5" Class="mb-4">
+			<MudIcon Icon="@Icons.Material.Filled.List" /> Lista de Tarefas
+		</MudText>
+
+		@if (tarefas == null)
+		{
+			<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+			<MudText Align="Align.Center">Carregando...</MudText>
+		}
+		else if (!tarefas.Any())
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				Nenhuma tarefa cadastrada. Clique em "Cadastrar Nova Tarefa" para começar.
+			</MudAlert>
+		}
+		else
+		{
+			<MudTable Items="@tarefas" Hover="true" Breakpoint="Breakpoint.Sm">
+				<HeaderContent>
+					<MudTh>ID</MudTh>
+					<MudTh>Título</MudTh>
+					<MudTh>Status</MudTh>
+					<MudTh>Criador</MudTh>
+					<MudTh>Responsável</MudTh>
+					<MudTh>Prazo</MudTh>
+					<MudTh>Prioridade</MudTh>
+					<MudTh>Ações</MudTh>
+				</HeaderContent>
+				<RowTemplate>
+					<MudTd DataLabel="ID">@context.Id</MudTd>
+					<MudTd DataLabel="Título">@context.Titulo</MudTd>
+					<MudTd DataLabel="Status">
+						<MudChip T="string" Color="@GetStatusColor(context.Status)" Size="Size.Small">
+							@GetStatusString(context.Status)
+						</MudChip>
+					</MudTd>
+					<MudTd DataLabel="Criador">@context.CriadorId</MudTd>
+					<MudTd DataLabel="Responsável">@context.ResponsavelId</MudTd>
+					<MudTd DataLabel="Prazo">@context.Prazo.ToShortDateString()</MudTd>
+					<MudTd DataLabel="Prioridade">
+						<MudChip T="string" Color="@GetPriorityColor(context.PrioridadeTarefa)" Size="Size.Small">
+							@GetPriorityString(context.PrioridadeTarefa)
+						</MudChip>
+					</MudTd>
+					<MudTd>
+						<MudIconButton Icon="@Icons.Material.Filled.Edit"
+									   Color="Color.Primary"
+									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
+					</MudTd>
+				</RowTemplate>
+			</MudTable>
+		}
+	</MudPaper>
+</MudContainer>
+
+@code {
+	private List<TarefaStatusDTO> statusList;
+	private List<UsuarioDTO>? usuarios;
+	private List<TarefaDTO>? tarefas;
+
+	protected override async Task OnInitializedAsync()
+	{
+		statusList = new();
+		statusList.Add(new TarefaStatusDTO(0, "Na Fila", TarefaStatusTipo.WAITING));
+		statusList.Add(new TarefaStatusDTO(1, "Em Execução", TarefaStatusTipo.IN_PROGRESS));
+		statusList.Add(new TarefaStatusDTO(2, "Finalizados", TarefaStatusTipo.FINISHED));
+
+		await CarregarListaUsuarios();
+		await CarregarListaTarefas();
+	}
+
+	private async Task CarregarListaUsuarios()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Usuario");
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
+			usuarios = new List<UsuarioDTO>();
+		}
+	}
+
+	private async Task CarregarListaTarefas()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Tarefa");
+
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			tarefas = await response.Content.ReadFromJsonAsync<List<TarefaDTO>>() ?? new List<TarefaDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar tarefas: {ex.Message}");
+			tarefas = new List<TarefaDTO>();
+		}
+	}
+
+	private void NavegarParaCriacao()
+	{
+		NavigationManager.NavigateTo("/tarefa/criar");
+	}
+
+	private void NavegarParaEdicao(int id)
+	{
+		NavigationManager.NavigateTo($"/tarefa/editar/{id}");
+	}
+
+	private string GetStatusString(int status)
+	{
+		return statusList.FirstOrDefault(s => s.Id == status).Nome;
+	}
+
+	private Color GetStatusColor(int status)
+	{
+		return statusList.FirstOrDefault(s => s.Id == status).Tipo switch
+		{
+			TarefaStatusTipo.WAITING => Color.Default, // Fila
+			TarefaStatusTipo.IN_PROGRESS => Color.Info, // Em Execução
+			TarefaStatusTipo.FINISHED => Color.Success, // Finalizados
+			_ => Color.Default
+		};
+	}
+
+	private string GetStatusIcon(int status)
+	{
+		return statusList.FirstOrDefault(s => s.Id == status).Tipo switch
+		{
+			TarefaStatusTipo.WAITING => Icons.Material.Filled.List,        // Fila
+			TarefaStatusTipo.IN_PROGRESS => Icons.Material.Filled.DirectionsRun, // Em Execução
+			TarefaStatusTipo.FINISHED => Icons.Material.Filled.CheckCircle,  // Finalizados
+			_ => Icons.Material.Filled.Help
+		};
+	}
+
+	private Color GetPriorityColor(int prioridade)
+	{
+		return prioridade switch
+		{
+			0 => Color.Success,  // Baixa
+			1 => Color.Info,     // Normal
+			2 => Color.Warning,  // Alta
+			3 => Color.Error,    // Urgente
+			_ => Color.Default
+		};
+	}
+
+	private String GetPriorityString(int prioridade)
+	{
+		return prioridade switch
+		{
+			0 => "Baixa",
+			1 => "Normal",
+			2 => "Alta",
+			3 => "Urgente",
+			_ => "..."
+		};
+	}
+}
