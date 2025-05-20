@@ -18,7 +18,7 @@ namespace TarefasLibrary.Modelo
         public string Senha { get; set; }
         public Funcao FuncaoUsuario { get; set; }
         public Setor SetorUsuario { get; set; }
-
+        public int SetorUsuarioId { get; set; } 
         public List<Tarefa> TarefasDono { get; set; } = new List<Tarefa>();
         public List<Tarefa> TarefasResponsavel { get; set; } = new List<Tarefa>();
         public List<Tarefa> TarefasMembro { get; set; } = new List<Tarefa>();
@@ -26,12 +26,13 @@ namespace TarefasLibrary.Modelo
         public List<Comentario> listaComentarios = new List<Comentario>();
 
         [JsonConstructor]
-        public Usuario(string nome, string senha, Funcao funcao, Setor setor)
+        public Usuario(string nome, string senha, Funcao funcao, int setorUsuarioId)
         {          
             Nome = nome;
             Senha = senha;
             FuncaoUsuario = funcao;
-            SetorUsuario = setor;
+            SetorUsuarioId = setorUsuarioId;
+
         }
 
         public Usuario() { }
@@ -43,6 +44,7 @@ namespace TarefasLibrary.Modelo
             Senha = senha;
             FuncaoUsuario = funcao;
             SetorUsuario = setor;
+            SetorUsuarioId = setor?.Id ?? 0;
         }
 
         public enum Funcao
@@ -52,11 +54,11 @@ namespace TarefasLibrary.Modelo
             Marketing
         }
 
-        public enum Setor
-        {
-            Ti,
-            Marketing,
-            Diretoria
-        }
+        //public enum Setor
+        //{
+        //    Ti,
+        //    Marketing,
+        //    Diretoria
+        //}
     }
 }

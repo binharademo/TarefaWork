@@ -65,12 +65,12 @@ systemctl stop "$NOME_SERVICO_API" || true
 
 # Limpar o diretório de destino, mantendo arquivos de dados
 exibir_mensagem "Limpando o diretório de destino..."
-#find "$DIRETORIO_DESTINO"/ -maxdepth 1 -mindepth 1 ! -name '*.db' -exec rm -Rf {} +
+find "$DIRETORIO_DESTINO"/ -maxdepth 1 -mindepth 1 ! -name '*.db' -exec rm -Rf {} +
 
 # Copiar os arquivos para o diretório de destino
 exibir_mensagem "Copiando arquivos para o diretório de destino..."
-#mkdir -p "$DIRETORIO_DESTINO"
-#cp -r "$DIRETORIO_TEMP"/* "$DIRETORIO_DESTINO"/
+mkdir -p "$DIRETORIO_DESTINO"
+cp -r "$DIRETORIO_TEMP"/* "$DIRETORIO_DESTINO"/
 
 # Configurar permissões
 exibir_mensagem "Configurando permissões..."

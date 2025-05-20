@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,8 +28,11 @@ namespace TarefasLibrary.Repositorio.Entity
         public Usuario? BuscarPorId(int id)
         {
             using var context = new AppDbContext(_connectionString);
-            return context.Usuarios.Find(id);
+            return context.Usuarios
+                .Include(u => u.SetorUsuario)
+                .FirstOrDefault(u => u.Id == id);
         }
+
 
         public bool Cadastrar(Usuario obj)
         {
@@ -63,8 +67,11 @@ namespace TarefasLibrary.Repositorio.Entity
         public List<Usuario> Listar()
         {
             using var context = new AppDbContext(_connectionString);
-            return context.Usuarios.ToList();
+            return context.Usuarios
+                .Include(u => u.SetorUsuario)
+                .ToList();
         }
+
 
         public bool Remover(Usuario obj)
         {
@@ -82,7 +89,7 @@ namespace TarefasLibrary.Repositorio.Entity
             }
         }
 
-        public List<Usuario> Listar(Usuario.Setor setor)
+        public List<Usuario> Listar(Setor SetorUsuario)
         {
             throw new NotImplementedException();
         }
