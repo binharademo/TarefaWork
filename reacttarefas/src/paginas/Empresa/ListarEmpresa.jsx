@@ -16,13 +16,19 @@ import {
     Container,
     Tooltip,
     IconButton,
-    Divider
+    Divider,
+    Menu,
+    MenuItem
 } from '@mui/material';
 import {
     Add as AddIcon,
     Refresh as RefreshIcon,
     Business as BusinessIcon,
-    Error as ErrorIcon
+    Error as ErrorIcon,
+    MoreVert as Icon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 
 function ListarEmpresa() {
@@ -30,6 +36,10 @@ function ListarEmpresa() {
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
     const navigate = useNavigate();
+
+    // Estados para gerenciar o menu de ações
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
 
     const fetchEmpresas = async () => {
         setCarregando(true);
@@ -63,6 +73,40 @@ function ListarEmpresa() {
     const handleNovaEmpresa = () => {
         navigate('/empresa/cadastro');
     };
+
+    // Handlers para o menu de ações
+    const handleAbrirMenu = (event, empresa) => {
+        setAnchorEl(event.currentTarget);
+        setEmpresaSelecionada(empresa);
+    };
+
+    const handleFecharMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleEditarEmpresa = () => {
+        if (empresaSelecionada) {
+            navigate(`/empresa/editar/${empresaSelecionada.id}`);
+        }
+        handleFecharMenu();
+    };
+
+    //const handleExcluirTarefa = () => {
+    //    if (tarefaSelecionada) {
+    //        navigate(`/tarefa/visualizar/${empresaSelecionada.id}`);
+    //    }
+    //    handleFecharMenu();
+    //    handleFecharMenu();
+    //};
+
+    //const handleConfirmarExclusao = () => {
+    //    setDialogoAberto(true);
+    //    handleFecharMenu();
+    //};
+
+    //const handleFecharDialogo = () => {
+    //    setDialogoAberto(false);
+    //};
 
     if (carregando) {
         return (
@@ -186,7 +230,8 @@ function ListarEmpresa() {
                                 <TableRow>
                                     <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Nome</TableCell>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>CNPJ</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}>CNPJ</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }}></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -207,6 +252,15 @@ function ListarEmpresa() {
                                         <TableCell>{empresa.id}</TableCell>
                                         <TableCell sx={{ fontWeight: 500 }}>{empresa.nome}</TableCell>
                                         <TableCell>{empresa.cnpj}</TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                size="small"
+                                                onClick={(e) => handleAbrirMenu(e, empresa)}
+                                                aria-label="Opções da tarefa"
+                                            >
+                                                <Icon />
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -220,6 +274,29 @@ function ListarEmpresa() {
                     </Typography>
                 </Box>
             </Paper>
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleFecharMenu}
+                keepMounted
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                <MenuItem onClick={handleEditarEmpresa}>
+                    <EditIcon fontSize="small" sx={{ mr: 1 }} color="primary" />
+                    Editar
+                </MenuItem>
+                {/*<MenuItem onClick={handleExcluirEmpresa}>*/}
+                {/*    <DeleteIcon fontSize="small" sx={{ mr: 1 }} color="action" />*/}
+                {/*    Excluir*/}
+                {/*</MenuItem>*/}
+            </Menu>
         </Container>
     );
 }

@@ -7,6 +7,7 @@ import EditarTarefa from './paginas/Tarefas/EditarTarefa';
 import VisualizarTarefa from './paginas/Tarefas/VisualizarTarefa';
 import CadastroEmpresa from './paginas/Empresa/CadastrarEmpresa';
 import ListarEmpresa from './paginas/Empresa/ListarEmpresa';
+import EditarEmpresa from './paginas/Empresa/EditarEmpresa'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import PersistentDrawerLeft from './components/Menu'
 import '@fontsource/roboto/300.css';
@@ -15,6 +16,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 import Listar from './paginas/Tarefas/Listar'
 import BoardTarefas from './paginas/Board/Board';
+
 
 function App() {
     const [count, setCount] = useState(0)
@@ -29,6 +31,7 @@ function App() {
                     <Route path="/tarefa/cadastro" element={<CadastroTarefa />} />
                     <Route path="/empresa/cadastro" element={<CadastroEmpresa />} />
                     <Route path="/empresa/listar" element={<ListarEmpresa />} />
+                    <Route path="/empresa/editar/:id" element={<EditarEmpresa />} />
                     <Route path="/tarefa/editar/:id" element={<EditarTarefa />} />
                     <Route path="/tarefa/visualizar/:id" element={<VisualizarTarefa />} />
                 </Routes>
