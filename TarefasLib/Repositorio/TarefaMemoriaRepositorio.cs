@@ -36,7 +36,7 @@ namespace TarefasLibrary.Repositorio
             return null;
         }
 
-        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade)
         {
             // TODO: Validar todos os parâmetros antes de atualizar (null checks e validações de negócio)
             if(novostatus == null)
@@ -46,6 +46,8 @@ namespace TarefasLibrary.Repositorio
             // TODO: Salvar as alterações na tarefa da lista de tarefas. 
             // TODO: Verificar se a tarefa existe no repositório antes de atualizar
             // TODO: Considerar criar uma cópia da tarefa para evitar modificações externas durante a atualização
+            tarefa.PrioridadeTarefa = novaprioridade;
+            tarefa.Titulo = novotitulo;
             tarefa.StatusTarefa = novostatus;
             tarefa.Descricao = novadescricao;
             tarefa.Prazo = novoprazo;

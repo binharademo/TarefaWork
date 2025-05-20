@@ -28,11 +28,11 @@ namespace TarefasLibrary.Negocio
             return _repositorio.BuscarPorID(id);
         }
 
-        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade)
         {
             // TODO: Validar todos os parâmetros antes de atualizar (null checks e validações de negócio)
             // TODO: Considerar usar um objeto DTO para encapsular os parâmetros de atualização
-            return _repositorio.Atualizar(tarefa, novostatus, novadescricao, novoprazo);    
+            return _repositorio.Atualizar(tarefa, novostatus, novadescricao, novoprazo, novotitulo, novaprioridade);    
         }
 
         public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus)

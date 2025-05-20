@@ -21,12 +21,14 @@ namespace TarefasLibrary.Repositorio.Entity
             using var context = new AppDbContext(_connectionString);
             context.Database.EnsureCreated();
         }
-        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade)
         {
             using var context = new AppDbContext(_connectionString);
             var tarefaExistente = context.Tarefas.Find(tarefa.Id);
             if (tarefaExistente != null)
             {
+                tarefaExistente.Titulo = novotitulo;
+                tarefaExistente.PrioridadeTarefa = novaprioridade;
                 tarefaExistente.StatusTarefa = novostatus;
                 tarefaExistente.Descricao = novadescricao;
                 tarefaExistente.Prazo = novoprazo;
