@@ -22,6 +22,8 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import { Link } from 'react-router-dom'; // Adicione esta importação
+import DomainAddIcon from '@mui/icons-material/DomainAdd';
+import BusinessIcon from '@mui/icons-material/Business';
 
 const drawerWidth = 240;
 
@@ -188,7 +190,7 @@ export default function PersistentDrawerLeft({ children }) {
                     <ListItem key="CadastroEmpresa" disablePadding>
                         <ListItemButton component={Link} to="/empresa/cadastro">
                             <ListItemIcon>
-                                <PersonAddIcon />
+                                <DomainAddIcon />
                             </ListItemIcon>
                             <ListItemText primary="Cadastro" />
                         </ListItemButton>
@@ -196,7 +198,7 @@ export default function PersistentDrawerLeft({ children }) {
                     <ListItem key="ListarEmpresa" disablePadding>
                         <ListItemButton component={Link} to="/empresa/listar">
                             <ListItemIcon>
-                                <Diversity3Icon />
+                                <BusinessIcon />
                             </ListItemIcon>
                             <ListItemText primary="Listar" />
                         </ListItemButton>
