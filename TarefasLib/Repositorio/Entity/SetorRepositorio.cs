@@ -21,7 +21,9 @@ namespace TarefasLibrary.Repositorio.Entity
         public Setor? BuscarPorId(int id)
         {
             using var context = new AppDbContext(_connectionString);
-            return context.Setores.Find(id);
+            return context.Setores
+                          .Include(s => s.Empresa) // inclui a empresa junto
+                          .FirstOrDefault(s => s.Id == id);
         }
 
         public bool Cadastrar(Setor obj)
@@ -53,7 +55,7 @@ namespace TarefasLibrary.Repositorio.Entity
         public List<Setor> Listar()
         {
             using var context = new AppDbContext(_connectionString);
-            return context.Setores.ToList();
+            return context.Setores.Include(s => s.Empresa).ToList();
         }
 
         public bool Remover(Setor obj)
