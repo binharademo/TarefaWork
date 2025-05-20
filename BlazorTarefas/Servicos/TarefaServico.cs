@@ -24,7 +24,7 @@ namespace BlazorTarefas.Servicos
             return await response.Content.ReadFromJsonAsync<TarefaDTO>();
         }
 
-        public async Task <bool> Atualizar(int id, TarefaDTO tarefa)
+        public async Task <bool> Atualizar(int id, AtualizarTarefaDTO tarefa)
         {
             var response = await _httpClient.PutAsJsonAsync($"tarefa/{id}", tarefa);
             return response.IsSuccessStatusCode;

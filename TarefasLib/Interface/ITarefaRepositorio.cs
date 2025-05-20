@@ -7,7 +7,7 @@ namespace TarefasLibrary.Interface
         Tarefa? BuscarPorID(int id);
         List<Tarefa> ListarTodas();
         bool Salvar(Tarefa tarefa);
-        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo);
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade);
         public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus);
         public List<Tarefa> ListarPorUsuario(int id);
         public bool MarcarMembro(Tarefa tarefa, Usuario membro);

@@ -29,7 +29,7 @@
             <label>Prioridade</label>
             <InputSelect class="form-control" @bind-Value="tarefa.PrioridadeTarefa">
                 <option value="Baixa">Baixa</option>
-                <option value="Média">Média</option>
+                <option value="Normal">Normal</option>
                 <option value="Alta">Alta</option>
             </InputSelect>
         </div>
@@ -111,7 +111,15 @@
 
     private async void AtualizarTarefa()
     {
-        tarefa.ResponsavelId = Responsavel;
+        var tarefa = new AtualizarTarefaDTO
+            {
+                Titulo = this.tarefa.Titulo,
+                Descricao = this.tarefa.Descricao,
+                Prazo = this.tarefa.Prazo,
+                ResponsavelId = Responsavel,
+                PrioridadeTarefa = this.tarefa.PrioridadeTarefa,
+                Status = this.tarefa.Status
+            };
         var resultado = await TarefaServico.Atualizar(Id, tarefa);
 
         if (resultado)

@@ -164,8 +164,18 @@
         if (! Enum.TryParse(newStatus, out Tarefa.Status statusTarefa))
             return;
 
+        var atualizartarefa = new AtualizarTarefaDTO
+            {
+                Titulo = tarefa.Titulo,
+                Descricao = tarefa.Descricao,
+                Prazo = tarefa.Prazo,
+                ResponsavelId = tarefa.ResponsavelId,
+                PrioridadeTarefa = tarefa.PrioridadeTarefa,
+                Status = statusTarefa
+            };
+
         tarefa.Status = statusTarefa;
-        TarefaServico.Atualizar(tarefa.Id, tarefa);
+        TarefaServico.Atualizar(tarefa.Id, atualizartarefa);
         await LoadTasksByStatus();
         StateHasChanged();
     }
