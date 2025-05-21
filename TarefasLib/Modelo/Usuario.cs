@@ -26,12 +26,13 @@ namespace TarefasLibrary.Modelo
         public List<Comentario> listaComentarios = new List<Comentario>();
 
         [JsonConstructor]
-        public Usuario(string nome, string senha, Funcao funcao, int setorUsuarioId)
+        public Usuario(string nome, string senha, Funcao funcao, Setor setor)
         {          
             Nome = nome;
             Senha = senha;
             FuncaoUsuario = funcao;
-            SetorUsuarioId = setorUsuarioId;
+            SetorUsuario = setor;
+            SetorUsuarioId = setor?.Id ?? 0;
 
         }
 
@@ -54,11 +55,6 @@ namespace TarefasLibrary.Modelo
             Marketing
         }
 
-        //public enum Setor
-        //{
-        //    Ti,
-        //    Marketing,
-        //    Diretoria
-        //}
+  
     }
 }

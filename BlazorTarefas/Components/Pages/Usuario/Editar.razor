@@ -1,6 +1,7 @@
 ﻿@page "/usuario/editar/{id:int}"
 @rendermode InteractiveServer
 @inject UsuarioServico UsuarioServico
+@inject SetorServico SetorServico
 @inject NavigationManager NavigationManager
 
 <PageTitle>Editar Usuário</PageTitle>
@@ -20,11 +21,11 @@
             <InputText class="form-control" @bind-Value="usuario.Nome" />
             <ValidationMessage For="() => usuario.Nome" />
         </div>
-        <div class="form-group mb-3">
+@*         <div class="form-group mb-3">
             <label>Senha</label>
             <InputText class="form-control" @bind-Value="usuario.Senha" />
             <ValidationMessage For="() => usuario.Senha" />
-        </div>
+        </div> *@
         <div class="form-group mb-3">
             <label>Função</label>
             <InputSelect class="form-control" @bind-Value="usuario.FuncaoUsuario">
@@ -33,17 +34,16 @@
                 <option value="2">Marketing</option>
             </InputSelect>
         </div>
-        <div class="form-check mb-3">
-            <label>Setor</label><br />
-
-            <InputRadioGroup @bind-Value="usuario.SetorUsuario">
-                <InputRadio Value="Usuario.Setor.Ti" id="setor_ti" />
-                <label class="me-3">TI</label>
-
-                <InputRadio Value="Usuario.Setor.Marketing" id="setor_marketing" />
-                <label class="me-3">Marketing</label>
-
-            </InputRadioGroup>
+        <div class="form-group mb-3">
+            <label>Setor</label>
+            <InputSelect class="form-control" @bind-Value="usuario.SetorUsuarioId">
+                <option value="">Selecione...</option>
+                @foreach (var setor in setores)
+                {
+                    <option value="@setor.Id">@setor.Nome</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="() => usuario.SetorUsuarioId" />
         </div>
 
         <button type="submit" class="btn btn-success">Salvar</button>
@@ -52,18 +52,17 @@
     </EditForm>
 }
 
-
-
-
 @code {
     [Parameter]
     public int Id { get; set; }
 
     private UsuarioDTO usuario = new();
+    private List<SetorDTO> setores = new();
 
     protected override async Task OnInitializedAsync()
     {
         // Carrega a tarefa pelo ID passado na URL
+        setores = await SetorServico.BuscaTodos();
         usuario = await UsuarioServico.BuscaPorIdAsync(Id);
     }
 
@@ -73,10 +72,11 @@
         var dto = new AtualizarUsuarioDTO
             {
                 Nome = usuario.Nome,
-                Senha = usuario.Senha,
+                // Senha = usuario.Senha,
                 FuncaoUsuario = usuario.FuncaoUsuario,
-                SetorUsuario = usuario.SetorUsuario
+                SetorUsuarioId = usuario.SetorUsuarioId 
             };
+
 
         // chama o serviço passando o id e o DTO certo
         var resultado = await UsuarioServico.AtualizarAsync(usuario.Id, dto);

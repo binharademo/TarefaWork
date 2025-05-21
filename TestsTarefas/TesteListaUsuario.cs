@@ -13,24 +13,29 @@ namespace Tests_Tarefas
             public UsuarioServicoTests()
             {
                 var repositorio = new UsuarioMemoriaRepositorio();
+                var setor = new Setor("Setor Teste", 1);
                 _servico = new UsuarioServico(repositorio);
 
-                _servico.Criar(new Usuario("binhara", "123", Usuario.Funcao.Analista, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario("binhara2", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario("binhara1", "123", Usuario.Funcao.Marketing, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario("binhara3", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario("binhara5", "123", Usuario.Funcao.Marketing, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario("binhara4", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti));
+                _servico.Criar(new Usuario("binhara", "123", Usuario.Funcao.Analista, setor));
+                _servico.Criar(new Usuario("binhara2", "123", Usuario.Funcao.Dev, setor));
+                _servico.Criar(new Usuario("binhara1", "123", Usuario.Funcao.Marketing, setor));
+                _servico.Criar(new Usuario("binhara3", "123", Usuario.Funcao.Dev, setor));
+                _servico.Criar(new Usuario("binhara5", "123", Usuario.Funcao.Marketing, setor));
+                _servico.Criar(new Usuario("binhara4", "123", Usuario.Funcao.Dev, setor));
             }
             [Fact]
             public void ListarUsuarioPorSetor_DeveRetornarSomenteUsuariosDoSetor()
             {
                 //arrange
                 UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+                var setor = new Setor("Setor Teste", 1);
+                var setor2 = new Setor("Setor Teste", 2);
+                var setor3 = new Setor("Setor Teste", 1);
 
-                Usuario u01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
-                Usuario u02 = new Usuario("binhara1", "123", Usuario.Funcao.Dev, Usuario.Setor.Marketing);
-                Usuario u03 = new Usuario("binhara2", "123", Usuario.Funcao.Dev, Usuario.Setor.Diretoria);
+
+                Usuario u01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, setor);
+                Usuario u02 = new Usuario("binhara1", "123", Usuario.Funcao.Dev, setor2);
+                Usuario u03 = new Usuario("binhara2", "123", Usuario.Funcao.Dev, setor3);
 
                 servico.Criar(u01);
                 servico.Criar(u02);
@@ -38,11 +43,11 @@ namespace Tests_Tarefas
 
 
                 //act
-                var resultado = servico.ListarUsuarioPorSetor(Usuario.Setor.Ti);
+                var resultado = servico.ListarUsuarioPorSetor(setor);
 
                 //assert
                 Assert.Single(resultado);
-                Assert.Equal(Usuario.Setor.Ti, resultado[0].SetorUsuario);
+                Assert.Equal(setor, resultado[0].SetorUsuario);
             }
 
             [Fact]
@@ -50,20 +55,20 @@ namespace Tests_Tarefas
             {
                 // Arrange
                 var servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+                var setorComUsuario = new Setor("Setor Com Usuario", 1);
+                var setorSemUsuario = new Setor("Setor Sem Usuario", 2);
 
-                var u01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Marketing);
-                var u02 = new Usuario("binhara1", "123", Usuario.Funcao.Dev, Usuario.Setor.Diretoria);
-
+                var u01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, setorComUsuario);
                 servico.Criar(u01);
-                servico.Criar(u02);
 
                 // Act
-                var resultado = servico.ListarUsuarioPorSetor(Usuario.Setor.Ti);
+                var resultado = servico.ListarUsuarioPorSetor(setorSemUsuario);
 
                 // Assert
                 Assert.NotNull(resultado);
-                Assert.Empty(resultado);
+                Assert.Empty(resultado); // ✅ agora sim, setor 2 não tem usuários
             }
+
 
             // TODO: Adicionar caso de teste para função que não tem nenhum usuário
             // TODO: Verificar se os usuários retornados são exatamente os esperados (não apenas a contagem)

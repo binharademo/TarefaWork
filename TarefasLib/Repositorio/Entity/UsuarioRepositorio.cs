@@ -45,13 +45,16 @@ namespace TarefasLibrary.Repositorio.Entity
         public bool Editar(Usuario obj)
         {
             using var context = new AppDbContext(_connectionString);
-            var usuarioExistente = context.Usuarios.Find(obj.Id);
+            var usuarioExistente = context.Usuarios
+                .Include(u => u.SetorUsuario)
+                .FirstOrDefault(u => u.Id == obj.Id);
+
             if (usuarioExistente != null)
             {
                 usuarioExistente.Nome = obj.Nome;
                 usuarioExistente.Senha = obj.Senha;
                 usuarioExistente.FuncaoUsuario = obj.FuncaoUsuario;
-                usuarioExistente.SetorUsuario = obj.SetorUsuario;
+                usuarioExistente.SetorUsuarioId = obj.SetorUsuarioId;
                 context.SaveChanges();
                 return true;
             }

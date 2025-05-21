@@ -16,10 +16,29 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void Cadastro_TarefaEF()
         {
+            var setorRepositorio = new TarefasLibrary.Repositorio.Entity.SetorRepositorio(connectionString);
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+
+            var setor = setorRepositorio.Listar().FirstOrDefault();
+
+            if (setor == null)
+            {
+                // Se não existir nenhum setor, cria uma empresa e um setor novo
+                var empresa = new Empresa("Empresa Teste", "99999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+
+                setor = new Setor
+                {
+                    Nome = "Setor Teste",
+                    Status = true,
+                    EmpresaId = empresa.Id
+                };
+                setorRepositorio.Cadastrar(setor);
+            }
             // Arrange
             var tarefa = new Tarefa("Teste", Tarefa.Status.ToDo, 
-                new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti), 
-                new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti), 
+                new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor), 
+                new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor), 
                 DateTime.Now.AddDays(5), "Descricao", 
                 Tarefa.Prioridade.Alta);
 

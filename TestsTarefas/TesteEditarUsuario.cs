@@ -13,9 +13,10 @@ namespace Tests_Tarefas
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
+            var setor = new Setor("Setor Teste", 1);
 
 
-            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, setor);
             servico.Criar(usuario);
 
             // Act
@@ -23,7 +24,7 @@ namespace Tests_Tarefas
             usuarioParaEditar.Nome = "binhara_editado";
             usuarioParaEditar.Senha = "456";
             usuarioParaEditar.FuncaoUsuario = Usuario.Funcao.Dev;
-            usuarioParaEditar.SetorUsuario = Usuario.Setor.Ti;
+            usuarioParaEditar.SetorUsuario = setor;
 
             bool resultadoEdicao = servico.Editar(usuarioParaEditar.Id, usuarioParaEditar.Nome, usuarioParaEditar.Senha, usuarioParaEditar.FuncaoUsuario, usuarioParaEditar.SetorUsuario);
 
@@ -34,14 +35,14 @@ namespace Tests_Tarefas
             Assert.Equal("binhara_editado", usuarioEditado.Nome);
             Assert.Equal("456", usuarioEditado.Senha);
             Assert.Equal(Usuario.Funcao.Dev, usuarioEditado.FuncaoUsuario);
-            Assert.Equal(Usuario.Setor.Ti, usuarioEditado.SetorUsuario);
+            Assert.Equal(setor, usuarioEditado.SetorUsuario);
 
             var usuarioPersistido = repositorio.BuscarPorId(usuario.Id); 
             Assert.NotNull(usuarioPersistido);
             Assert.Equal("binhara_editado", usuarioPersistido.Nome);
             Assert.Equal("456", usuarioPersistido.Senha);
             Assert.Equal(Usuario.Funcao.Dev, usuarioPersistido.FuncaoUsuario);
-            Assert.Equal(Usuario.Setor.Ti, usuarioPersistido.SetorUsuario);
+            Assert.Equal(setor, usuarioPersistido.SetorUsuario);
         }
 
         [Fact]
@@ -50,11 +51,12 @@ namespace Tests_Tarefas
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
+            var setor = new Setor("Setor Teste", 1);
 
             int idInexistente = -1; 
 
             // Act
-            var resultado = servico.Editar(idInexistente,"adair da silva","nova_senha",Usuario.Funcao.Analista,Usuario.Setor.Ti);
+            var resultado = servico.Editar(idInexistente,"adair da silva","nova_senha",Usuario.Funcao.Analista,setor);
 
             // Assert
             Assert.False(resultado); 
@@ -66,9 +68,10 @@ namespace Tests_Tarefas
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
+            var setor = new Setor("Setor Teste", 1);
 
 
-            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, setor);
             servico.Criar(usuario);
 
             // Act
@@ -87,9 +90,10 @@ namespace Tests_Tarefas
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
+            var setor = new Setor("Setor Teste", 1);
 
 
-            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, setor);
             servico.Criar(usuario);
 
             // Act
@@ -109,9 +113,10 @@ namespace Tests_Tarefas
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
+            var setor = new Setor("Setor Teste", 1);
 
 
-            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Marketing, Usuario.Setor.Ti);
+            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Marketing, setor);
             servico.Criar(usuario);
 
             // Act
@@ -131,23 +136,23 @@ namespace Tests_Tarefas
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
 
+            var setor = new Setor("Setor Teste", 1);
+            var setor2 = new Setor("Setor Teste 2", 2);
 
-            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Marketing, Usuario.Setor.Ti);
+            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Marketing, setor);
             servico.Criar(usuario);
 
             // Act
-            var usuarioEditado = servico.Editar(usuario.Id, usuario.Nome, usuario.Senha,usuario.FuncaoUsuario,Usuario.Setor.Marketing);
-
+            var usuarioEditado = servico.Editar(usuario.Id, usuario.Nome, usuario.Senha, usuario.FuncaoUsuario, setor2);
 
             // Assert
-
             Assert.True(usuarioEditado);
-            Assert.Equal(Usuario.Setor.Marketing, usuario.SetorUsuario);
+            Assert.Equal(setor2, usuario.SetorUsuario); // corrigido
             Assert.Equal("binhara", usuario.Nome);
             Assert.Equal("123", usuario.Senha);
             Assert.Equal(Usuario.Funcao.Marketing, usuario.FuncaoUsuario);
-
         }
+
 
         // TODO: Considerar adicionar validações para campos inválidos (nome vazio, senha fraca, etc.)
         [Fact]
@@ -156,26 +161,26 @@ namespace Tests_Tarefas
             // Arrange
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
+            var setor = new Setor("Setor Teste", 1);
+            var setor2 = new Setor("Setor Teste 2", 2);
 
-
-            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Marketing, Usuario.Setor.Ti);
+            Usuario usuario = new Usuario("binhara", "123", Usuario.Funcao.Marketing, setor);
             servico.Criar(usuario);
 
             // Act
-            var usuarioEditado = servico.Editar(usuario.Id,"Alessandro Binhara", "SenhaNova", Usuario.Funcao.Analista, Usuario.Setor.Marketing);
-
+            var usuarioEditado = servico.Editar(usuario.Id, "Alessandro Binhara", "SenhaNova", Usuario.Funcao.Analista, setor2);
 
             // Assert
-
             Assert.True(usuarioEditado);
             Assert.Equal("Alessandro Binhara", usuario.Nome);
             Assert.Equal("SenhaNova", usuario.Senha);
             Assert.Equal(Usuario.Funcao.Analista, usuario.FuncaoUsuario);
-            Assert.Equal(Usuario.Setor.Marketing, usuario.SetorUsuario);
+            Assert.Equal(setor2, usuario.SetorUsuario); 
 
             var usuarioDoRepositorio = repositorio.BuscarPorId(usuario.Id);
             Assert.Same(usuario, usuarioDoRepositorio);
         }
+
         [Fact]
         public void EditarUsuario_ComIdInvalido_DeveRetornarFalse()
         {
@@ -183,9 +188,10 @@ namespace Tests_Tarefas
             var repositorio = new UsuarioMemoriaRepositorio();
             var servico = new UsuarioServico(repositorio);
             var idInvalido = -1;
+            var setor = new Setor("Setor Teste", 1);
 
             // Act
-            var resultado = servico.Editar(idInvalido, "Nome", "Senha123", Usuario.Funcao.Analista, Usuario.Setor.Marketing);
+            var resultado = servico.Editar(idInvalido, "Nome", "Senha123", Usuario.Funcao.Analista, setor);
 
             // Assert
             Assert.False(resultado);

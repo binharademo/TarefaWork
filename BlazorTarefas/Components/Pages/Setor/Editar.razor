@@ -18,12 +18,12 @@ else
         <DataAnnotationsValidator />
         <div class="form-group mb-3">
             <label>Nome</label>
-            <InputText class="form-control" @bind-Value="setor.Nome" />
+            <InputText class="form-control" @bind-Value="setorDTO.Nome" />
             <ValidationMessage For="() => setor.Nome" />
         </div>
         <div class="form-group mb-3">
             <label>Status</label>
-            <InputRadioGroup @bind-Value="setor.Status">
+            <InputRadioGroup @bind-Value="setorDTO.Status">
                 <div class="form-check">
                     <InputRadio class="form-check-input" Value="true" />
                     <label class="form-check-label">Ativo</label>
@@ -48,32 +48,42 @@ else
     public int Id { get; set; }
 
     private SetorDTO setor = new();
+    private AlterarSetorDTO setorDTO = new();
 
     protected override async Task OnInitializedAsync()
     {
-        // Carrega a tarefa pelo ID passado na URL
+        // Carrega o setor pelo ID
         setor = await SetorServico.BuscaPorId(Id);
+
+        if (setor != null)
+        {
+            // Preenche os dados do DTO usado no formulário
+            setorDTO = new AlterarSetorDTO
+                {
+                    Nome = setor.Nome,
+                    Status = setor.Status,
+                    EmpresaId = setor.Empresa.Id
+                };
+        }
     }
 
-    private void SalvarSetor()
+    private async Task SalvarSetor()
     {
-        var resultado = SetorServico.Atualizar(setor);
-
+        var resultado = await SetorServico.Atualizar(Id, setorDTO);
         if (resultado)
         {
-            // Se a atualização for bem-sucedida, navega para a lista de setores
             NavigationManager.NavigateTo("/setor/listar");
         }
         else
         {
             NavigationManager.NavigateTo("/erro");
         }
-       
     }
+
     private void Cancelar()
     {
-        // Cancela e volta para a lista
-        NavigationManager.NavigateTo("/setor");
+        NavigationManager.NavigateTo("/setor/listar");
     }
 }
+
 

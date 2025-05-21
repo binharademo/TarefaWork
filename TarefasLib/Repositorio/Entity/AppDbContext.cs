@@ -77,11 +77,10 @@ namespace TarefasLibrary.Repositorio.Entity
                 entity.Property(u => u.FuncaoUsuario)
                       .HasConversion<string>();
 
-                // Relacionamento com Setor (FK)
                 entity.HasOne(u => u.SetorUsuario)
-                      .WithMany() // ou .WithMany(s => s.Usuarios) se tiver lista de usuários no Setor
+                      .WithMany() 
                       .HasForeignKey(u => u.SetorUsuarioId)
-                      .OnDelete(DeleteBehavior.Restrict); // ou Cascade, dependendo do que você quiser
+                      .OnDelete(DeleteBehavior.Restrict); 
 
                 entity.HasMany(t => t.listaComentarios);
             });

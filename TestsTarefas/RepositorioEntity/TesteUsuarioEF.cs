@@ -16,8 +16,28 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void Cadastro_UsuarioEF()
         {
+            var setorRepositorio = new TarefasLibrary.Repositorio.Entity.SetorRepositorio(connectionString);
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+
+            var setor = setorRepositorio.Listar().FirstOrDefault();
+
+            if (setor == null)
+            {
+                // Se não existir nenhum setor, cria uma empresa e um setor novo
+                var empresa = new Empresa("Empresa Teste", "99999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+
+                setor = new Setor
+                {
+                    Nome = "Setor Teste",
+                    Status = true,
+                    EmpresaId = empresa.Id
+                };
+                setorRepositorio.Cadastrar(setor);
+            }
+
             // Arrange
-            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor);
             var usuarioRepositorio = new UsuarioRepositorio(connectionString);
             usuarioRepositorio.InicializarBancoDados();
             // Act
@@ -29,8 +49,28 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void Editar_UsuarioEF()
         {
+            var setorRepositorio = new TarefasLibrary.Repositorio.Entity.SetorRepositorio(connectionString);
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+
+            var setor = setorRepositorio.Listar().FirstOrDefault();
+
+            if (setor == null)
+            {
+                // Se não existir nenhum setor, cria uma empresa e um setor novo
+                var empresa = new Empresa("Empresa Teste", "99999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+
+                setor = new Setor
+                {
+                    Nome = "Setor Teste",
+                    Status = true,
+                    EmpresaId = empresa.Id
+                };
+                setorRepositorio.Cadastrar(setor);
+            }
+
             // Arrange
-            var usuario = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var usuario = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             var usuarioRepositorio = new UsuarioRepositorio(connectionString);
             usuarioRepositorio.InicializarBancoDados();
             usuarioRepositorio.Cadastrar(usuario);
@@ -45,8 +85,28 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void BuscarPorId_UsuarioEF()
         {
+            var setorRepositorio = new TarefasLibrary.Repositorio.Entity.SetorRepositorio(connectionString);
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+
+            var setor = setorRepositorio.Listar().FirstOrDefault();
+
+            if (setor == null)
+            {
+                // Se não existir nenhum setor, cria uma empresa e um setor novo
+                var empresa = new Empresa("Empresa Teste", "99999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+
+                setor = new Setor
+                {
+                    Nome = "Setor Teste",
+                    Status = true,
+                    EmpresaId = empresa.Id
+                };
+                setorRepositorio.Cadastrar(setor);
+            }
+
             // Arrange
-            var usuario = new Usuario("Gabriel90", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var usuario = new Usuario("Gabriel90", "123456", Usuario.Funcao.Dev, setor);
             var usuarioRepositorio = new UsuarioRepositorio(connectionString);
             usuarioRepositorio.InicializarBancoDados();
             usuarioRepositorio.Cadastrar(usuario);
@@ -60,8 +120,28 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void Deletar_UsuarioEF()
         {
+            var setorRepositorio = new TarefasLibrary.Repositorio.Entity.SetorRepositorio(connectionString);
+            var empresaRepositorio = new EmpresaRepositorio(connectionString);
+
+            var setor = setorRepositorio.Listar().FirstOrDefault();
+
+            if (setor == null)
+            {
+                // Se não existir nenhum setor, cria uma empresa e um setor novo
+                var empresa = new Empresa("Empresa Teste", "99999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+
+                setor = new Setor
+                {
+                    Nome = "Setor Teste",
+                    Status = true,
+                    EmpresaId = empresa.Id
+                };
+                setorRepositorio.Cadastrar(setor);
+            }
+
             // Arrange
-            var usuario = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var usuario = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             var usuarioRepositorio = new UsuarioRepositorio(connectionString);
             usuarioRepositorio.InicializarBancoDados();
             usuarioRepositorio.Cadastrar(usuario);

@@ -30,7 +30,8 @@ public class UsuarioController : ControllerBase
             Id = u.Id,
             Nome = u.Nome,
             FuncaoUsuario = u.FuncaoUsuario,
-            SetorUsuario = u.SetorUsuario,
+            SetorUsuarioId = u.SetorUsuarioId,
+            SetorNome = u.SetorUsuario?.Nome 
         });
 
         return Ok(usuariosDTO);
@@ -50,7 +51,8 @@ public class UsuarioController : ControllerBase
             Id = usuario.Id,
             Nome = usuario.Nome,
             FuncaoUsuario = usuario.FuncaoUsuario,
-            SetorUsuario = usuario.SetorUsuario
+            SetorUsuarioId = usuario.SetorUsuarioId,
+            SetorNome = usuario.SetorUsuario?.Nome
         };
 
         return Ok(usuarioDTO);
@@ -59,48 +61,66 @@ public class UsuarioController : ControllerBase
     [HttpPost]
     public ActionResult<UsuarioDTO> Criar(CriarUsuarioDTO usuarioDTO)
     {
-        var usuario = new Usuario(
-            id: 0,
-            nome: usuarioDTO.Nome,
-            senha: usuarioDTO.Senha,
-            funcao: usuarioDTO.FuncaoUsuario,
-            setor: usuarioDTO.SetorUsuario
-            );
+        var usuario = new Usuario
+        {
+            Nome = usuarioDTO.Nome,
+            Senha = usuarioDTO.Senha,
+            FuncaoUsuario = usuarioDTO.FuncaoUsuario,
+            SetorUsuarioId = usuarioDTO.SetorUsuarioId
+        };
 
         var usuarioCriado = _usuario.Criar(usuario);
+
+        if (usuarioCriado == null)
+        {
+            return BadRequest("Não foi possível criar o usuário.");
+        }
 
         var usuarioCriadoDTO = new UsuarioDTO
         {
             Id = usuarioCriado.Id,
             Nome = usuarioCriado.Nome,
             FuncaoUsuario = usuarioCriado.FuncaoUsuario,
-            SetorUsuario = usuarioCriado.SetorUsuario
+            SetorUsuarioId = usuarioCriado.SetorUsuarioId,
+            SetorNome = usuarioCriado.SetorUsuario?.Nome 
         };
 
         return CreatedAtAction(nameof(ObterPorId), new { id = usuarioCriadoDTO.Id }, usuarioCriadoDTO);
-
     }
 
 
     [HttpPut("{id}")]
     public ActionResult<UsuarioDTO> Atualizar(int id, AtualizarUsuarioDTO usuarioDTO)
     {
-        var usuarioExistente = _usuario.Buscar(id);
+        var usuarioExistente = _usuario.Buscar(id); 
         if (usuarioExistente == null)
-        {
             return NotFound();
-        }
 
-        // Atualizar os campos do usuário
         usuarioExistente.Nome = usuarioDTO.Nome;
         usuarioExistente.Senha = usuarioDTO.Senha;
         usuarioExistente.FuncaoUsuario = usuarioDTO.FuncaoUsuario;
-        usuarioExistente.SetorUsuario = usuarioDTO.SetorUsuario;
+        usuarioExistente.SetorUsuarioId = usuarioDTO.SetorUsuarioId;
 
-        var usuarioAtualizado = _usuario.Editar(usuarioExistente);
+        var sucesso = _usuario.Editar(usuarioExistente);
+        if (!sucesso)
+            return BadRequest("Não foi possível atualizar o usuário.");
 
-        return Ok(usuarioAtualizado);
+        // Rebusca com Include
+        var usuarioAtualizado = _usuario.Buscar(id); 
+        var usuarioAtualizadoDTO = new UsuarioDTO
+        {
+            Id = usuarioAtualizado.Id,
+            Nome = usuarioAtualizado.Nome,
+            FuncaoUsuario = usuarioAtualizado.FuncaoUsuario,
+            SetorUsuarioId = usuarioAtualizado.SetorUsuarioId,
+            SetorNome = usuarioAtualizado.SetorUsuario?.Nome
+        };
+
+        return Ok(usuarioAtualizadoDTO);
     }
+
+
+
 
     //[HttpDelete("{id}")]
     //public ActionResult Remover(int id)
