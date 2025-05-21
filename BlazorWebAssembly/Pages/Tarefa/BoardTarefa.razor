@@ -1,0 +1,231 @@
+﻿@page "/tarefa/board"
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+<PageTitle>Quadro de Tarefas</PageTitle>
+
+<MudContainer Class="mt-4">
+	<MudPaper Elevation="3" Class="pa-4">
+		<MudText Typo="Typo.h4" Class="mb-4">Quadro de Tarefas</MudText>
+
+		<MudGrid Class="mb-4">
+			<MudItem>
+				<MudButton Variant="Variant.Filled"
+						   Color="Color.Success"
+						   StartIcon="@Icons.Material.Filled.Add"
+						   OnClick="NavegarParaCriacao">
+					Nova Tarefa
+				</MudButton>
+			</MudItem>
+			<MudItem>
+				<MudButton Variant="Variant.Outlined"
+						   Color="Color.Primary"
+						   StartIcon="@Icons.Material.Filled.List"
+						   Href="/tarefa/lista">
+					Ver Lista de Tarefas
+				</MudButton>
+			</MudItem>
+		</MudGrid>
+
+		@if (tarefas == null)
+		{
+			<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+			<MudText Align="Align.Center">Carregando...</MudText>
+		}
+		else
+		{
+			<div class="d-flex justify-center mb-2">
+				<MudButton Variant="Variant.Text"
+						   Color="Color.Primary"
+						   OnClick="async () => { tarefas = await CarregarListaTarefas(); StateHasChanged(); }"
+						   StartIcon="@Icons.Material.Filled.Refresh">
+					Atualizar
+				</MudButton>
+			</div>
+
+			<MudDropContainer T="TarefaDTO"
+							  Items="tarefas"
+							  ItemsSelector="@((item,dropzone) => item.Status.ToString() == dropzone)"
+							  ItemDropped="ItemUpdated"
+							  Class="d-flex flex-row flex-grow-1 pb-3 overflow-x-auto gap-2">
+				<ChildContent>
+					@foreach (var status in statusList)
+					{
+						<MudDropZone T="TarefaDTO"
+									 Identifier="@status.Id.ToString()"
+									 Style="min-width: 250px; min-height: 300px;max-width: 400px;"
+									 Class="rounded-lg border-2 border-solid mud-border-lines-default pa-2 flex-grow-1 flex-shrink-0">
+							<MudText Typo="Typo.h6" Class="px-2 py-1 d-flex align-center">
+								<MudIcon Icon="@GetStatusIcon(status.Tipo)" Color="@GetStatusColor(status.Tipo)" Class="mr-2" />
+								@status.Nome
+								<MudSpacer />
+								<MudBadge Content="@tarefas.Count(t => t.Status == status.Id)"
+										  Color="Color.Secondary"
+										  Overlap="false"
+										  Class="mr-2 object-right">
+								</MudBadge>
+							</MudText>
+						</MudDropZone>
+					}
+				</ChildContent>
+				<ItemRenderer>
+					<MudCard Elevation="1" Class="mt-2">
+						<MudCardContent Class="py-2">
+							<MudText Typo="Typo.subtitle1">@context.Titulo</MudText>
+							<MudText Typo="Typo.body2">@context.Descricao</MudText>
+							<MudText Typo="Typo.caption">@usuarios.FirstOrDefault(u => u.Id == context.CriadorId).Nome</MudText>
+						</MudCardContent>
+						<MudCardActions>
+							<MudChip T="string" Size="Size.Small"
+									 Color="@GetPriorityColor(context.PrioridadeTarefa)"
+									 Variant="Variant.Filled">
+								@GetPriorityString(context.PrioridadeTarefa)
+							</MudChip>
+							<MudSpacer />
+							<MudIconButton Icon="@Icons.Material.Filled.Edit"
+										   Color="Color.Primary"
+										   Size="Size.Small"
+										   OnClick="() => NavegarParaEdicao(context.Id)" />
+						</MudCardActions>
+					</MudCard>
+				</ItemRenderer>
+
+			</MudDropContainer>
+		}
+	</MudPaper>
+</MudContainer>
+
+@code {
+	private List<TarefaStatusDTO> statusList = new();
+	private List<UsuarioDTO> usuarios;
+	private List<TarefaDTO>? tarefas;
+
+	protected override async Task OnInitializedAsync()
+	{
+		statusList.Add(new TarefaStatusDTO(0, "Na Fila", TarefaStatusTipo.WAITING));
+		statusList.Add(new TarefaStatusDTO(1, "Em Execução", TarefaStatusTipo.IN_PROGRESS));
+		statusList.Add(new TarefaStatusDTO(2, "Finalizados", TarefaStatusTipo.FINISHED));
+
+		tarefas = await CarregarListaTarefas();
+		await CarregarListaUsuarios();
+	}
+
+	private async Task<List<TarefaDTO>> CarregarListaTarefas()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Tarefa");
+
+			if (response.IsSuccessStatusCode)
+			{
+				return await response.Content.ReadFromJsonAsync<List<TarefaDTO>>() ?? new List<TarefaDTO>();
+			}
+			else
+			{
+				Snackbar.Add($"Erro ao carregar tarefas: {response.StatusCode}", Severity.Error);
+				return new List<TarefaDTO>();
+			}
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao carregar tarefas: {ex.Message}", Severity.Error);
+			return new List<TarefaDTO>();
+		}
+	}
+
+	private async Task CarregarListaUsuarios()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Usuario");
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
+			usuarios = new List<UsuarioDTO>();
+		}
+	}
+
+	private async Task ItemUpdated(MudItemDropInfo<TarefaDTO> dropInfo)
+	{
+		// Obtém o novo status da coluna de destino
+		if (!int.TryParse(dropInfo.DropzoneIdentifier, out int newStatusId))
+			return;
+		// Atualiza o status da tarefa localmente
+		dropInfo.Item.Status = newStatusId;
+
+		// Envia a atualização para a API
+		var response = await Http.PutAsync($"tarefa/{dropInfo.Item.Id}/status/{newStatusId}", null);
+
+		if (!response.IsSuccessStatusCode)
+		{
+			Snackbar.Add("Erro ao mover a tarefa.", Severity.Error);
+			// Se falhar, recarrega as tarefas do servidor para garantir consistência
+			tarefas = await CarregarListaTarefas();
+			StateHasChanged();
+		}
+	}
+
+	private Color GetPriorityColor(int prioridade)
+	{
+		return prioridade switch
+		{
+			0 => Color.Success,  // Baixa
+			1 => Color.Info,     // Normal
+			2 => Color.Warning,  // Alta
+			3 => Color.Error,    // Urgente
+			_ => Color.Default
+		};
+	}
+
+	private String GetPriorityString(int prioridade)
+	{
+		return prioridade switch
+		{
+			0 => "Baixa",
+			1 => "Normal",
+			2 => "Alta",
+			3 => "Urgente",
+			_ => "..."
+		};
+	}
+
+	private void NavegarParaCriacao()
+	{
+		NavigationManager.NavigateTo("/tarefa/criar");
+	}
+
+	private void NavegarParaEdicao(int id)
+	{
+		NavigationManager.NavigateTo($"/tarefa/editar/{id}");
+	}
+
+	// Obtém ícone apropriado para cada status
+	private string GetStatusIcon(TarefaStatusTipo status)
+	{
+		return status switch
+		{
+			TarefaStatusTipo.WAITING => Icons.Material.Filled.List,        // Fila
+			TarefaStatusTipo.IN_PROGRESS => Icons.Material.Filled.DirectionsRun, // Em Execução
+			TarefaStatusTipo.FINISHED => Icons.Material.Filled.CheckCircle,  // Finalizados
+			_ => Icons.Material.Filled.Help
+		};
+	}
+
+	// Estilos personalizados para as colunas do quadro
+	private Color GetStatusColor(TarefaStatusTipo status)
+	{
+		return status switch
+		{
+			TarefaStatusTipo.WAITING => Color.Default, // Fila
+			TarefaStatusTipo.IN_PROGRESS => Color.Info, // Em Execução
+			TarefaStatusTipo.FINISHED => Color.Success, // Finalizados
+			_ => Color.Default
+		};
+	}
+
+}

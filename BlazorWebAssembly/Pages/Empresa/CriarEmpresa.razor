@@ -1,0 +1,71 @@
+﻿@page "/empresa/criar"
+@using Microsoft.AspNetCore.WebUtilities
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+<PageTitle>Novo Usuário</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+	<MudText Typo="Typo.h4" Class="mb-4">Nova Tarefa</MudText>
+
+	<MudForm Model="empresa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+		<MudGrid>
+			<MudItem xs="12">
+				<MudTextField Label="Nome" @bind-Value="empresa.Nome" Required="true"
+							  RequiredError="Nome é obrigatório" />
+			</MudItem>
+			<MudItem xs="12">
+				<MudTextField Label="CNPJ" @bind-Value="empresa.Cnpj" Required="true"
+							  RequiredError="Nome é obrigatório" />
+			</MudItem>
+
+			<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+				<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+						   OnClick="Cancelar">Cancelar</MudButton>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary"
+						   OnClick="SalvarEmpresa">Salvar</MudButton>
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+</MudContainer>
+
+@code {
+	private EmpresaDTO empresa = new();
+	private bool success;
+	private string[] errors = { };
+	private MudForm? form;
+
+	private async Task SalvarEmpresa()
+	{
+		try
+		{
+			if (form is null) return;
+
+			await form.Validate();
+			if (!success)
+				return;
+
+			var response = await Http.PostAsJsonAsync("Empresa", empresa);
+
+			if (!response.IsSuccessStatusCode){
+				Snackbar.Add($"Erro ao salvar empresa: {response.StatusCode}", Severity.Error);
+				Console.WriteLine($"Erro ao salvar empresa: {response.StatusCode}");
+				return;
+			}
+
+			NavigationManager.NavigateTo("/empresa/lista");
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao salvar empresa: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao salvar empresa: {ex.Message}");
+			if (ex.InnerException != null)
+				Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+		}
+	}
+
+	private void Cancelar()
+		=> NavigationManager.NavigateTo("/empresa/lista");
+}

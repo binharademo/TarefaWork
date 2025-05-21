@@ -1,0 +1,117 @@
+﻿@page "/usuario/criar"
+@using Microsoft.AspNetCore.WebUtilities
+@using System.ComponentModel.DataAnnotations
+@using System.Text.RegularExpressions
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+<PageTitle>Novo Usuário</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+	<MudText Typo="Typo.h4" Class="mb-4">Nova Tarefa</MudText>
+
+	<MudForm Model="usuario" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+		<MudGrid>
+			<MudItem xs="12">
+				<MudTextField Label="Nome" @bind-Value="usuario.Nome" Required="true"
+							  RequiredError="Nome é obrigatório" />
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudTextField Label="Senha" @bind-Value="usuario.Senha" Required="true"
+							  InputType="InputType.Password"
+							  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))"
+							  RequiredError="Senha é obrigatória!" />
+			</MudItem>
+			<MudItem xs="12" sm="6">
+				<MudTextField Label="Confirme a Senha" @bind-Value="_Senha" Required="true"
+							  InputType="InputType.Password"
+							  Validation="@(new Func<string, string>(SenhasIguais))"
+							  RequiredError="Senha é obrigatória!" />
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudSelect Label="Prioridade" @bind-Value="usuario.SetorUsuario">
+					<MudSelectItem Value="0">T.I.</MudSelectItem>
+					<MudSelectItem Value="1">Marketing</MudSelectItem>
+				</MudSelect>
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudSelect Label="Prioridade" @bind-Value="usuario.FuncaoUsuario">
+					<MudSelectItem Value="0">Desenvolvedor</MudSelectItem>
+					<MudSelectItem Value="1">Analista</MudSelectItem>
+					<MudSelectItem Value="2">Marketing</MudSelectItem>
+				</MudSelect>
+			</MudItem>
+
+
+			<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+				<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+						   OnClick="Cancelar">Cancelar</MudButton>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary"
+						   OnClick="SalvarUsuario">Salvar</MudButton>
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+</MudContainer>
+
+@code {
+	private UsuarioDTO usuario = new();
+	private bool success;
+	private string[] errors = { };
+	private MudForm? form;
+	private string? _Senha;
+
+	private async Task SalvarUsuario()
+	{
+		try
+		{
+			if (form is null) return;
+
+			await form.Validate();
+			if (!success)
+				return;
+
+
+			var response = await Http.PostAsJsonAsync("Usuario", usuario);
+
+			if (!response.IsSuccessStatusCode)
+				throw new Exception(await response.Content.ReadAsStringAsync());
+
+			NavigationManager.NavigateTo("/usuario/lista");
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao salvar usuário: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao salvar usuário: {ex.Message}");
+			if (ex.InnerException != null)
+				Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+		}
+	}
+
+	private string? SenhasIguais(string senha)
+	{
+		return senha.Equals(usuario.Senha) ? null : "Senhas estão diferentes";
+	}
+
+	private IEnumerable<string> PasswordStrength(string pw)
+	{
+		if (string.IsNullOrWhiteSpace(pw))
+		{
+			yield return "Senha é Obrigatória!";
+			yield break;
+		}
+		if (pw.Length < 4)
+			yield return "Senha deve ter 4 caracteres";
+		// if (!Regex.IsMatch(pw, @"[A-Z]"))
+		// 	yield return "Deve conter letras maiúsculas";
+		if (!Regex.IsMatch(pw, @"[a-z]"))
+			yield return "Deve conter letras minúsculas";
+		// if (!Regex.IsMatch(pw, @"[0-9]"))
+		// 	yield return "Deve conter letras números";
+	}
+
+	private void Cancelar()
+		=> NavigationManager.NavigateTo("/usuario/lista");
+}

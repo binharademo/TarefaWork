@@ -1,0 +1,154 @@
+﻿@page "/usuario"
+@page "/usuario/lista"
+@inject HttpClient Http
+
+<PageTitle>Lista de Usuários</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+	<MudGrid>
+		<MudItem xs="6">
+			<MudText Typo="Typo.h4">
+				<MudIcon Icon="@Icons.Material.Filled.Groups" /> Gerenciador de Usuários
+			</MudText>
+		</MudItem>
+		<MudItem xs="6" Class="d-flex justify-end">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+					   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+				Cadastrar Novo Usuário
+			</MudButton>
+		</MudItem>
+	</MudGrid>
+
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudText Typo="Typo.h5" Class="mb-4">
+			<MudIcon Icon="@Icons.Material.Filled.List" /> Lista de Usuários
+		</MudText>
+
+		@if (usuarios == null)
+		{
+			<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+			<MudText Align="Align.Center">Carregando...</MudText>
+		}
+		else if (!usuarios.Any())
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				Nenhum usuário cadastrado. Clique em "Cadastrar Novo Usuário" para começar.
+			</MudAlert>
+		}
+		else
+		{
+			<MudTable Items="@usuarios" Hover="true" Breakpoint="Breakpoint.Sm">
+				<HeaderContent>
+					<MudTh>ID</MudTh>
+					<MudTh>Nome</MudTh>
+					<MudTh>Setor</MudTh>
+					<MudTh>Funcao</MudTh>
+					<MudTh>Ações</MudTh>
+				</HeaderContent>
+				<RowTemplate>
+					<MudTd DataLabel="ID">@context.Id</MudTd>
+					<MudTd DataLabel="Título">@context.Nome</MudTd>
+					<MudTd DataLabel="Setor">
+						<MudChip T="string" Color="@GetSetorColor(context.SetorUsuario)" Size="Size.Small">
+							@GetSetorString(context.SetorUsuario)
+						</MudChip>
+					</MudTd>
+					<MudTd DataLabel="Função">
+						<MudChip T="string" Color="@GetFuncaoColor(context.FuncaoUsuario)" Size="Size.Small">
+							@GetFuncaoString(context.FuncaoUsuario)
+						</MudChip>
+					</MudTd>
+					<MudTd>
+						<MudIconButton Icon="@Icons.Material.Filled.Edit"
+									   Color="Color.Primary"
+									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
+					</MudTd>
+				</RowTemplate>
+			</MudTable>
+		}
+	</MudPaper>
+</MudContainer>
+
+@code {
+	private List<UsuarioDTO>? usuarios;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await CarregarListaUsuarios();
+	}
+
+	private async Task CarregarListaUsuarios()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Usuario");
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
+			usuarios = new List<UsuarioDTO>();
+		}
+	}
+
+	private void NavegarParaCriacao()
+	{
+		NavigationManager.NavigateTo("/usuario/criar");
+	}
+
+	private void NavegarParaEdicao(int id)
+	{
+		NavigationManager.NavigateTo($"/usuario/editar/{id}");
+	}
+
+	private Color GetSetorColor(int setor)
+	{
+		return setor switch
+		{
+			0 => Color.Success,  
+			1 => Color.Info,     
+			2 => Color.Warning,  
+			3 => Color.Error,    
+			_ => Color.Default
+		};
+	}
+
+	private String GetSetorString(int setor)
+	{
+		return setor switch
+		{
+			0 => "T.I.",
+			1 => "Marketing",
+			2 => "Financeiro",
+			3 => "R.H.",
+			_ => "..."
+		};
+	}
+
+	private Color GetFuncaoColor(int setor)
+	{
+		return setor switch
+		{
+			0 => Color.Success,  // Baixa
+			1 => Color.Info,     // Normal
+			2 => Color.Warning,  // Alta
+			3 => Color.Error,    // Urgente
+			_ => Color.Default
+		};
+	}
+
+	private String GetFuncaoString(int setor)
+	{
+		return setor switch
+		{
+			0 => "Desenvolvedor",
+			1 => "Analista",
+			2 => "Marketing",
+			3 => "Urgente",
+			_ => "..."
+		};
+	}
+}

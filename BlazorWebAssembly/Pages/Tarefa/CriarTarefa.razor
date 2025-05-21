@@ -1,0 +1,126 @@
+﻿@page "/tarefa/criar"
+@using Microsoft.AspNetCore.WebUtilities
+@inject ISnackbar Snackbar
+@inject HttpClient Http
+
+<PageTitle>Nova Tarefa</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+	<MudText Typo="Typo.h4" Class="mb-4">Nova Tarefa</MudText>
+
+	<MudForm Model="tarefa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+		<MudGrid>
+			<MudItem xs="12">
+				<MudTextField Label="Título" @bind-Value="tarefa.Titulo" Required="true"
+							  RequiredError="Título é obrigatório" />
+			</MudItem>
+
+			<MudItem xs="12">
+				<MudTextField Label="Descrição" @bind-Value="tarefa.Descricao"
+							  Lines="3" />
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudSelect Label="Prioridade" @bind-Value="tarefa.PrioridadeTarefa">
+					<MudSelectItem Value="0">Baixa</MudSelectItem>
+					<MudSelectItem Value="1">Média</MudSelectItem>
+					<MudSelectItem Value="2">Alta</MudSelectItem>
+				</MudSelect>
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudSelect Label="Criador" @bind-Value="tarefa.CriadorId">
+					@foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+					{
+						<MudSelectItem Value="@usuario.Id">@usuario.Nome</MudSelectItem>
+					}
+				</MudSelect>
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudSelect Label="Responsável" @bind-Value="tarefa.ResponsavelId">
+					@foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+					{
+						<MudSelectItem Value="@usuario.Id">@usuario.Nome</MudSelectItem>
+					}
+				</MudSelect>
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
+				<MudDatePicker Label="Prazo" Editable="true" @bind-Date="_prazo"
+							   DateFormat="dd/MM/yyyy" Required="true"
+							   RequiredError="Prazo é obrigatório" />
+			</MudItem>
+
+			<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+				<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+						   OnClick="Cancelar">Cancelar</MudButton>
+				<MudButton Variant="Variant.Filled" Color="Color.Primary"
+						   OnClick="SalvarTarefa">Salvar</MudButton>
+			</MudItem>
+		</MudGrid>
+	</MudForm>
+</MudContainer>
+
+@code {
+	private TarefaDTO tarefa = new();
+	private List<UsuarioDTO>? usuarios;
+	private bool success;
+	private string[] errors = { };
+	private MudForm form;
+	private DateTime? _prazo = DateTime.Now.AddDays(2);
+
+	protected override async Task OnInitializedAsync()
+	{
+		await CarregarListaUsuarios();
+	}
+
+	private async Task CarregarListaUsuarios()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Usuario");
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
+			usuarios = new List<UsuarioDTO>();
+		}
+	}
+
+	private async Task SalvarTarefa()
+	{
+		try
+		{
+			await form.Validate();
+			if (!success)
+				return;
+			if (!_prazo.HasValue)
+				return;
+
+			tarefa.Prazo = _prazo.Value;
+			tarefa.Status = 0; // Fila
+
+			var response = await Http.PostAsJsonAsync("Tarefa", tarefa);
+
+			if (!response.IsSuccessStatusCode)
+				throw new Exception(await response.Content.ReadAsStringAsync());
+
+			NavigationManager.NavigateTo("/tarefa/lista");
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao salvar tarefa: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao salvar tarefa: {ex.Message}");
+			if (ex.InnerException != null)
+				Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+		}
+	}
+
+	private void Cancelar()
+		=> NavigationManager.NavigateTo("/tarefa/lista");
+}

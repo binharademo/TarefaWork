@@ -1,7 +1,26 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Gerenciador de tarefas</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+<MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
+	<MudGrid>
+		<MudItem xs="4">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Dashboard"
+					   Size="Size.Large" OnClick='() => NavigationManager.NavigateTo("/tarefa/board")'>
+				Board de Tarefas
+			</MudButton>
+		</MudItem>
+		<MudItem xs="4">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.ListAlt"
+					   Size="Size.Large" OnClick='() => NavigationManager.NavigateTo("/tarefa/lista")'>
+				Lista de Tarefas
+			</MudButton>
+		</MudItem>
+		<MudItem xs="4">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Groups"
+					   Size="Size.Large" OnClick='() => NavigationManager.NavigateTo("/usuario/lista")'>
+				Lista de Usuários
+			</MudButton>
+		</MudItem>
+	</MudGrid>
+</MudContainer>

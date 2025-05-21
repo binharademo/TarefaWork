@@ -15,7 +15,7 @@
     <MudNavGroup Title="TAREFAS" Icon="@Icons.Material.Filled.ChecklistRtl">
 
         <MudNavLink Href="/tarefa/board" Match="NavLinkMatch.Prefix"
-                    Icon="@Icons.Material.Filled.PieChart"
+                    Icon="@Icons.Material.Filled.Dashboard"
                     Class="ml-2">
             Board
         </MudNavLink>
@@ -33,6 +33,38 @@
         </MudNavLink> 
     </MudNavGroup>
 
+    <!-- Seção de usuarios -->
+    <MudNavGroup Title="USUÁRIOS" Icon="@Icons.Material.Filled.Groups">
+
+        <MudNavLink Href="/usuario/lista" Match="NavLinkMatch.Prefix"
+                    Icon="@Icons.Material.Filled.ManageAccounts"
+                    Class="ml-2">
+            Listar
+        </MudNavLink>
+
+        <MudNavLink Href="/usuario/criar" Match="NavLinkMatch.Prefix"
+                    Icon="@Icons.Material.Filled.PersonAdd"
+                    Class="ml-2">
+            Criar
+        </MudNavLink>
+    </MudNavGroup>
+
+    <!-- Seção de empresas -->
+    <MudNavGroup Title="EMPRESAS" Icon="@Icons.Material.Filled.Work">
+
+        <MudNavLink Href="/empresa/lista" Match="NavLinkMatch.Prefix"
+                    Icon="@Icons.Material.Filled.Work"
+                    Class="ml-2">
+            Listar
+        </MudNavLink>
+
+        <MudNavLink Href="/empresa/criar" Match="NavLinkMatch.Prefix"
+                    Icon="@Icons.Material.Filled.AddCircle"
+                    Class="ml-2">
+            Criar
+        </MudNavLink>
+    </MudNavGroup>
+
     <MudDivider Class="my-3" />
-    
+
 </MudNavMenu>

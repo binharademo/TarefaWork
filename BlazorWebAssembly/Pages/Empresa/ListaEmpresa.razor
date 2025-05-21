@@ -1,0 +1,87 @@
+﻿@page "/empresa"
+@page "/empresa/lista"
+@inject HttpClient Http
+
+<PageTitle>Lista de Empresas</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudGrid>
+			<MudItem xs="8">
+				<MudText Typo="Typo.h5" Class="mb-4">
+					<MudIcon Icon="@Icons.Material.Filled.List" /> Lista de Empresas
+				</MudText>
+			</MudItem>
+			<MudItem xs="4" Class="d-flex justify-end">
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+						   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+					Cadastrar
+				</MudButton>
+			</MudItem>
+		</MudGrid>
+
+		@if (empresas == null)
+		{
+			<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+			<MudText Align="Align.Center">Carregando...</MudText>
+		}
+		else if (!empresas.Any())
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				Nenhuma empresa cadastrada. Clique em "Cadastrar" para começar.
+			</MudAlert>
+		}
+		else
+		{
+			<MudTable Items="@empresas" Hover="true" Breakpoint="Breakpoint.Sm">
+				<HeaderContent>
+					<MudTh>ID</MudTh>
+					<MudTh>Nome</MudTh>
+					<MudTh>CNPJ</MudTh>
+					<MudTh>Ações</MudTh>
+				</HeaderContent>
+				<RowTemplate>
+					<MudTd DataLabel="ID">@context.Id</MudTd>
+					<MudTd DataLabel="Nome">@context.Nome</MudTd>
+					<MudTd DataLabel="CNPJ">@context.Cnpj</MudTd>
+					<MudTd>
+						<MudIconButton Icon="@Icons.Material.Filled.Edit"
+									   Color="Color.Primary"
+									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
+					</MudTd>
+				</RowTemplate>
+			</MudTable>
+		}
+	</MudPaper>
+</MudContainer>
+
+@code {
+	private List<EmpresaDTO>? empresas;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Empresa");
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			empresas = await response.Content.ReadFromJsonAsync<List<EmpresaDTO>>() ?? new List<EmpresaDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar empresas: {ex.Message}");
+			empresas = new List<EmpresaDTO>();
+		}
+	}
+
+	private void NavegarParaCriacao()
+	{
+		NavigationManager.NavigateTo("/empresa/criar");
+	}
+
+	private void NavegarParaEdicao(int id)
+	{
+		NavigationManager.NavigateTo($"/empresa/editar/{id}");
+	}
+}

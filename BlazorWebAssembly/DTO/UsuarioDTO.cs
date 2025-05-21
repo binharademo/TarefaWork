@@ -2,11 +2,10 @@
 {
     public class UsuarioDTO
     {
-        public int Id { get; set; } = -1;
-        //public string Senha { get; set; }
-        public string Nome { get; set; } = "NÃO ENCONTRADO";
-        //public Funcao FuncaoUsuario { get; set; }
-        //public Setor SetorUsuario { get; set; }
-
+        public int Id { get; set; }
+        public string Senha { get; set; }
+        public string Nome { get; set; }
+        public int FuncaoUsuario { get; set; }
+        public int SetorUsuario { get; set; }
     }
 }
