@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { styled, useTheme } from '@mui/material/styles';
+﻿import * as React from 'react';
+import { styled, useTheme, alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -21,14 +21,35 @@ import Diversity3Icon from '@mui/icons-material/Diversity3';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import { Link } from 'react-router-dom'; // Adicione esta importa��o
+import { Link, useLocation } from 'react-router-dom';
 import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import BusinessIcon from '@mui/icons-material/Business';
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
+import Avatar from '@mui/material/Avatar';
+import Badge from '@mui/material/Badge';
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import SearchIcon from '@mui/icons-material/Search';
+import InputBase from '@mui/material/InputBase';
+import Tooltip from '@mui/material/Tooltip';
+import ListSubheader from '@mui/material/ListSubheader';
+import Collapse from '@mui/material/Collapse';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import CloseIcon from '@mui/icons-material/Close';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import PersonIcon from '@mui/icons-material/Person';
+import WarningIcon from '@mui/icons-material/Warning';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Button from '@mui/material/Button';
 
-const drawerWidth = 240;
+const drawerWidth = 260;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme }) => ({
+    ({ theme, open }) => ({
         flexGrow: 1,
         padding: theme.spacing(3),
         transition: theme.transitions.create('margin', {
@@ -36,55 +57,188 @@ const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(
             duration: theme.transitions.duration.leavingScreen,
         }),
         marginLeft: `-${drawerWidth}px`,
-        variants: [
-            {
-                props: ({ open }) => open,
-                style: {
-                    transition: theme.transitions.create('margin', {
-                        easing: theme.transitions.easing.easeOut,
-                        duration: theme.transitions.duration.enteringScreen,
-                    }),
-                    marginLeft: 0,
-                },
-            },
-        ],
-    }),
+        ...(open && {
+            transition: theme.transitions.create('margin', {
+                easing: theme.transitions.easing.easeOut,
+                duration: theme.transitions.duration.enteringScreen,
+            }),
+            marginLeft: 0,
+        }),
+    })
 );
 
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
-})(({ theme }) => ({
+})(({ theme, open }) => ({
     transition: theme.transitions.create(['margin', 'width'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
     }),
-    variants: [
-        {
-            props: ({ open }) => open,
-            style: {
-                width: `calc(100% - ${drawerWidth}px)`,
-                marginLeft: `${drawerWidth}px`,
-                transition: theme.transitions.create(['margin', 'width'], {
-                    easing: theme.transitions.easing.easeOut,
-                    duration: theme.transitions.duration.enteringScreen,
-                }),
-            },
+    boxShadow: '0 3px 5px 2px rgba(0, 0, 0, .1)',
+    background: 'linear-gradient(90deg, #3949ab 0%, #5c6bc0 100%)',
+    ...(open && {
+        width: `calc(100% - ${drawerWidth}px)`,
+        marginLeft: `${drawerWidth}px`,
+        transition: theme.transitions.create(['margin', 'width'], {
+            easing: theme.transitions.easing.easeOut,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
+
+const Search = styled('div')(({ theme }) => ({
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+        marginLeft: theme.spacing(3),
+        width: 'auto',
+    },
+}));
+
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+    color: 'inherit',
+    '& .MuiInputBase-input': {
+        padding: theme.spacing(1, 1, 1, 0),
+        paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+        transition: theme.transitions.create('width'),
+        width: '100%',
+        [theme.breakpoints.up('md')]: {
+            width: '20ch',
         },
-    ],
+    },
 }));
 
 const DrawerHeader = styled('div')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'space-between',
+    background: 'linear-gradient(90deg, #3949ab 0%, #5c6bc0 100%)',
+    color: 'white',
+}));
+
+const MainDrawerHeader = styled('div')(({ theme }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
     ...theme.mixins.toolbar,
     justifyContent: 'flex-end',
+    visibility: 'hidden', // Tornar invisível
+    height: 0, // Remover espaço vertical
+    padding: 0, // Remover padding
+}));
+
+const StyledListSubheader = styled(ListSubheader)(({ theme }) => ({
+    backgroundColor: alpha(theme.palette.primary.light, 0.08),
+    lineHeight: '48px',
+    color: theme.palette.primary.dark,
+    fontWeight: 600,
+    fontSize: '0.875rem',
+}));
+
+const StyledListItemButton = styled(ListItemButton)(({ theme, active }) => ({
+    borderRadius: '8px',
+    margin: '6px 8px',
+    '&:hover': {
+        backgroundColor: alpha(theme.palette.primary.main, 0.08),
+    },
+    ...(active && {
+        backgroundColor: alpha(theme.palette.primary.main, 0.12),
+        '&:hover': {
+            backgroundColor: alpha(theme.palette.primary.main, 0.16),
+        },
+    }),
+}));
+
+const StyledListItemIcon = styled(ListItemIcon)(({ theme, active }) => ({
+    minWidth: 40,
+    color: active ? theme.palette.primary.main : theme.palette.text.secondary,
+}));
+
+const StyledListItemText = styled(ListItemText)(({ theme, active }) => ({
+    '& .MuiTypography-root': {
+        fontWeight: active ? 600 : 400,
+        color: active ? theme.palette.primary.main : theme.palette.text.primary,
+    },
 }));
 
 export default function PersistentDrawerLeft({ children }) {
     const theme = useTheme();
+    const location = useLocation();
     const [open, setOpen] = React.useState(false);
+    const [openUsers, setOpenUsers] = React.useState(true);
+    const [openTasks, setOpenTasks] = React.useState(true);
+    const [openCompanies, setOpenCompanies] = React.useState(true);
+    const [openSectors, setOpenSectors] = React.useState(true);
+
+    // Estados para o menu de notificações
+    const [notificationsAnchorEl, setNotificationsAnchorEl] = React.useState(null);
+    const openNotifications = Boolean(notificationsAnchorEl);
+
+    // Mock de dados para notificações
+    const notificationsMock = [
+        {
+            id: 1,
+            type: 'task',
+            title: 'Nova tarefa atribuída',
+            message: 'Você recebeu uma nova tarefa: "Revisar relatório mensal"',
+            time: 'Há 5 minutos',
+            read: false,
+            priority: 'high',
+            icon: <AssignmentIcon color="primary" />
+        },
+        {
+            id: 2,
+            type: 'alert',
+            title: 'Prazo próximo',
+            message: 'A tarefa "Reunião com cliente" vence em 2 horas',
+            time: 'Há 30 minutos',
+            read: false,
+            priority: 'urgent',
+            icon: <WarningIcon sx={{ color: '#ff9800' }} />
+        },
+        {
+            id: 3,
+            type: 'user',
+            title: 'Novo comentário',
+            message: 'xxmarceloo comentou na sua tarefa "Implementar login"',
+            time: 'Há 2 horas',
+            read: true,
+            priority: 'normal',
+            icon: <PersonIcon color="secondary" />
+        },
+        {
+            id: 4,
+            type: 'success',
+            title: 'Tarefa concluída',
+            message: 'A tarefa "Atualizar documentação" foi marcada como concluída',
+            time: 'Há 1 dia',
+            read: true,
+            priority: 'low',
+            icon: <CheckCircleIcon sx={{ color: 'green' }} />
+        }
+    ];
+
+    // Contador de notificações não lidas
+    const unreadCount = notificationsMock.filter(notification => !notification.read).length;
 
     const handleDrawerOpen = () => {
         setOpen(true);
@@ -92,6 +246,34 @@ export default function PersistentDrawerLeft({ children }) {
 
     const handleDrawerClose = () => {
         setOpen(false);
+    };
+
+    const handleToggleUsers = () => {
+        setOpenUsers(!openUsers);
+    };
+
+    const handleToggleTasks = () => {
+        setOpenTasks(!openTasks);
+    };
+
+    const handleToggleCompanies = () => {
+        setOpenCompanies(!openCompanies);
+    };
+
+    const handleToggleSectors = () => {
+        setOpenSectors(!openSectors);
+    };
+
+    const handleNotificationsClick = (event) => {
+        setNotificationsAnchorEl(event.currentTarget);
+    };
+
+    const handleNotificationsClose = () => {
+        setNotificationsAnchorEl(null);
+    };
+
+    const isActive = (path) => {
+        return location.pathname === path;
     };
 
     return (
@@ -104,18 +286,133 @@ export default function PersistentDrawerLeft({ children }) {
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
                         edge="start"
-                        sx={[
-                            {
-                                mr: 2,
-                            },
-                            open && { display: 'none' },
-                        ]}
+                        sx={{
+                            mr: 2,
+                            ...(open && { display: 'none' }),
+                        }}
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
+                    <Typography variant="h6" noWrap component="div" sx={{ display: { xs: 'none', sm: 'block' } }}>
                         Tarefas React
                     </Typography>
+                    <Search>
+                        <SearchIconWrapper>
+                            <SearchIcon />
+                        </SearchIconWrapper>
+                        <StyledInputBase
+                            placeholder="Pesquisar..."
+                            inputProps={{ 'aria-label': 'search' }}
+                        />
+                    </Search>
+                    <Box sx={{ flexGrow: 1 }} />
+                    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+                        <Tooltip title="Notificações">
+                            <IconButton
+                                size="large"
+                                color="inherit"
+                                onClick={handleNotificationsClick}
+                                aria-controls={openNotifications ? 'notifications-menu' : undefined}
+                                aria-haspopup="true"
+                                aria-expanded={openNotifications ? 'true' : undefined}
+                            >
+                                <Badge badgeContent={unreadCount} color="error">
+                                    <NotificationsIcon />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
+                        <Menu
+                            id="notifications-menu"
+                            anchorEl={notificationsAnchorEl}
+                            open={openNotifications}
+                            onClose={handleNotificationsClose}
+                            PaperProps={{
+                                elevation: 3,
+                                sx: {
+                                    width: '350px',
+                                    maxHeight: '450px',
+                                    overflow: 'auto',
+                                    border: '1px solid',
+                                    borderColor: 'divider',
+                                    borderRadius: 2,
+                                },
+                            }}
+                            transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                            anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                        >
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2, borderBottom: '1px solid', borderColor: 'divider' }}>
+                                <Typography variant="subtitle1" fontWeight="bold">
+                                    Notificações ({unreadCount} não lidas)
+                                </Typography>
+                                <IconButton size="small" onClick={handleNotificationsClose}>
+                                    <CloseIcon fontSize="small" />
+                                </IconButton>
+                            </Box>
+
+                            {notificationsMock.length > 0 ? (
+                                notificationsMock.map((notification) => (
+                                    <MenuItem
+                                        key={notification.id}
+                                        onClick={handleNotificationsClose}
+                                        sx={{
+                                            py: 1,
+                                            px: 2,
+                                            borderLeft: notification.read ? 'none' : '4px solid',
+                                            borderColor: notification.read ? 'transparent' : 'primary.main',
+                                            backgroundColor: notification.read ? 'transparent' : alpha(theme.palette.primary.light, 0.08),
+                                            '&:hover': {
+                                                backgroundColor: notification.read ? alpha(theme.palette.primary.light, 0.04) : alpha(theme.palette.primary.light, 0.12)
+                                            }
+                                        }}
+                                    >
+                                        <Box sx={{ display: 'flex', width: '100%' }}>
+                                            <Box sx={{ mr: 2, mt: 0.5 }}>
+                                                {notification.icon}
+                                            </Box>
+                                            <Box sx={{ flex: 1 }}>
+                                                <Typography variant="subtitle2" sx={{ fontWeight: notification.read ? 400 : 600 }}>
+                                                    {notification.title}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5 }}>
+                                                    {notification.message}
+                                                </Typography>
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                    <AccessTimeIcon sx={{ fontSize: 14, mr: 0.5, color: 'text.disabled' }} />
+                                                    <Typography variant="caption" color="text.disabled">
+                                                        {notification.time}
+                                                    </Typography>
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </MenuItem>
+                                ))
+                            ) : (
+                                <Box sx={{ py: 4, textAlign: 'center' }}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Nenhuma notificação disponível
+                                    </Typography>
+                                </Box>
+                            )}
+
+                            <Box sx={{ p: 1.5, borderTop: '1px solid', borderColor: 'divider', textAlign: 'center' }}>
+                                <Button size="small" color="primary">
+                                    Ver todas as notificações
+                                </Button>
+                            </Box>
+                        </Menu>
+                        <Tooltip title="Perfil">
+                            <IconButton
+                                size="large"
+                                edge="end"
+                                color="inherit"
+                                sx={{ ml: 1 }}
+                            >
+                                <Avatar sx={{ width: 32, height: 32, bgcolor: alpha(theme.palette.common.white, 0.8), color: theme.palette.primary.main }}>
+                                    U
+                                </Avatar>
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -125,6 +422,8 @@ export default function PersistentDrawerLeft({ children }) {
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
                         boxSizing: 'border-box',
+                        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+                        borderRight: 'none',
                     },
                 }}
                 variant="persistent"
@@ -132,81 +431,157 @@ export default function PersistentDrawerLeft({ children }) {
                 open={open}
             >
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
+                        <Avatar sx={{ bgcolor: 'white', color: theme.palette.primary.main, mr: 1, width: 32, height: 32 }}>TR</Avatar>
+                        <Typography variant="h6" noWrap component="div">
+                            Tarefas React
+                        </Typography>
+                    </Box>
+                    <IconButton onClick={handleDrawerClose} sx={{ color: 'white' }}>
                         {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <List>
-                    <h4>Dashboard</h4>
+
+                <List component="nav" sx={{ px: 1, py: 1 }}>
                     <ListItem key="BoardTarefas" disablePadding>
-                        <ListItemButton component={Link} to="/">
-                            <ListItemIcon>
+                        <StyledListItemButton component={Link} to="/" active={isActive("/")} disableRipple>
+                            <StyledListItemIcon active={isActive("/")}>
                                 <DashboardIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Board" />
-                        </ListItemButton>
-                    </ListItem>
-                    <h4>Usuarios</h4>
-                    <ListItem key="CadastroUsuario" disablePadding>
-                        <ListItemButton component={Link} to="/usuario/cadastro">
-                            <ListItemIcon>
-                                <PersonAddIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Cadastro" />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem key="ListarUsuario" disablePadding>
-                        <ListItemButton component={Link} to="/usuario/listar">
-                            <ListItemIcon>
-                                <Diversity3Icon />
-                            </ListItemIcon>
-                            <ListItemText primary="Listar" />
-                        </ListItemButton>
+                            </StyledListItemIcon>
+                            <StyledListItemText primary="Dashboard" active={isActive("/")} />
+                        </StyledListItemButton>
                     </ListItem>
                 </List>
-                <Divider />
-                <List>
-                    <h4>Tarefas</h4>
-                    <ListItem key="CadastroTarefa" disablePadding>
-                        <ListItemButton component={Link} to="/tarefa/cadastro">
-                            <ListItemIcon>
-                                <AddTaskIcon></AddTaskIcon>
-                            </ListItemIcon>
-                            <ListItemText primary="Cadastro"></ListItemText>
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem key="ListarTarefa" disablePadding>
-                        <ListItemButton component={Link} to="/tarefa/listar">
-                            <ListItemIcon>
-                                <FormatListBulletedIcon></FormatListBulletedIcon>
-                            </ListItemIcon>
-                            <ListItemText primary="Listar"></ListItemText>
-                        </ListItemButton>
-                    </ListItem>
+
+                <Divider variant="middle" sx={{ my: 1 }} />
+
+                <List
+                    sx={{ px: 1, py: 0 }}
+                    component="nav"
+                    aria-labelledby="usuarios-subheader"
+                >
+                    <ListItemButton onClick={handleToggleUsers} sx={{ borderRadius: '8px' }}>
+                        <ListItemText primary="Usuários" />
+                        {openUsers ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openUsers} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            <ListItem key="CadastroUsuario" disablePadding>
+                                <StyledListItemButton component={Link} to="/usuario/cadastro" active={isActive("/usuario/cadastro")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/usuario/cadastro")}>
+                                        <PersonAddIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Cadastro" active={isActive("/usuario/cadastro")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                            <ListItem key="ListarUsuario" disablePadding>
+                                <StyledListItemButton component={Link} to="/usuario/listar" active={isActive("/usuario/listar")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/usuario/listar")}>
+                                        <Diversity3Icon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Listar" active={isActive("/usuario/listar")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                        </List>
+                    </Collapse>
                 </List>
-                <List>
-                    <h4>Empresas</h4>
-                    <ListItem key="CadastroEmpresa" disablePadding>
-                        <ListItemButton component={Link} to="/empresa/cadastro">
-                            <ListItemIcon>
-                                <DomainAddIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Cadastro" />
-                        </ListItemButton>
-                    </ListItem>
-                    <ListItem key="ListarEmpresa" disablePadding>
-                        <ListItemButton component={Link} to="/empresa/listar">
-                            <ListItemIcon>
-                                <BusinessIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Listar" />
-                        </ListItemButton>
-                    </ListItem>
+
+                <List
+                    sx={{ px: 1, py: 0 }}
+                    component="nav"
+                    aria-labelledby="tarefas-subheader"
+                >
+                    <ListItemButton onClick={handleToggleTasks} sx={{ borderRadius: '8px' }}>
+                        <ListItemText primary="Tarefas" />
+                        {openTasks ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openTasks} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            <ListItem key="CadastroTarefa" disablePadding>
+                                <StyledListItemButton component={Link} to="/tarefa/cadastro" active={isActive("/tarefa/cadastro")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/tarefa/cadastro")}>
+                                        <AddTaskIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Cadastro" active={isActive("/tarefa/cadastro")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                            <ListItem key="ListarTarefa" disablePadding>
+                                <StyledListItemButton component={Link} to="/tarefa/listar" active={isActive("/tarefa/listar")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/tarefa/listar")}>
+                                        <FormatListBulletedIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Listar" active={isActive("/tarefa/listar")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                        </List>
+                    </Collapse>
+                </List>
+
+                <List
+                    sx={{ px: 1, py: 0 }}
+                    component="nav"
+                    aria-labelledby="empresas-subheader"
+                >
+                    <ListItemButton onClick={handleToggleCompanies} sx={{ borderRadius: '8px' }}>
+                        <ListItemText primary="Empresas" />
+                        {openCompanies ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openCompanies} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            <ListItem key="CadastroEmpresa" disablePadding>
+                                <StyledListItemButton component={Link} to="/empresa/cadastro" active={isActive("/empresa/cadastro")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/empresa/cadastro")}>
+                                        <DomainAddIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Cadastro" active={isActive("/empresa/cadastro")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                            <ListItem key="ListarEmpresa" disablePadding>
+                                <StyledListItemButton component={Link} to="/empresa/listar" active={isActive("/empresa/listar")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/empresa/listar")}>
+                                        <BusinessIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Listar" active={isActive("/empresa/listar")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                        </List>
+                    </Collapse>
+                </List>
+
+                <List
+                    sx={{ px: 1, py: 0 }}
+                    component="nav"
+                    aria-labelledby="setores-subheader"
+                >
+                    <ListItemButton onClick={handleToggleSectors} sx={{ borderRadius: '8px' }}>
+                        <ListItemText primary="Setores" />
+                        {openSectors ? <ExpandLess /> : <ExpandMore />}
+                    </ListItemButton>
+                    <Collapse in={openSectors} timeout="auto" unmountOnExit>
+                        <List component="div" disablePadding>
+                            <ListItem key="CadastrarSetor" disablePadding>
+                                <StyledListItemButton component={Link} to="/setor/cadastro" active={isActive("/setor/cadastro")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/setor/cadastro")}>
+                                        <GroupAddRoundedIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Cadastro" active={isActive("/setor/cadastro")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                            <ListItem key="ListarSetor" disablePadding>
+                                <StyledListItemButton component={Link} to="/setor/listar" active={isActive("/setor/listar")} disableRipple sx={{ pl: 4 }}>
+                                    <StyledListItemIcon active={isActive("/setor/listar")}>
+                                        <PeopleAltRoundedIcon />
+                                    </StyledListItemIcon>
+                                    <StyledListItemText primary="Listar" active={isActive("/setor/listar")} />
+                                </StyledListItemButton>
+                            </ListItem>
+                        </List>
+                    </Collapse>
                 </List>
             </Drawer>
             <Main open={open}>
-                <DrawerHeader />
+                <MainDrawerHeader />
                 {children}
             </Main>
         </Box>

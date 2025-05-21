@@ -26,7 +26,6 @@ import {
     Error as ErrorIcon,
     PriorityHigh as PriorityHighIcon,
     MoreVert as MoreVertIcon,
-    DragIndicator as DragIndicatorIcon,
     Visibility as VisibilityIcon,
     Edit as EditIcon
 } from '@mui/icons-material';
@@ -87,11 +86,12 @@ export default function BoardTarefas() {
             .finally(() => setLoading(false));
     };
 
-    const showNotification = (message, severity = 'info') => setNotification({ open: true, message, severity });
-    const closeNotification = () => setNotification(prev => ({ ...prev, open: false }));
+    const showNotification = (message, severity = 'info') =>
+        setNotification({ open: true, message, severity });
+    const closeNotification = () =>
+        setNotification(prev => ({ ...prev, open: false }));
 
     const statusLabels = { 0: 'Concluído', 1: 'Em Andamento', 2: 'Pendente' };
-
 
     const converterParaSegundos = str => {
         if (!str) return 0;
@@ -107,7 +107,6 @@ export default function BoardTarefas() {
         return [h, m, ss].map(n => n.toString().padStart(2, '0')).join(':');
     };
 
-    // Handle menu open
     const handleMenuOpen = (event, taskId) => {
         event.stopPropagation();
         setSelectedTaskId(taskId);
@@ -118,7 +117,6 @@ export default function BoardTarefas() {
         setSelectedTaskId(null);
     };
 
-    // Navigation
     const handleVisualizar = () => {
         navigate(`/tarefa/visualizar/${selectedTaskId}`);
         handleMenuClose();
@@ -128,23 +126,41 @@ export default function BoardTarefas() {
         handleMenuClose();
     };
 
-    const handleDragEnd = async result => {
+    const handleDragEnd = async (result) => {
         const { source, destination } = result;
-        if (!destination || (source.droppableId === destination.droppableId && source.index === destination.index)) return;
+        if (!destination) return;
 
         const srcId = source.droppableId;
         const dstId = destination.droppableId;
+
+        // 1) Reordenar dentro da mesma coluna
+        if (srcId === dstId) {
+            const items = Array.from(columns[srcId]);
+            const [moved] = items.splice(source.index, 1);
+            items.splice(destination.index, 0, moved);
+            setColumns(prev => ({ ...prev, [srcId]: items }));
+            return;
+        }
+
+        // 2) Movimentar entre colunas (status diferente)
         const srcList = Array.from(columns[srcId]);
         const dstList = Array.from(columns[dstId]);
         const [moved] = srcList.splice(source.index, 1);
         const updated = { ...moved, status: Number(dstId) };
         dstList.splice(destination.index, 0, updated);
-        setColumns({ ...columns, [srcId]: srcList, [dstId]: dstList });
+
+        setColumns(prev => ({
+            ...prev,
+            [srcId]: srcList,
+            [dstId]: dstList
+        }));
 
         showNotification(`Movendo "${updated.titulo}" para ${statusLabels[updated.status]}...`, 'info');
         try {
             const res = await fetch(`http://localhost:53011/Tarefa/${updated.id}`, {
-                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(updated)
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updated)
             });
             if (!res.ok) throw new Error();
             showNotification(`Tarefa "${updated.titulo}" movida!`, 'success');
@@ -176,7 +192,12 @@ export default function BoardTarefas() {
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
                                     >
-                                        <Typography variant="h6" align="center" gutterBottom sx={{ color: theme.palette[STATUS_COLORS[status]].dark }}>
+                                        <Typography
+                                            variant="h6"
+                                            align="center"
+                                            gutterBottom
+                                            sx={{ color: theme.palette[STATUS_COLORS[status]].dark }}
+                                        >
                                             {statusLabels[status]} ({columns[status].length})
                                         </Typography>
                                         {columns[status].map((t, idx) => {
@@ -252,7 +273,6 @@ export default function BoardTarefas() {
                 </Grid>
             </DragDropContext>
 
-            {/* Menu de opções */}
             <Menu
                 anchorEl={anchorEl}
                 open={menuOpen}
@@ -261,15 +281,11 @@ export default function BoardTarefas() {
                 transformOrigin={{ vertical: 'top', horizontal: 'right' }}
             >
                 <MenuItem onClick={handleVisualizar}>
-                    <ListItemIcon>
-                        <VisibilityIcon fontSize="small" />
-                    </ListItemIcon>
+                    <ListItemIcon><VisibilityIcon fontSize="small" /></ListItemIcon>
                     Visualizar
                 </MenuItem>
                 <MenuItem onClick={handleEditar}>
-                    <ListItemIcon>
-                        <EditIcon fontSize="small" />
-                    </ListItemIcon>
+                    <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
                     Editar
                 </MenuItem>
             </Menu>
