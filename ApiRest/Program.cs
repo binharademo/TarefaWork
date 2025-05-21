@@ -2,6 +2,7 @@ using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Repositorio;
 using TarefasLibrary.Repositorio.Entity;
+using SetorRepositorio = TarefasLibrary.Repositorio.Entity.SetorRepositorio;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,7 @@ var _connectionString = builder.Configuration.GetConnectionString("DefaultConnec
 builder.Services.AddSingleton<ITarefaRepositorio>(new TarefaRepositorio(_connectionString));
 builder.Services.AddSingleton<IUsuarioRepositorio>(new UsuarioRepositorio(_connectionString));
 builder.Services.AddSingleton<IRepositorio<Empresa>>(new EmpresaRepositorio(_connectionString));
-
+builder.Services.AddSingleton<IRepositorio<Setor>>(new SetorRepositorio(_connectionString));
 builder.Services.AddSingleton<IComentarioRepositorio>(new ComentarioRepositorio(_connectionString));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

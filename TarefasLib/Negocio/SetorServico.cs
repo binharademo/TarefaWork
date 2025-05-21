@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;
 using TarefasLibrary.Repositorio;
@@ -11,25 +7,32 @@ namespace TarefasLibrary.Negocio
 {
     public class SetorServico
     {
-        private readonly SetorRepositorio? _repository;
-        public SetorServico(SetorRepositorio repository)
+        private readonly IRepositorio<Setor> _repository;
+        public SetorServico(IRepositorio<Setor> repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public Setor? BuscarPorId(int id)
+        public bool Cadastrar(Setor setor)
         {
-            return _repository.BuscarPorId(id);
-        }
-
-        public bool Cadastrar(Setor obj)
-        {
-            return _repository.Cadastrar(obj);
+            return _repository.Cadastrar(setor);
         }
 
         public bool Editar(int id, string nome, bool status)
         {
-            return _repository.Editar(new(id, nome, status));
+            Setor s = _repository.BuscarPorId(id);
+            if (s == null)
+                return false;
+
+            s.Nome = nome;
+            s.Status = status;
+
+            return _repository.Editar(s);
+        }
+
+        public bool Editar(Setor setor)
+        {
+            return _repository.Editar(setor);
         }
 
         public List<Setor> Listar()
@@ -37,9 +40,14 @@ namespace TarefasLibrary.Negocio
             return _repository.Listar();
         }
 
-        public bool Remover(Setor obj)
+        public bool Remover(Setor setor)
         {
-            return _repository.Remover(obj);
+            return _repository.Remover(setor);
+        }
+
+        public Setor BuscarPorId(int id)
+        {
+            return _repository.BuscarPorId(id);
         }
     }
 }

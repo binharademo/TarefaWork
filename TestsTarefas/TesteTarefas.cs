@@ -187,7 +187,9 @@ namespace Tests_Tarefas
             // Act
             string novaDescricao = "Estudar VB";
             DateTime novoPrazo = new DateTime(2025, 12, 05);
-            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done, novaDescricao, novoPrazo);
+            tarefa01.Descricao = novaDescricao;
+            tarefa01.Titulo = "Estudar VB";
+            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done, novaDescricao, novoPrazo, titulo, Tarefa.Prioridade.Alta);
 
             // Assert
             Assert.True(resultado);
@@ -219,7 +221,7 @@ namespace Tests_Tarefas
             //Act
             string novadescricao = "Estudar PHP";
             DateTime novoprazo = new DateTime(2025, 12, 09);
-            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done, novadescricao, novoprazo);
+            bool resultado = tarefaServico.Atualizar(tarefa01, Tarefa.Status.Done, novadescricao, novoprazo, titulo, Tarefa.Prioridade.Alta);
 
             //Assert
             Assert.True(resultado);
