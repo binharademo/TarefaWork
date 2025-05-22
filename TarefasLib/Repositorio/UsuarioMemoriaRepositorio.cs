@@ -14,7 +14,7 @@ namespace TarefasLibrary.Repositorio
             usuario.Id = GeraNovoId();
             ListaUsuarios.Add(usuario);
             return true;
-            }
+        }
 
         public Usuario? BuscarPorId(int id)
         {
@@ -37,14 +37,20 @@ namespace TarefasLibrary.Repositorio
         {
             return ListaUsuarios;
         }
-        public List<Usuario> Listar(Usuario.Setor setor)
+        public List<Usuario> ListarPorSetor(Setor setor)
         {
-            return ListaUsuarios.Where(t=>t.SetorUsuario==setor).ToList();
+            return ListaUsuarios.Where(t => t.SetorUsuario == setor).ToList();
         }
+
 
         public List<Usuario> Listar(Usuario.Funcao funcao)
         {
             return ListaUsuarios.Where(t => t.FuncaoUsuario == funcao).ToList();
+        }
+
+        public List<Usuario> Listar(Setor SetorUsuario)
+        {
+            return ListaUsuarios.Where(u => u.SetorUsuario == SetorUsuario).ToList();
         }
 
         public bool Editar(Usuario obj)
@@ -52,7 +58,7 @@ namespace TarefasLibrary.Repositorio
             var usuarioExistente = BuscarPorId(obj.Id);
             if (usuarioExistente == null)
                 return false;
-            
+
             usuarioExistente.Nome = obj.Nome;
             usuarioExistente.Senha = obj.Senha;
             usuarioExistente.FuncaoUsuario = obj.FuncaoUsuario;

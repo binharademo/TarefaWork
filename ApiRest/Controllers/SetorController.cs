@@ -1,5 +1,6 @@
 ﻿using ApiRest.DTOs;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using TarefasLibrary.Interface;
 using TarefasLibrary.Modelo;

@@ -63,11 +63,11 @@ namespace TarefasLibrary.Repositorio.Entity
 
             modelBuilder.Entity<Usuario>(entity =>
             {
-                entity.ToTable("Usuarios"); // Nome da tabela no banco de dados
+                entity.ToTable("Usuarios");
                 entity.HasKey(u => u.Id);
 
                 entity.Property(u => u.Id)
-                      .ValueGeneratedOnAdd(); // autoincremento  
+                      .ValueGeneratedOnAdd();
 
                 entity.Property(u => u.Nome)
                       .IsRequired();
@@ -75,13 +75,16 @@ namespace TarefasLibrary.Repositorio.Entity
                 entity.Property(u => u.Senha);
 
                 entity.Property(u => u.FuncaoUsuario)
-                      .HasConversion<string>(); // Armazena como texto (opcional)  
+                      .HasConversion<string>();
 
-                entity.Property(u => u.SetorUsuario)
-                      .HasConversion<string>(); // Armazena como texto (opcional)  
+                entity.HasOne(u => u.SetorUsuario)
+                      .WithMany() 
+                      .HasForeignKey(u => u.SetorUsuarioId)
+                      .OnDelete(DeleteBehavior.Restrict); 
 
                 entity.HasMany(t => t.listaComentarios);
             });
+
 
             modelBuilder.Entity<Cronometro>(entity =>
             {

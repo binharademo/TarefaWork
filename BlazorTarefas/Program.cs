@@ -30,6 +30,17 @@ builder.Services
         client.BaseAddress = new Uri("http://localhost:53011/");
     });
 
+builder.Services
+    .AddHttpClient<SetorServico>(client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:53011/");
+    });
+
+
+
+
+
+
 // Registrar serviços da aplicação
 //builder.Services.AddScoped<UsuarioServico>();
 //builder.Services.AddScoped<TarefaServico>();

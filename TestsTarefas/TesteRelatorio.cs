@@ -19,9 +19,10 @@ namespace Tests_Tarefas
             //arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             
 
@@ -58,9 +59,10 @@ namespace Tests_Tarefas
         {
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 

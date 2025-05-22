@@ -15,11 +15,12 @@ namespace Tests_Tarefas
             public UsuarioServicoTests()
             {
                 var repositorio = new UsuarioMemoriaRepositorio();
+                var setor = new Setor("Setor Teste", 1);
                 _servico = new UsuarioServico(repositorio);
 
-                _servico.Criar(new Usuario(1, "binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario(2, "binhara2", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti));
-                _servico.Criar(new Usuario(3, "binhara3", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti));
+                _servico.Criar(new Usuario(1, "binhara", "123", Usuario.Funcao.Dev, setor));
+                _servico.Criar(new Usuario(2, "binhara2", "123", Usuario.Funcao.Dev, setor));
+                _servico.Criar(new Usuario(3, "binhara3", "123", Usuario.Funcao.Dev, setor));
 
             }
 
@@ -32,13 +33,14 @@ namespace Tests_Tarefas
                 //arrange
 
                 UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+                var setor = new Setor("Setor Teste", 1);
 
                 //act
-                Usuario usuario01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+                Usuario usuario01 = new Usuario("binhara", "123", Usuario.Funcao.Dev, setor);
                 servico.Criar(usuario01);
                 servico.Buscar(usuario01.Id);
 
-                Usuario usuario02 = new Usuario("", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti); // não está validando o nome vazio, cria o objeto sem nome
+                Usuario usuario02 = new Usuario("", "123", Usuario.Funcao.Dev, setor); // não está validando o nome vazio, cria o objeto sem nome
                 servico.Criar(usuario02);
                 servico.Buscar(usuario02.Id);
 
@@ -74,8 +76,9 @@ namespace Tests_Tarefas
             {
                 // arrange
                 var servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+                var setor = new Setor("Setor Teste", 1);
 
-                var usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+                var usuario = new Usuario("binhara", "123", Usuario.Funcao.Dev, setor);
                 servico.Criar(usuario);
 
                 // act

@@ -111,10 +111,11 @@ namespace Tests_Tarefas
         public void TestVincularUmComentarioAUmTarefa()
         {
             //arrange
+            var setor = new Setor("Setor Teste", 1);
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 

@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
 @inject UsuarioServico UsuarioServico
+@inject SetorServico SetorServico
 
 <PageTitle>Novo Usuário</PageTitle>
 
@@ -22,24 +23,22 @@
     <div class="form-group mb-3">
         <label>Função</label>
         <InputSelect class="form-control" @bind-Value="usuario.FuncaoUsuario">
-            <option value="0">Dev</option>
-            <option value="1">Analista</option>
-            <option value="2">Marketing</option>
+            <option value="Dev">Dev</option>
+            <option value="Analista">Analista</option>
+            <option value="Marketing">Marketing</option>
         </InputSelect>
     </div>
-    <div class="form-check mb-3">
-        <label>Setor</label><br />
-
-        <InputRadioGroup @bind-Value="usuario.SetorUsuario">
-            <InputRadio Value="Usuario.Setor.Ti" id="setor_ti" />
-            <label for="todo" class="me-3">TI</label>
-
-            <InputRadio Value="Usuario.Setor.Marketing" id="setor_marketing" />
-            <label for="doing" class="me-3">Marketing</label>
-
-        </InputRadioGroup>
+    <div class="form-group mb-3">
+        <label>Setor</label>
+        <InputSelect class="form-control" @bind-Value="usuario.SetorUsuarioId">
+            <option value="">Selecione...</option>
+            @foreach (var setor in setores)
+            {
+                <option value="@setor.Id">@setor.Nome</option>
+            }
+        </InputSelect>
+        <ValidationMessage For="() => usuario.SetorUsuarioId" />
     </div>
-
     <button type="submit" class="btn btn-success" >Salvar</button>
     <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
 
@@ -47,6 +46,14 @@
 
 @code {
     private CriarUsuarioDTO usuario = new();
+    private List<SetorDTO> setores = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        setores = await SetorServico.BuscaTodos();
+        setores = setores.Where(s => s.Status).ToList();
+
+    }
 
     private void SalvarUsuario()
     {

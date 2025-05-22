@@ -14,11 +14,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorNome(string titulo, int totalResultados)
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
             Tarefa.Status status = Tarefa.Status.ToDo;
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -48,11 +49,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorPrioridade(Tarefa.Prioridade prioridade, int totalResultados)
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
             Tarefa.Status status = Tarefa.Status.ToDo;
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -83,11 +85,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorStatus(Tarefa.Status statusTarefa, int totalResultados)
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
 
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -117,11 +120,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorDataCriacao(int inicio, int fim, int totalResultados)
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
 
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -150,11 +154,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorCriador()
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
 
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -180,11 +185,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorResponsavel()
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
 
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -211,11 +217,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPorMembro()
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
 
             DateTime prazo = new DateTime(2025, 12, 31);
@@ -258,11 +265,12 @@ namespace Tests_Tarefas.TarefaFiltro
         public void FiltrarPrioridadeEStatus(Tarefa.Prioridade? prioridade, Tarefa.Status? statusTarefa, int totalResultados)
         {
             //Arrange
+            var setor = new Setor("Setor Teste", 1);
             TarefaServico tarefa = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico usuario = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             usuario.Criar(responsavel);
 
             DateTime prazo = new DateTime(2025, 12, 31);
