@@ -38,7 +38,6 @@ const STATUS_COLORS = {
 
 const StyledColumn = styled(Paper)(({ theme, status }) => ({
     padding: theme.spacing(2),
-    minHeight: 500,
     borderRadius: theme.shape.borderRadius * 2,
     backgroundColor: theme.palette.background.paper,
     borderTop: `4px solid ${theme.palette[STATUS_COLORS[status]].main}`,
@@ -179,11 +178,16 @@ export default function BoardTarefas() {
     );
 
     return (
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 4, backgroundColor: 'white', borderRadius: 5, border: '1px solid #4E71FF' }}>
+            <Box sx={{ mb: 2, mt: 2, display: 'flex', alignItems: 'center' }}>
+                <Typography variant="h4" component="h1" fontWeight="500" color="#4E71FF">
+                    Board Tarefas
+                </Typography>
+            </Box>
             <DragDropContext onDragEnd={handleDragEnd}>
-                <Grid container spacing={3} wrap="nowrap" sx={{ overflowX: 'auto' }}>
-                    {[2, 1, 0].map(status => (
-                        <Grid item key={status} sx={{ flex: '0 0 30%', minWidth: 300 }}>
+                <Grid container spacing={5} wrap="nowrap" sx={{ overflowX: 'auto' }}>
+                    {[2, 1, 0].map((status) => (
+                        <Grid item key={status} sx={{ minWidth: 280 }}>
                             <Droppable droppableId={String(status)}>
                                 {(provided, snapshot) => (
                                     <StyledColumn
@@ -191,15 +195,22 @@ export default function BoardTarefas() {
                                         status={status}
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
+                                        sx={{
+                                            mb: '10px',
+                                            backgroundColor: snapshot.isDraggingOver ? '#f0f0f0' : 'white',
+                                            transition: 'background-color 0.2s ease'
+                                        }}
                                     >
+
                                         <Typography
                                             variant="h6"
                                             align="center"
                                             gutterBottom
-                                            sx={{ color: theme.palette[STATUS_COLORS[status]].dark }}
+                                            sx={{ color: theme.palette[STATUS_COLORS[status]].dark, mb:2 }}
                                         >
-                                            {statusLabels[status]} ({columns[status].length})
+                                            {statusLabels[status]}
                                         </Typography>
+
                                         {columns[status].map((t, idx) => {
                                             const expired = new Date(t.prazo) < new Date();
                                             return (

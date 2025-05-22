@@ -182,8 +182,9 @@ const StyledListItemText = styled(ListItemText)(({ theme, active }) => ({
 
 export default function PersistentDrawerLeft({ children }) {
     const theme = useTheme();
-    const location = useLocation();
     const [open, setOpen] = React.useState(false);
+    const location = useLocation();
+    const activeColor = '#4E71FF';
     const [openUsers, setOpenUsers] = React.useState(true);
     const [openTasks, setOpenTasks] = React.useState(true);
     const [openCompanies, setOpenCompanies] = React.useState(true);
@@ -279,7 +280,7 @@ export default function PersistentDrawerLeft({ children }) {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-            <AppBar position="fixed" open={open}>
+            <AppBar position="fixed" open={open} sx={{ backgroundColor: '#4E71FF', borderBottom: '1px solid #1F509A' }}>
                 <Toolbar>
                     <IconButton
                         color="inherit"
@@ -418,6 +419,7 @@ export default function PersistentDrawerLeft({ children }) {
             <Drawer
                 sx={{
                     width: drawerWidth,
+                    backgroundColor: '#DDDDDD',
                     flexShrink: 0,
                     '& .MuiDrawer-paper': {
                         width: drawerWidth,
@@ -442,142 +444,128 @@ export default function PersistentDrawerLeft({ children }) {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-
-                <List component="nav" sx={{ px: 1, py: 1 }}>
+                <List sx={{ textAlign: 'center' }}>
+                    <h4>Dashboard</h4>
                     <ListItem key="BoardTarefas" disablePadding>
-                        <StyledListItemButton component={Link} to="/" active={isActive("/")} disableRipple>
-                            <StyledListItemIcon active={isActive("/")}>
+                        <ListItemButton
+                            component={Link}
+                            to="/"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/' ? { color: activeColor } : {}}>
                                 <DashboardIcon />
-                            </StyledListItemIcon>
-                            <StyledListItemText primary="Dashboard" active={isActive("/")} />
-                        </StyledListItemButton>
+                            </ListItemIcon>
+                            <ListItemText primary="Board" sx={location.pathname === '/' ? { color: activeColor } : {}} />
+                        </ListItemButton>
+                    </ListItem>
+                    <h4>Usuarios</h4>
+                    <ListItem key="CadastroUsuario" disablePadding>
+                        <ListItemButton
+                            component={Link}
+                            to="/usuario/cadastro"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/usuario/cadastro' ? { color: activeColor } : {}}>
+                                <PersonAddIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Cadastro" sx={location.pathname === '/usuario/cadastro' ? { color: activeColor } : {}} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem key="ListarUsuario" disablePadding>
+                        <ListItemButton
+                            component={Link}
+                            to="/usuario/listar"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/usuario/listar' ? { color: activeColor } : {}}>
+                                <Diversity3Icon />
+                            </ListItemIcon>
+                            <ListItemText primary="Listar" sx={location.pathname === '/usuario/listar' ? { color: activeColor } : {}} />
+                        </ListItemButton>
                     </ListItem>
                 </List>
-
-                <Divider variant="middle" sx={{ my: 1 }} />
-
-                <List
-                    sx={{ px: 1, py: 0 }}
-                    component="nav"
-                    aria-labelledby="usuarios-subheader"
-                >
-                    <ListItemButton onClick={handleToggleUsers} sx={{ borderRadius: '8px' }}>
-                        <ListItemText primary="Usuários" />
-                        {openUsers ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={openUsers} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItem key="CadastroUsuario" disablePadding>
-                                <StyledListItemButton component={Link} to="/usuario/cadastro" active={isActive("/usuario/cadastro")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/usuario/cadastro")}>
-                                        <PersonAddIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Cadastro" active={isActive("/usuario/cadastro")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                            <ListItem key="ListarUsuario" disablePadding>
-                                <StyledListItemButton component={Link} to="/usuario/listar" active={isActive("/usuario/listar")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/usuario/listar")}>
-                                        <Diversity3Icon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Listar" active={isActive("/usuario/listar")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                        </List>
-                    </Collapse>
+                <Divider />
+                <List sx={{ textAlign: 'center' }}>
+                    <h4>Tarefas</h4>
+                    <ListItem key="CadastroTarefa" disablePadding>
+                        <ListItemButton
+                            component={Link}
+                            to="/tarefa/cadastro"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/tarefa/cadastro' ? { color: activeColor } : {}}>
+                                <AddTaskIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Cadastro" sx={location.pathname === '/tarefa/cadastro' ? { color: activeColor } : {}} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem key="ListarTarefa" disablePadding>
+                        <ListItemButton
+                            component={Link}
+                            to="/tarefa/listar"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/tarefa/listar' ? { color: activeColor } : {}}>
+                                <FormatListBulletedIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Listar" sx={location.pathname === '/tarefa/listar' ? { color: activeColor } : {}} />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
-
-                <List
-                    sx={{ px: 1, py: 0 }}
-                    component="nav"
-                    aria-labelledby="tarefas-subheader"
-                >
-                    <ListItemButton onClick={handleToggleTasks} sx={{ borderRadius: '8px' }}>
-                        <ListItemText primary="Tarefas" />
-                        {openTasks ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={openTasks} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItem key="CadastroTarefa" disablePadding>
-                                <StyledListItemButton component={Link} to="/tarefa/cadastro" active={isActive("/tarefa/cadastro")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/tarefa/cadastro")}>
-                                        <AddTaskIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Cadastro" active={isActive("/tarefa/cadastro")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                            <ListItem key="ListarTarefa" disablePadding>
-                                <StyledListItemButton component={Link} to="/tarefa/listar" active={isActive("/tarefa/listar")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/tarefa/listar")}>
-                                        <FormatListBulletedIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Listar" active={isActive("/tarefa/listar")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                        </List>
-                    </Collapse>
-                </List>
-
-                <List
-                    sx={{ px: 1, py: 0 }}
-                    component="nav"
-                    aria-labelledby="empresas-subheader"
-                >
-                    <ListItemButton onClick={handleToggleCompanies} sx={{ borderRadius: '8px' }}>
-                        <ListItemText primary="Empresas" />
-                        {openCompanies ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={openCompanies} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItem key="CadastroEmpresa" disablePadding>
-                                <StyledListItemButton component={Link} to="/empresa/cadastro" active={isActive("/empresa/cadastro")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/empresa/cadastro")}>
-                                        <DomainAddIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Cadastro" active={isActive("/empresa/cadastro")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                            <ListItem key="ListarEmpresa" disablePadding>
-                                <StyledListItemButton component={Link} to="/empresa/listar" active={isActive("/empresa/listar")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/empresa/listar")}>
-                                        <BusinessIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Listar" active={isActive("/empresa/listar")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                        </List>
-                    </Collapse>
-                </List>
-
-                <List
-                    sx={{ px: 1, py: 0 }}
-                    component="nav"
-                    aria-labelledby="setores-subheader"
-                >
-                    <ListItemButton onClick={handleToggleSectors} sx={{ borderRadius: '8px' }}>
-                        <ListItemText primary="Setores" />
-                        {openSectors ? <ExpandLess /> : <ExpandMore />}
-                    </ListItemButton>
-                    <Collapse in={openSectors} timeout="auto" unmountOnExit>
-                        <List component="div" disablePadding>
-                            <ListItem key="CadastrarSetor" disablePadding>
-                                <StyledListItemButton component={Link} to="/setor/cadastro" active={isActive("/setor/cadastro")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/setor/cadastro")}>
-                                        <GroupAddRoundedIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Cadastro" active={isActive("/setor/cadastro")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                            <ListItem key="ListarSetor" disablePadding>
-                                <StyledListItemButton component={Link} to="/setor/listar" active={isActive("/setor/listar")} disableRipple sx={{ pl: 4 }}>
-                                    <StyledListItemIcon active={isActive("/setor/listar")}>
-                                        <PeopleAltRoundedIcon />
-                                    </StyledListItemIcon>
-                                    <StyledListItemText primary="Listar" active={isActive("/setor/listar")} />
-                                </StyledListItemButton>
-                            </ListItem>
-                        </List>
-                    </Collapse>
+                <List sx={{ textAlign: 'center' }}>
+                    <h4>Empresas</h4>
+                    <ListItem key="CadastroEmpresa" disablePadding>
+                        <ListItemButton
+                            component={Link}
+                            to="/empresa/cadastro"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/empresa/cadastro' ? { color: activeColor } : {}}>
+                                <DomainAddIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Cadastro" sx={location.pathname === '/empresa/cadastro' ? { color: activeColor } : {}} />
+                        </ListItemButton>
+                    </ListItem>
+                    <ListItem key="ListarEmpresa" disablePadding>
+                        <ListItemButton
+                            component={Link}
+                            to="/empresa/listar"
+                            sx={{
+                                '&.Mui-focusVisible': { backgroundColor: 'rgba(255, 127, 62, 0.12)' },
+                                '&:hover': { backgroundColor: 'rgba(78, 113, 255, 0.1)' },
+                                '& .MuiTouchRipple-root span': { backgroundColor: activeColor + ' !important' },
+                            }}
+                        >
+                            <ListItemIcon sx={location.pathname === '/empresa/listar' ? { color: activeColor } : {}}>
+                                <BusinessIcon />
+                            </ListItemIcon>
+                            <ListItemText primary="Listar" sx={location.pathname === '/empresa/listar' ? { color: activeColor } : {}} />
+                        </ListItemButton>
+                    </ListItem>
                 </List>
             </Drawer>
             <Main open={open}>

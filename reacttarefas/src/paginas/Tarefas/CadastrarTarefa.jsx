@@ -136,7 +136,8 @@ function CadastroTarefa() {
                     sx={{
                         p: 4,
                         borderRadius: 2,
-                        background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
+                        background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
+                        border: '1px solid #4E71FF'
                     }}
                 >
                     <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
@@ -302,27 +303,29 @@ function CadastroTarefa() {
                                     </Select>
                                 </FormControl>
                             </Grid>
-
-                            <Grid item xs={12}>
-                                <TextField
-                                    fullWidth
-                                    label="Descrição"
-                                    name="descricao"
-                                    value={formData.descricao}
-                                    onChange={handleChange}
-                                    multiline
-                                    rows={6}
-                                    required
-                                    variant="outlined"
-                                    InputProps={{
-                                        startAdornment: (
-                                            <InputAdornment position="start">
-                                                <DescriptionIcon color="action" />
-                                            </InputAdornment>
-                                        ),
-                                    }}
-                                />
                             </Grid>
+
+                            <Grid mt={3}>
+                                <Grid item xs={12}>
+                                    <TextField
+                                        fullWidth
+                                        label="Descrição"
+                                        name="descricao"
+                                        value={formData.descricao}
+                                        onChange={handleChange}
+                                        multiline
+                                        rows={3}
+                                        required
+                                        variant="outlined"
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="start">
+                                                    <DescriptionIcon color="action" />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                    />
+                                </Grid>
 
                             <Grid item xs={12}>
                                 <Box

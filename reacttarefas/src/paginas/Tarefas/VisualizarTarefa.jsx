@@ -228,7 +228,7 @@ function VisualizarTarefa() {
     const isPrazoVencido = new Date(tarefa.prazo) < new Date();
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4, mb: 8 }}>
+        <Container maxWidth="xl" sx={{ mb: 8, width: '100%' }}>
             <Box mb={2} display="flex" alignItems="center">
                 <Tooltip title="Voltar para a lista">
                     <IconButton onClick={handleVoltar} sx={{ mr: 1 }}>
@@ -245,47 +245,51 @@ function VisualizarTarefa() {
                 sx={{
                     p: 3,
                     borderRadius: 2,
-                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
+                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
+                    width: '100%',
+                    border: '1px solid #4E71FF'
                 }}
             >
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={3}>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={1}>
                     <Box display="flex" alignItems="center">
                         <AssignmentIcon sx={{ fontSize: 40, mr: 2, color: '#3f51b5' }} />
                         <Box>
                             <Typography variant="h4" fontWeight="500">
                                 {tarefa.titulo}
                             </Typography>
-                            <Box display="flex" alignItems="center" mt={1}>
-                                <Chip
-                                    icon={getStatusIcon(tarefa.status)}
-                                    label={getStatusLabel(tarefa.status)}
-                                    color={getStatusColor(tarefa.status)}
-                                    sx={{ mr: 1 }}
-                                />
-                                <Chip
-                                    icon={getPrioridadeIcon(tarefa.prioridadeTarefa)}
-                                    label={getPrioridadeLabel(tarefa.prioridadeTarefa)}
-                                    color={tarefa.prioridadeTarefa === 2 ? 'error' : tarefa.prioridadeTarefa === 1 ? 'warning' : 'info'}
-                                />
-                            </Box>
                         </Box>
                     </Box>
 
                     <Button
-                        variant="outlined"
-                        color="primary"
+                        variant="contained"
+                        color="warning"
                         startIcon={<EditIcon />}
                         onClick={handleEditar}
+                        sx={{marginLeft: 5} }
                     >
                         Editar Tarefa
                     </Button>
                 </Box>
 
+                <Box display="flex" alignItems="center" mb={2}>
+                    <Chip
+                        icon={getStatusIcon(tarefa.status)}
+                        label={getStatusLabel(tarefa.status)}
+                        color={getStatusColor(tarefa.status)}
+                        sx={{ mr: 1 }}
+                    />
+                    <Chip
+                        icon={getPrioridadeIcon(tarefa.prioridadeTarefa)}
+                        label={getPrioridadeLabel(tarefa.prioridadeTarefa)}
+                        color={tarefa.prioridadeTarefa === 2 ? 'error' : tarefa.prioridadeTarefa === 1 ? 'warning' : 'info'}
+                    />
+                </Box>
+
                 <Divider sx={{ mb: 3 }} />
 
-                <Grid container spacing={3}>
+                <Grid container spacing={3} sx={{flexDirection: 'column'} }>
                     <Grid item xs={12}>
-                        <Card variant="outlined" sx={{ mb: 3, bgcolor: '#fafafa' }}>
+                        <Card variant="outlined" sx={{ mb: 1, bgcolor: '#fafafa' }}>
                             <CardContent>
                                 <Typography variant="h6" gutterBottom>
                                     Descrição
@@ -302,6 +306,7 @@ function VisualizarTarefa() {
                             <Typography variant="h6" gutterBottom>
                                 Informações da Tarefa
                             </Typography>
+
                             <List disablePadding>
                                 <ListItem divider>
                                     <ListItemText

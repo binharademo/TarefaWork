@@ -76,18 +76,19 @@ function CadastroUsuario() {
     };
 
     return (
-        <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
             <Paper
-                elevation={3}
+                elevation={12}
                 sx={{
                     p: 4,
-                    borderRadius: 2,
-                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
+                    borderRadius: 5,
+                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
+                    border: '1px solid #4E71FF'
                 }}
             >
                 <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
-                    <PersonIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
-                    <Typography variant="h4" component="h1" fontWeight="500" color="primary">
+                    <PersonIcon sx={{ fontSize: 32, mr: 2, color: '#4E71FF ' }} />
+                    <Typography variant="h4" component="h1" fontWeight="500" color="#4E71FF">
                         Novo Usuario
                     </Typography>
                 </Box>
@@ -99,106 +100,116 @@ function CadastroUsuario() {
                 )}
 
                 <form name="novoUsuarioForm" onSubmit={salvarUsuario}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <TextField
-                                id="nome"
-                                label="Nome do Usuario"
-                                fullWidth
-                                variant="outlined"
-                                name="nome"
-                                value={usuario.nome}
-                                onChange={handleChange}
-                                required
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <PersonIcon color="action" />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <TextField
-                                id="senha"
-                                label="Senha"
-                                fullWidth
-                                variant="outlined"
-                                name="senha"
-                                type={showPassword ? 'text' : 'password'}
-                                value={usuario.senha}
-                                onChange={handleChange}
-                                required
-                                InputProps={{
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }}
-                            />
-                        </Grid>
-
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth variant="outlined">
-                                <InputLabel id="funcao-label">Funcao</InputLabel>
-                                <Select
-                                    labelId="funcao-label"
-                                    id="funcaoUsuario"
-                                    name="funcaoUsuario"
-                                    value={usuario.funcaoUsuario}
+                    <Grid container spacing={3} sx={{ display: 'flex', flexDirection: 'column'} }>
+                        <Grid sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            gap: 2
+                        }}>
+                            <Grid item xs={12}>
+                                <TextField
+                                    id="nome"
+                                    label="Nome do Usuario"
+                                    fullWidth
+                                    variant="outlined"
+                                    name="nome"
+                                    value={usuario.nome}
                                     onChange={handleChange}
-                                    label="Funcao"
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <WorkIcon color="action" />
-                                        </InputAdornment>
-                                    }
-                                >
-                                    <MenuItem value="">Selecione uma funcao</MenuItem>
-                                    <MenuItem value={0}>Dev</MenuItem>
-                                    <MenuItem value={1}>Analista</MenuItem>
-                                    <MenuItem value={2}>Marketing</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Grid>
+                                    required
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="start">
+                                                <PersonIcon color="action" />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </Grid>
 
-                        <Grid item xs={12} md={6}>
-                            <FormControl fullWidth variant="outlined">
-                                <InputLabel id="setor-label">Setor</InputLabel>
-                                <Select
-                                    labelId="setor-label"
-                                    id="setorUsuario"
-                                    name="setorUsuario"
-                                    value={usuario.setorUsuario}
+                            <Grid item xs={12}>
+                                <TextField
+                                    id="senha"
+                                    label="Senha"
+                                    fullWidth
+                                    variant="outlined"
+                                    name="senha"
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={usuario.senha}
                                     onChange={handleChange}
-                                    label="Setor"
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <BusinessCenterIcon color="action" />
-                                        </InputAdornment>
-                                    }
-                                >
-                                    <MenuItem value="">Selecione um setor</MenuItem>
-                                    <MenuItem value={0}>TI</MenuItem>
-                                    <MenuItem value={1}>Marketing</MenuItem>
-                                </Select>
-                            </FormControl>
+                                    required
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="funcao-label">Funcao</InputLabel>
+                                    <Select
+                                        labelId="funcao-label"
+                                        id="funcaoUsuario"
+                                        name="funcaoUsuario"
+                                        value={usuario.funcaoUsuario}
+                                        onChange={handleChange}
+                                        label="Funcao"
+                                        endAdornment={
+                                            <InputAdornment position="start">
+                                                <WorkIcon color="action" />
+                                            </InputAdornment>
+                                        }
+                                        sx={{minWidth: '150px;'} }
+                                    >
+                                        <MenuItem value="">Selecione uma funcao</MenuItem>
+                                        <MenuItem value={0}>Dev</MenuItem>
+                                        <MenuItem value={1}>Analista</MenuItem>
+                                        <MenuItem value={2}>Marketing</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12}>
+                                <FormControl fullWidth variant="outlined">
+                                    <InputLabel id="setor-label">Setor</InputLabel>
+                                    <Select
+                                        labelId="setor-label"
+                                        id="setorUsuario"
+                                        name="setorUsuario"
+                                        value={usuario.setorUsuario}
+                                        onChange={handleChange}
+                                        label="Setor"
+                                        endAdornment={
+                                            <InputAdornment position="start">
+                                                <BusinessCenterIcon color="action" />
+                                            </InputAdornment>
+                                        }
+                                        sx={{ minWidth: '150px;' }}
+                                    >
+                                        <MenuItem value="">Selecione um setor</MenuItem>
+                                        <MenuItem value={0}>TI</MenuItem>
+                                        <MenuItem value={1}>Marketing</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
                         </Grid>
 
                         <Grid item xs={12}>
                             <Box
                                 sx={{
                                     display: 'flex',
-                                    justifyContent: 'flex-end',
+                                    justifyContent: 'center',
                                     gap: 2,
                                     mt: 2
                                 }}
@@ -208,13 +219,14 @@ function CadastroUsuario() {
                                     onClick={cancelar}
                                     startIcon={<CancelIcon />}
                                     sx={{ px: 3 }}
+                                    color="error"
                                 >
                                     Cancelar
                                 </Button>
                                 <Button
                                     type="submit"
                                     variant="contained"
-                                    color="primary"
+                                    color="success"
                                     startIcon={<SaveIcon />}
                                     sx={{ px: 3 }}
                                 >
