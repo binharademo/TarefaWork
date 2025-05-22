@@ -31,6 +31,12 @@ const columnStyles = {
     2: { borderTop: '4px solid #f44336' }    // Pendente
 };
 
+const borderStyles = {
+    0: { border: '1px solid #4caf50' },   // Concluído
+    1: { border: '1px solid #ff9800' },   // Em Andamento
+    2: { border: '1px solid #f44336' }    // Pendente
+};
+
 const statusLabels = {
     0: 'Concluído',
     1: 'Em Andamento',
@@ -224,11 +230,16 @@ export default function BoardTarefas() {
     }
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 4, backgroundColor: 'white', padding: '20px 50px 20px 50px', borderRadius: 5, border: '1px solid #4E71FF' }}>
+            <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+                <Typography variant="h4" component="h1" fontWeight="500" color="#4E71FF">
+                    Board Tarefas
+                </Typography>
+            </Box>
             <DragDropContext onDragEnd={handleDragEnd}>
-                <Grid container spacing={2} wrap="nowrap" sx={{ overflowX: 'auto' }}>
+                <Grid container spacing={5} wrap="nowrap" sx={{ overflowX: 'auto' }}>
                     {[2, 1, 0].map((status) => (
-                        <Grid item key={status} sx={{ flex: '0 0 30%', minWidth: 280 }}>
+                        <Grid item key={status} sx={{ minWidth: 280 }}>
                             <Droppable droppableId={String(status)}>
                                 {(provided, snapshot) => (
                                     <Paper
@@ -236,7 +247,8 @@ export default function BoardTarefas() {
                                         {...provided.droppableProps}
                                         sx={{
                                             p: 2,
-                                            minHeight: 500,
+                                            mb: '10px',
+                                            ...borderStyles[status],
                                             backgroundColor: snapshot.isDraggingOver ? '#f0f0f0' : 'white',
                                             transition: 'background-color 0.2s ease',
                                             ...columnStyles[status]

@@ -1,7 +1,15 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+body {
+    min-height: 100vh; /* Garante que cubra a altura total da tela */
+    margin: 0; /* Remove margens padrão do body */
+    /* Outros estilos globais que você possa ter */
 }
 
+#root { /* Se sua aplicação React estiver dentro de uma div com id "root" */
+    display: flex;
+    justify-content: center;
+    background-color: #DDDDDD;
+    align-items: flex-start; /* Opcional: centraliza o conteúdo */
+    min-height: 100vh; /* Garante que ocupe a altura total */
+}
+
+/*#EAEFEF*/
