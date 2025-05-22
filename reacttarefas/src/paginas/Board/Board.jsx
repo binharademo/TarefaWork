@@ -38,7 +38,6 @@ const STATUS_COLORS = {
 
 const StyledColumn = styled(Paper)(({ theme, status }) => ({
     padding: theme.spacing(2),
-    minHeight: 500,
     borderRadius: theme.shape.borderRadius * 2,
     backgroundColor: theme.palette.background.paper,
     borderTop: `4px solid ${theme.palette[STATUS_COLORS[status]].main}`,
@@ -47,17 +46,6 @@ const StyledColumn = styled(Paper)(({ theme, status }) => ({
         backgroundColor: theme.palette.action.hover
     }
 }));
-const borderStyles = {
-    0: { border: '1px solid #4caf50' },   // Concluído
-    1: { border: '1px solid #ff9800' },   // Em Andamento
-    2: { border: '1px solid #f44336' }    // Pendente
-};
-
-const statusLabels = {
-    0: 'Concluído',
-    1: 'Em Andamento',
-    2: 'Pendente'
-};
 
 const StyledCard = styled(Card)(({ theme, isdragging, status }) => ({
     cursor: 'grab',
@@ -190,8 +178,8 @@ export default function BoardTarefas() {
     );
 
     return (
-        <Container maxWidth="xl" sx={{ mt: 4, mb: 4, backgroundColor: 'white', padding: '20px 50px 20px 50px', borderRadius: 5, border: '1px solid #4E71FF' }}>
-            <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
+        <Container maxWidth="xl" sx={{ mt: 4, mb: 4, backgroundColor: 'white', borderRadius: 5, border: '1px solid #4E71FF' }}>
+            <Box sx={{ mb: 2, mt: 2, display: 'flex', alignItems: 'center' }}>
                 <Typography variant="h4" component="h1" fontWeight="500" color="#4E71FF">
                     Board Tarefas
                 </Typography>
@@ -208,23 +196,21 @@ export default function BoardTarefas() {
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
                                         sx={{
-                                            p: 2,
                                             mb: '10px',
-                                            ...borderStyles[status],
                                             backgroundColor: snapshot.isDraggingOver ? '#f0f0f0' : 'white',
-                                            transition: 'background-color 0.2s ease',
-                                            ...columnStyles[status]
+                                            transition: 'background-color 0.2s ease'
                                         }}
                                     >
-                                        <Typography variant="h6" textAlign="center" gutterBottom>
-                                    >
+
                                         <Typography
                                             variant="h6"
                                             align="center"
                                             gutterBottom
-                                            sx={{ color: theme.palette[STATUS_COLORS[status]].dark }}
+                                            sx={{ color: theme.palette[STATUS_COLORS[status]].dark, mb:2 }}
                                         >
-                                        
+                                            {statusLabels[status]}
+                                        </Typography>
+
                                         {columns[status].map((t, idx) => {
                                             const expired = new Date(t.prazo) < new Date();
                                             return (

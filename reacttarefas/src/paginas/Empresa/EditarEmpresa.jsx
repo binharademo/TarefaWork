@@ -88,7 +88,8 @@ function EditarEmpresa() {
 
     return (
         <Container maxWidth="sm" sx={{ mt: 4 }}>
-            <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
+            <Paper elevation={3} sx={{
+                p: 4, borderRadius: 2, border: '1px solid #4E71FF' }}>
                 <Typography variant="h5" gutterBottom>
                     Editar Empresa
                 </Typography>

@@ -140,7 +140,8 @@ function ListarUsuario() {
                 sx={{
                     p: 3,
                     borderRadius: 2,
-                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
+                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
+                    border: '1px solid #4E71FF'
                 }}
             >
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
