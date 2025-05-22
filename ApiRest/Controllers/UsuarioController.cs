@@ -105,7 +105,6 @@ public class UsuarioController : ControllerBase
         if (!sucesso)
             return BadRequest("Não foi possível atualizar o usuário.");
 
-        // Rebusca com Include
         var usuarioAtualizado = _usuario.Buscar(id); 
         var usuarioAtualizadoDTO = new UsuarioDTO
         {
@@ -118,8 +117,6 @@ public class UsuarioController : ControllerBase
 
         return Ok(usuarioAtualizadoDTO);
     }
-
-
 
 
     //[HttpDelete("{id}")]

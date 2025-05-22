@@ -13,13 +13,12 @@
 }
 else
 {
-    <EditForm Model="setor" OnValidSubmit="SalvarSetor" FormName="editarSetorForm">
-
+    <EditForm Model="setorDTO" OnValidSubmit="SalvarSetor" FormName="editarSetorForm">
         <DataAnnotationsValidator />
         <div class="form-group mb-3">
             <label>Nome</label>
             <InputText class="form-control" @bind-Value="setorDTO.Nome" />
-            <ValidationMessage For="() => setor.Nome" />
+            <ValidationMessage For="() => setorDTO.Nome" />
         </div>
         <div class="form-group mb-3">
             <label>Status</label>
@@ -33,12 +32,10 @@ else
                     <label class="form-check-label">Inativo</label>
                 </div>
             </InputRadioGroup>
-            <ValidationMessage For="() => setor.Status" />
+            <ValidationMessage For="() => setorDTO.Status" />
         </div>
-
         <button type="submit" class="btn btn-success">Salvar</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
-
     </EditForm>
 }
 
@@ -60,15 +57,23 @@ else
             // Preenche os dados do DTO usado no formulário
             setorDTO = new AlterarSetorDTO
                 {
+                    Id = setor.Id, 
                     Nome = setor.Nome,
                     Status = setor.Status,
                     EmpresaId = setor.Empresa.Id
                 };
+
+            // DEBUG: Adicione estas linhas para verificar
+            Console.WriteLine($"Setor carregado - Status: {setor.Status}");
+            Console.WriteLine($"DTO criado - Status: {setorDTO.Status}");
         }
     }
 
     private async Task SalvarSetor()
     {
+        // DEBUG: Verifique o que está sendo enviado
+        Console.WriteLine($"Enviando - Nome: {setorDTO.Nome}, Status: {setorDTO.Status}, EmpresaId: {setorDTO.EmpresaId}");
+
         var resultado = await SetorServico.Atualizar(Id, setorDTO);
         if (resultado)
         {

@@ -41,6 +41,7 @@ namespace TarefasLibrary.Repositorio.Entity
             if (setorExistente != null)
             {
                 setorExistente.Nome = obj.Nome;
+                setorExistente.Status = obj.Status;
 
                 context.SaveChanges();
                 return true;

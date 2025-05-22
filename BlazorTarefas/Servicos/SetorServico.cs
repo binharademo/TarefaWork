@@ -23,6 +23,9 @@ namespace BlazorTarefas.Servicos
 
         public async Task<bool> Atualizar(int id, AlterarSetorDTO setor)
         {
+            // DEBUG: Verifique o que está sendo enviado
+            Console.WriteLine($"HTTP Client enviando - Status: {setor.Status}");
+
             var response = await _httpClient.PutAsJsonAsync($"setor/{id}", setor);
             return response.IsSuccessStatusCode;
         }

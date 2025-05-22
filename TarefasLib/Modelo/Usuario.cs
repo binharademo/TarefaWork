@@ -36,6 +36,16 @@ namespace TarefasLibrary.Modelo
 
         }
 
+        public Usuario(string nome, string senha, Funcao funcao, int setorusuarioid)
+        {
+            Nome = nome;
+            Senha = senha;
+            FuncaoUsuario = funcao;
+            SetorUsuarioId = setorusuarioid;
+
+        }
+
+
         public Usuario() { }
 
         public Usuario(int id, string nome, string senha, Funcao funcao, Setor setor)

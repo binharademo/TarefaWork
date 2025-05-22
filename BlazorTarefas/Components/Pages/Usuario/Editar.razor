@@ -21,17 +21,17 @@
             <InputText class="form-control" @bind-Value="usuario.Nome" />
             <ValidationMessage For="() => usuario.Nome" />
         </div>
-@*         <div class="form-group mb-3">
+        <div class="form-group mb-3">
             <label>Senha</label>
             <InputText class="form-control" @bind-Value="usuario.Senha" />
             <ValidationMessage For="() => usuario.Senha" />
-        </div> *@
+        </div>
         <div class="form-group mb-3">
             <label>Função</label>
             <InputSelect class="form-control" @bind-Value="usuario.FuncaoUsuario">
-                <option value="0">Dev</option>
-                <option value="1">Analista</option>
-                <option value="2">Marketing</option>
+                <option value="Dev">Dev</option>
+                <option value="Analista">Analista</option>
+                <option value="Marketing">Marketing</option>
             </InputSelect>
         </div>
         <div class="form-group mb-3">
@@ -64,6 +64,7 @@
         // Carrega a tarefa pelo ID passado na URL
         setores = await SetorServico.BuscaTodos();
         usuario = await UsuarioServico.BuscaPorIdAsync(Id);
+        setores = setores.Where(s => s.Status).ToList();
     }
 
     private async Task SalvarUsuario()
@@ -72,7 +73,7 @@
         var dto = new AtualizarUsuarioDTO
             {
                 Nome = usuario.Nome,
-                // Senha = usuario.Senha,
+                Senha = usuario.Senha,
                 FuncaoUsuario = usuario.FuncaoUsuario,
                 SetorUsuarioId = usuario.SetorUsuarioId 
             };

@@ -15,98 +15,103 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void CriarComentario()
         {
-            var setorRepositorio = new SetorRepositorio(connectionString);
             var empresaRepositorio = new EmpresaRepositorio(connectionString);
-
-            var setor = setorRepositorio.Listar().FirstOrDefault();
-
-            if (setor == null)
-            {
-                // Se não existir nenhum setor, cria uma empresa e um setor novo
-                var empresa = empresaRepositorio.Listar().FirstOrDefault();
-
-                if (empresa == null)
-                {
-                    empresa = new Empresa("Empresa Teste", "99999999999999");
-                    empresaRepositorio.Cadastrar(empresa);
-                    empresa = empresaRepositorio.Listar().First(); // garantir que o Id seja preenchido
-                }
-                setor = new Setor
-                {
-                    Nome = "Setor Teste",
-                    Status = true,
-                    EmpresaId = empresa.Id
-                };
-                setorRepositorio.Cadastrar(setor);
-            }
-            var tarefa = new Tarefa("Teste", Tarefa.Status.ToDo,
-               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor),
-               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor),
-               DateTime.Now.AddDays(5), "Descricao",
-               Tarefa.Prioridade.Alta);
-
-            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor);
+            var setorRepositorio = new SetorRepositorio(connectionString);
             var usuarioRepositorio = new UsuarioRepositorio(connectionString);
-            usuarioRepositorio.InicializarBancoDados();
-            bool resultado = usuarioRepositorio.Cadastrar(usuario);
-
             var tarefaRepositorio = new TarefaRepositorio(connectionString);
             var comentarioRepositorio = new ComentarioRepositorio(connectionString);
+
+            empresaRepositorio.InicializarBancoDados();
+            setorRepositorio.InicializarBancoDados();
+            usuarioRepositorio.InicializarBancoDados();
             tarefaRepositorio.InicializarBancoDados();
             comentarioRepositorio.InicializarBancoDados();
 
-            // Act
+            // Garante que a empresa e o setor existam
+            var empresa = empresaRepositorio.Listar().FirstOrDefault();
+            if (empresa == null)
+            {
+                empresa = new Empresa("Empresa Gabriel", "9999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+                empresa = empresaRepositorio.Listar().First(); // garante ID preenchido
+            }
+
+            var setor = setorRepositorio.Listar().FirstOrDefault(s => s.EmpresaId == empresa.Id);
+            if (setor == null)
+            {
+                setor = new Setor("Setor Gabriel", empresa);
+                setorRepositorio.Cadastrar(setor);
+                setor = setorRepositorio.Listar().First(s => s.EmpresaId == empresa.Id);
+            }
+
+            // Cria os objetos com o setor.Id real
+            var tarefa = new Tarefa("Teste", Tarefa.Status.ToDo,
+                new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor.Id),
+                new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor.Id),
+                DateTime.Now.AddDays(5), "Descricao", Tarefa.Prioridade.Alta);
+
+            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor.Id);
+            var resultadoUsuario = usuarioRepositorio.Cadastrar(usuario);
+
+            // Salva a tarefa
             tarefaRepositorio.Salvar(tarefa);
+
+            // Cria e salva os comentários
             var comentario = new Comentario("Comentario de teste", DateTime.Now, tarefa.Id, usuario.Id);
             var comentario2 = new Comentario("Comentario de teste2", DateTime.Now, tarefa.Id, usuario.Id);
             var resultado1 = comentarioRepositorio.Cadastrar(comentario);
             var resultado2 = comentarioRepositorio.Cadastrar(comentario2);
 
             // Assert
+            Assert.True(resultadoUsuario);
             Assert.True(resultado1);
             Assert.True(resultado2);
         }
 
+
         [Fact]
         public void ListarComentarios()
         {
-            var setorRepositorio = new SetorRepositorio(connectionString);
             var empresaRepositorio = new EmpresaRepositorio(connectionString);
+            var setorRepositorio = new SetorRepositorio(connectionString);
+            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
+            var tarefaRepositorio = new TarefaRepositorio(connectionString);
+            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
 
-            var setor = setorRepositorio.Listar().FirstOrDefault();
+            empresaRepositorio.InicializarBancoDados();
+            setorRepositorio.InicializarBancoDados();
+            usuarioRepositorio.InicializarBancoDados();
+            tarefaRepositorio.InicializarBancoDados();
+            comentarioRepositorio.InicializarBancoDados();
 
+            // Garante que a empresa e o setor existam
+            var empresa = empresaRepositorio.Listar().FirstOrDefault();
+            if (empresa == null)
+            {
+                empresa = new Empresa("Empresa Teste 2", "9999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+                empresa = empresaRepositorio.Listar().First(); // garante ID preenchido
+            }
+
+            var setor = setorRepositorio.Listar().FirstOrDefault(s => s.EmpresaId == empresa.Id);
             if (setor == null)
             {
-                // Se não existir nenhum setor, cria uma empresa e um setor novo
-                var empresa = new Empresa("Empresa Teste", "99999999999999");
-                empresaRepositorio.Cadastrar(empresa);
-
-                setor = new Setor
-                {
-                    Nome = "Setor Teste",
-                    Status = true,
-                    EmpresaId = empresa.Id
-                };
+                setor = new Setor("Setor Lavanderia", empresa);
                 setorRepositorio.Cadastrar(setor);
+                setor = setorRepositorio.Listar().First(s => s.EmpresaId == empresa.Id);
             }
 
             // Criação da tarefa
             var tarefa = new Tarefa("Testebuscar", Tarefa.Status.ToDo,
-               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor),
-               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor),
+               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor.Id),
+               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor.Id),
                DateTime.Now.AddDays(5), "Descricao",
                Tarefa.Prioridade.Alta);
 
             // Criação do usuário
-            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor);
-            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
-            usuarioRepositorio.InicializarBancoDados();
+            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor.Id);
+            
             usuarioRepositorio.Cadastrar(usuario);
-
-            var tarefaRepositorio = new TarefaRepositorio(connectionString);
-            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
-            tarefaRepositorio.InicializarBancoDados();
-            comentarioRepositorio.InicializarBancoDados();
             tarefaRepositorio.Salvar(tarefa);
 
             var comentario1 = new Comentario("teste 000001", DateTime.Now, tarefa.Id, usuario.Id);
@@ -123,47 +128,47 @@ namespace Tests_Tarefas.RepositorioEntity
             Assert.Equal(2, resultado.Count);
         }
 
-
         [Fact]
         public void DeletarComentario()
         {
-            var setorRepositorio = new SetorRepositorio(connectionString);
             var empresaRepositorio = new EmpresaRepositorio(connectionString);
+            var setorRepositorio = new SetorRepositorio(connectionString);
+            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
+            var tarefaRepositorio = new TarefaRepositorio(connectionString);
+            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
 
-            var setor = setorRepositorio.Listar().FirstOrDefault();
+            empresaRepositorio.InicializarBancoDados();
+            setorRepositorio.InicializarBancoDados();
+            usuarioRepositorio.InicializarBancoDados();
+            tarefaRepositorio.InicializarBancoDados();
+            comentarioRepositorio.InicializarBancoDados();
 
-            if (setor == null)
+            // Garante que a empresa e o setor existam
+            var empresa = empresaRepositorio.Listar().FirstOrDefault();
+            if (empresa == null)
             {
-                // Se não existir nenhum setor, cria uma empresa e um setor novo
-                var empresa = new Empresa("Empresa Teste", "99999999999999");
+                empresa = new Empresa("Empresa Teste 2", "9999999999999");
                 empresaRepositorio.Cadastrar(empresa);
-
-                setor = new Setor
-                {
-                    Nome = "Setor Teste",
-                    Status = true,
-                    EmpresaId = empresa.Id
-                };
-                setorRepositorio.Cadastrar(setor);
+                empresa = empresaRepositorio.Listar().First(); // garante ID preenchido
             }
 
-
+            var setor = setorRepositorio.Listar().FirstOrDefault(s => s.EmpresaId == empresa.Id);
+            if (setor == null)
+            {
+                setor = new Setor("Setor Lavanderia", empresa);
+                setorRepositorio.Cadastrar(setor);
+                setor = setorRepositorio.Listar().First(s => s.EmpresaId == empresa.Id);
+            }
             // Arrange
             var tarefa = new Tarefa("Teste", Tarefa.Status.ToDo,
-               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor),
-               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor),
+               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor.Id),
+               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor.Id),
                DateTime.Now.AddDays(5), "Descricao",
                Tarefa.Prioridade.Alta);
 
-            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor);
-            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
-            usuarioRepositorio.InicializarBancoDados();
+            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor.Id);
+           
             bool resultado = usuarioRepositorio.Cadastrar(usuario);
-
-            var tarefaRepositorio = new TarefaRepositorio(connectionString);
-            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
-            tarefaRepositorio.InicializarBancoDados();
-            comentarioRepositorio.InicializarBancoDados();
 
             // Act
             tarefaRepositorio.Salvar(tarefa);
@@ -183,42 +188,45 @@ namespace Tests_Tarefas.RepositorioEntity
         [Fact]
         public void EditarComentario()
         {
-            var setorRepositorio = new SetorRepositorio(connectionString);
             var empresaRepositorio = new EmpresaRepositorio(connectionString);
+            var setorRepositorio = new SetorRepositorio(connectionString);
+            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
+            var tarefaRepositorio = new TarefaRepositorio(connectionString);
+            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
 
-            var setor = setorRepositorio.Listar().FirstOrDefault();
+            empresaRepositorio.InicializarBancoDados();
+            setorRepositorio.InicializarBancoDados();
+            usuarioRepositorio.InicializarBancoDados();
+            tarefaRepositorio.InicializarBancoDados();
+            comentarioRepositorio.InicializarBancoDados();
 
+            // Garante que a empresa e o setor existam
+            var empresa = empresaRepositorio.Listar().FirstOrDefault();
+            if (empresa == null)
+            {
+                empresa = new Empresa("Empresa Teste 2", "9999999999999");
+                empresaRepositorio.Cadastrar(empresa);
+                empresa = empresaRepositorio.Listar().First(); // garante ID preenchido
+            }
+
+            var setor = setorRepositorio.Listar().FirstOrDefault(s => s.EmpresaId == empresa.Id);
             if (setor == null)
             {
-                // Se não existir nenhum setor, cria uma empresa e um setor novo
-                var empresa = new Empresa("Empresa Teste", "99999999999999");
-                empresaRepositorio.Cadastrar(empresa);
-
-                setor = new Setor
-                {
-                    Nome = "Setor Teste",
-                    Status = true,
-                    EmpresaId = empresa.Id
-                };
+                setor = new Setor("Setor Lavanderia", empresa);
                 setorRepositorio.Cadastrar(setor);
+                setor = setorRepositorio.Listar().First(s => s.EmpresaId == empresa.Id);
             }
 
             // Arrange
             var tarefa = new Tarefa("Teste", Tarefa.Status.ToDo,
-               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor),
-               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor),
+               new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor.Id),
+               new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor.Id),
                DateTime.Now.AddDays(5), "Descricao",
                Tarefa.Prioridade.Alta);
 
-            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor);
-            var usuarioRepositorio = new UsuarioRepositorio(connectionString);
-            usuarioRepositorio.InicializarBancoDados();
+            var usuario = new Usuario("Teste", "123456", Usuario.Funcao.Dev, setor.Id);
             bool resultado = usuarioRepositorio.Cadastrar(usuario);
 
-            var tarefaRepositorio = new TarefaRepositorio(connectionString);
-            var comentarioRepositorio = new ComentarioRepositorio(connectionString);
-            tarefaRepositorio.InicializarBancoDados();
-            comentarioRepositorio.InicializarBancoDados();
             tarefaRepositorio.Salvar(tarefa);
             var comentario = new Comentario("teste editar", DateTime.Now, tarefa.Id, usuario.Id);
             var resultado1 = comentarioRepositorio.Cadastrar(comentario);
