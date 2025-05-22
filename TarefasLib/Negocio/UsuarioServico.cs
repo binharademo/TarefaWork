@@ -30,9 +30,9 @@ namespace TarefasLibrary.Negocio
             return _usuarioRepositorio.Listar();
         }
 
-        public List<Usuario> ListarUsuarioPorSetor(Usuario.Setor setor)
+        public List<Usuario> ListarUsuarioPorSetor(Setor setorusuario)
         {
-            return _usuarioRepositorio.Listar(setor);
+            return _usuarioRepositorio.Listar(setorusuario);
         }
 
         public List<Usuario> ListarUsuarioPorFuncao(Usuario.Funcao funcao)
@@ -40,9 +40,9 @@ namespace TarefasLibrary.Negocio
             return _usuarioRepositorio.Listar(funcao);
         }
 
-        public bool Editar(int id, string nome, string senha, Usuario.Funcao funcao, Usuario.Setor setor)
+        public bool Editar(int id, string nome, string senha, Usuario.Funcao funcao, Setor setorusuario)
         {
-            return _usuarioRepositorio.Editar(new(id, nome, senha, funcao, setor));
+            return _usuarioRepositorio.Editar(new(id, nome, senha, funcao, setorusuario));
         }
 
         public bool Editar(Usuario usuario)

@@ -18,75 +18,76 @@ import {
     IconButton,
     Divider,
     Menu,
-    MenuItem
+    MenuItem,
+    Chip
 } from '@mui/material';
 import {
     Add as AddIcon,
     Refresh as RefreshIcon,
-    Business as BusinessIcon,
+    Apartment as ApartmentIcon,
     Error as ErrorIcon,
     MoreVert as Icon,
     Edit as EditIcon,
     Delete as DeleteIcon,
-    Visibility as VisibilityIcon
+    Visibility as VisibilityIcon,
+    Business as BusinessIcon
 } from '@mui/icons-material';
 
-function ListarEmpresa() {
-    const [empresas, setEmpresas] = useState([]);
+function ListarSetor() {
+    const [setores, setSetores] = useState([]);
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
     const navigate = useNavigate();
 
     // Estados para gerenciar o menu de ações
     const [anchorEl, setAnchorEl] = useState(null);
-    const [empresaSelecionada, setEmpresaSelecionada] = useState(null);
+    const [setorSelecionado, setSetorSelecionado] = useState(null);
 
-    const fetchEmpresas = async () => {
+    const fetchSetores = async () => {
         setCarregando(true);
         setErro(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Empresa');
+            const response = await fetch('http://localhost:53011/Setor');
             if (!response.ok) {
-                throw new Error('Erro ao carregar empresas');
+                throw new Error('Erro ao carregar setores');
             }
             const data = await response.json();
             console.log("Dados recebidos:", data);
-            setEmpresas(Array.isArray(data) ? data : [data]);
+            setSetores(Array.isArray(data) ? data : [data]);
         } catch (error) {
             setErro(error.message);
         } finally {
             setCarregando(false);
-            console.log(empresas);
+            console.log(setores);
         }
     };
 
     useEffect(() => {
-        fetchEmpresas();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchSetores();
     }, []);
 
     useEffect(() => {
-        console.log("Estado empresas atualizado:", empresas);
-    }, [empresas]);
+        console.log("Estado setores atualizado:", setores);
+    }, [setores]);
 
-    const handleNovaEmpresa = () => {
-        navigate('/empresa/cadastro');
+    const handleNovoSetor = () => {
+        navigate('/setor/cadastro');
     };
 
     // Handlers para o menu de ações
-    const handleAbrirMenu = (event, empresa) => {
+    const handleAbrirMenu = (event, setor) => {
         setAnchorEl(event.currentTarget);
-        setEmpresaSelecionada(empresa);
+        setSetorSelecionado(setor);
     };
 
     const handleFecharMenu = () => {
         setAnchorEl(null);
     };
 
-    const handleEditarEmpresa = () => {
-        if (empresaSelecionada) {
-            navigate(`/empresa/editar/${empresaSelecionada.id}`);
+    const handleEditarSetor = () => {
+        if (setorSelecionado) {
+            navigate(`/setor/editar/${setorSelecionado.id}`);
         }
         handleFecharMenu();
     };
@@ -103,7 +104,7 @@ function ListarEmpresa() {
                 >
                     <CircularProgress size={60} thickness={4} />
                     <Typography variant="h6" mt={2} color="text.secondary">
-                        Carregando empresas...
+                        Carregando setores...
                     </Typography>
                 </Box>
             </Container>
@@ -117,15 +118,14 @@ function ListarEmpresa() {
                 sx={{
                     p: 3,
                     borderRadius: 2,
-                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
-                    border: '1px solid #4E71FF'
+                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
                 }}
             >
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                     <Box display="flex" alignItems="center">
-                        <BusinessIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
+                        <ApartmentIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
                         <Typography variant="h4" component="h1" fontWeight="500" color="primary">
-                            Lista de Empresas
+                            Lista de Setores
                         </Typography>
                     </Box>
 
@@ -133,7 +133,7 @@ function ListarEmpresa() {
                         <Tooltip title="Atualizar lista">
                             <IconButton
                                 color="primary"
-                                onClick={fetchEmpresas}
+                                onClick={fetchSetores}
                                 sx={{ mr: 1 }}
                             >
                                 <RefreshIcon />
@@ -143,7 +143,7 @@ function ListarEmpresa() {
                         <Button
                             variant="contained"
                             color="primary"
-                            onClick={handleNovaEmpresa}
+                            onClick={handleNovoSetor}
                             startIcon={<AddIcon />}
                             sx={{
                                 boxShadow: '0 4px 6px rgba(50, 50, 93, 0.11), 0 1px 3px rgba(0, 0, 0, 0.08)',
@@ -151,7 +151,7 @@ function ListarEmpresa() {
                                 px: 2
                             }}
                         >
-                            Nova Empresa
+                            Novo Setor
                         </Button>
                     </Box>
                 </Box>
@@ -164,7 +164,7 @@ function ListarEmpresa() {
                         sx={{ mb: 3 }}
                         icon={<ErrorIcon fontSize="inherit" />}
                         action={
-                            <Button color="inherit" size="small" onClick={fetchEmpresas}>
+                            <Button color="inherit" size="small" onClick={fetchSetores}>
                                 Tentar novamente
                             </Button>
                         }
@@ -173,7 +173,7 @@ function ListarEmpresa() {
                     </Alert>
                 )}
 
-                {empresas.length === 0 ? (
+                {setores.length === 0 ? (
                     <Box
                         display="flex"
                         flexDirection="column"
@@ -183,20 +183,20 @@ function ListarEmpresa() {
                         bgcolor="#f5f5f5"
                         borderRadius={2}
                     >
-                        <BusinessIcon sx={{ fontSize: 64, color: '#bdbdbd', mb: 2 }} />
+                        <ApartmentIcon sx={{ fontSize: 64, color: '#bdbdbd', mb: 2 }} />
                         <Typography variant="h6" color="text.secondary" gutterBottom>
-                            Nenhuma empresa cadastrada
+                            Nenhum setor cadastrado
                         </Typography>
                         <Typography variant="body2" color="text.secondary" mb={2}>
-                            Clique no botao acima para adicionar uma nova empresa
+                            Clique no botão acima para adicionar um novo setor
                         </Typography>
                         <Button
                             variant="outlined"
                             color="primary"
-                            onClick={handleNovaEmpresa}
+                            onClick={handleNovoSetor}
                             startIcon={<AddIcon />}
                         >
-                            Adicionar Empresa
+                            Adicionar Setor
                         </Button>
                     </Box>
                 ) : (
@@ -214,14 +214,15 @@ function ListarEmpresa() {
                                 <TableRow>
                                     <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Nome</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold' }}>CNPJ</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold' }}></TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Empresa</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}></TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {empresas.map((empresa) => (
+                                {setores.map((setor) => (
                                     <TableRow
-                                        key={empresa.id}
+                                        key={setor.id}
                                         hover
                                         sx={{
                                             '&:nth-of-type(odd)': { backgroundColor: '#fafafa' },
@@ -233,14 +234,27 @@ function ListarEmpresa() {
                                             }
                                         }}
                                     >
-                                        <TableCell>{empresa.id}</TableCell>
-                                        <TableCell sx={{ fontWeight: 500 }}>{empresa.nome}</TableCell>
-                                        <TableCell>{empresa.cnpj}</TableCell>
+                                        <TableCell>{setor.id}</TableCell>
+                                        <TableCell sx={{ fontWeight: 500 }}>{setor.nome}</TableCell>
+                                        <TableCell>
+                                            <Chip
+                                                label={setor.status ? "Ativo" : "Inativo"}
+                                                color={setor.status ? "success" : "default"}
+                                                size="small"
+                                                variant="outlined"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Box display="flex" alignItems="center">
+                                                <BusinessIcon fontSize="small" sx={{ mr: 1, color: '#757575' }} />
+                                                {setor.empresa?.nome || "N/A"}
+                                            </Box>
+                                        </TableCell>
                                         <TableCell>
                                             <IconButton
                                                 size="small"
-                                                onClick={(e) => handleAbrirMenu(e, empresa)}
-                                                aria-label="Opções da tarefa"
+                                                onClick={(e) => handleAbrirMenu(e, setor)}
+                                                aria-label="Opções do setor"
                                             >
                                                 <Icon />
                                             </IconButton>
@@ -254,7 +268,7 @@ function ListarEmpresa() {
 
                 <Box display="flex" justifyContent="flex-end" mt={3}>
                     <Typography variant="body2" color="text.secondary">
-                        Total: {empresas.length} empresa{empresas.length !== 1 ? 's' : ''}
+                        Total: {setores.length} setor{setores.length !== 1 ? 'es' : ''}
                     </Typography>
                 </Box>
             </Paper>
@@ -272,7 +286,7 @@ function ListarEmpresa() {
                     horizontal: 'right',
                 }}
             >
-                <MenuItem onClick={handleEditarEmpresa}>
+                <MenuItem onClick={handleEditarSetor}>
                     <EditIcon fontSize="small" sx={{ mr: 1 }} color="primary" />
                     Editar
                 </MenuItem>
@@ -281,4 +295,4 @@ function ListarEmpresa() {
     );
 }
 
-export default ListarEmpresa;
+export default ListarSetor;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     Button,
     TextField,
@@ -10,10 +10,6 @@ import {
     Grid,
     Alert,
     InputAdornment,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
     FormControlLabel,
     Switch,
     CircularProgress
@@ -21,40 +17,45 @@ import {
 import {
     Save as SaveIcon,
     Cancel as CancelIcon,
-    Apartment as ApartmentIcon,
-    Business as BusinessIcon
+    Apartment as ApartmentIcon
 } from '@mui/icons-material';
 
-function CadastrarSetor() {
+function EditarSetor() {
+    const { id } = useParams();
     const navigate = useNavigate();
+
     const [setor, setSetor] = useState({
         nome: '',
-        status: true,
-        empresaId: ''
+        status: true
     });
-    const [empresas, setEmpresas] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
 
     useEffect(() => {
-        const carregarEmpresas = async () => {
+        const carregarDados = async () => {
             try {
-                const response = await fetch('http://localhost:53011/Empresa');
-                if (!response.ok) {
-                    throw new Error('Erro ao carregar empresas');
+                const setorResponse = await fetch(`http://localhost:53011/Setor/${id}`);
+                if (!setorResponse.ok) {
+                    throw new Error('Erro ao carregar dados do setor');
                 }
-                const data = await response.json();
-                setEmpresas(data);
+                const setorData = await setorResponse.json();
+                const statusBoolean = setorData.status === true || setorData.status === "true";
+                setSetor({
+                    nome: setorData.nome,
+                    status: statusBoolean
+                });
+                console.log("Status carregado:", statusBoolean);
             } catch (err) {
-                console.error('Erro ao carregar empresas:', err);
-                setError('Não foi possível carregar a lista de empresas.');
+                console.error('Erro ao carregar dados:', err);
+                setError(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
-        carregarEmpresas();
-    }, []);
+        carregarDados();
+    }, [id]);
 
     const handleChange = e => {
         const { name, value } = e.target;
@@ -62,39 +63,52 @@ function CadastrarSetor() {
     };
 
     const handleSwitchChange = e => {
-        setSetor(prev => ({ ...prev, status: e.target.checked }));
+        const isChecked = e.target.checked;
+        console.log("Switch alterado para:", isChecked);
+        setSetor(prev => ({ ...prev, status: isChecked }));
     };
 
-    const salvarSetor = async e => {
+    const atualizarSetor = async e => {
         e.preventDefault();
         setError(null);
-
-        if (!setor.empresaId) {
-            setError('Selecione uma empresa válida.');
-            return;
-        }
+        setSuccess(false);
 
         try {
-            const response = await fetch('http://localhost:53011/Setor', {
-                method: 'POST',
+            const getSetorResponse = await fetch(`http://localhost:53011/Setor/${id}`);
+            if (!getSetorResponse.ok) {
+                throw new Error('Erro ao obter dados atuais do setor');
+            }
+            const setorAtual = await getSetorResponse.json();
+
+            console.log("Enviando status:", setor.status);
+            console.log("Dados completos para envio:", {
+                id: parseInt(id),
+                nome: setor.nome,
+                status: setor.status,
+                empresaId: setorAtual.empresa.id
+            });
+
+            const response = await fetch(`http://localhost:53011/Setor/${id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    id: 0,
+                    id: parseInt(id),
                     nome: setor.nome,
                     status: setor.status,
-                    empresaId: parseInt(setor.empresaId)
+                    empresaId: setorAtual.empresa.id
                 })
             });
 
             if (!response.ok) {
                 const errorText = await response.text();
-                throw new Error(errorText || 'Erro ao criar setor');
+                throw new Error(errorText || 'Erro ao atualizar setor');
             }
 
-            navigate('/setor/listar');
+            setSuccess(true);
+            setTimeout(() => navigate('/setor/listar'), 1000);
         } catch (err) {
-            console.error('Erro ao salvar setor:', err);
-            setError('Falha ao salvar setor. Tente novamente.');
+            console.error('Erro ao atualizar setor:', err);
+            setError('Falha ao atualizar setor. Tente novamente.');
         }
     };
 
@@ -105,7 +119,10 @@ function CadastrarSetor() {
     if (loading) {
         return (
             <Container maxWidth="md" sx={{ mt: 4, mb: 4, display: 'flex', justifyContent: 'center' }}>
-                <CircularProgress />
+                <Box display="flex" flexDirection="column" alignItems="center">
+                    <CircularProgress />
+                    <Typography mt={2}>Carregando setor...</Typography>
+                </Box>
             </Container>
         );
     }
@@ -123,7 +140,7 @@ function CadastrarSetor() {
                 <Box sx={{ mb: 3, display: 'flex', alignItems: 'center' }}>
                     <ApartmentIcon sx={{ fontSize: 32, mr: 2, color: '#3f51b5' }} />
                     <Typography variant="h4" component="h1" fontWeight="500" color="primary">
-                        Novo Setor
+                        Editar Setor
                     </Typography>
                 </Box>
 
@@ -133,7 +150,13 @@ function CadastrarSetor() {
                     </Alert>
                 )}
 
-                <form name="novoSetorForm" onSubmit={salvarSetor}>
+                {success && (
+                    <Alert severity="success" sx={{ mb: 3 }}>
+                        Setor atualizado com sucesso!
+                    </Alert>
+                )}
+
+                <form name="editarSetorForm" onSubmit={atualizarSetor}>
                     <Grid container spacing={3}>
                         <Grid item xs={12}>
                             <TextField
@@ -153,34 +176,6 @@ function CadastrarSetor() {
                                     ),
                                 }}
                             />
-                        </Grid>
-
-                        <Grid item xs={12}>
-                            <FormControl fullWidth variant="outlined" required>
-                                <InputLabel id="empresa-label">Empresa</InputLabel>
-                                <Select
-                                    labelId="empresa-label"
-                                    id="empresaId"
-                                    name="empresaId"
-                                    value={setor.empresaId}
-                                    onChange={handleChange}
-                                    label="Empresa"
-                                    startAdornment={
-                                        <InputAdornment position="start">
-                                            <BusinessIcon color="action" />
-                                        </InputAdornment>
-                                    }
-                                >
-                                    <MenuItem value="" disabled>
-                                        <em>Selecione uma empresa</em>
-                                    </MenuItem>
-                                    {empresas.map((empresa) => (
-                                        <MenuItem key={empresa.id} value={empresa.id}>
-                                            {empresa.nome} ({empresa.cnpj})
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
                         </Grid>
 
                         <Grid item xs={12}>
@@ -232,4 +227,4 @@ function CadastrarSetor() {
     );
 }
 
-export default CadastrarSetor;
+export default EditarSetor;

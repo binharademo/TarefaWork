@@ -1,58 +1,50 @@
 ﻿using ApiRest.DTOs;
+using System.Net.Http;
+using System.Net.Http.Json;
 using TarefasLibrary.Modelo;
 
 namespace BlazorTarefas.Servicos
 {
     public class SetorServico
     {
-        private List<SetorDTO> _setor = new List<SetorDTO>();
-        private readonly EmpresaServico _empresa;
-        private int _nextId = 1;
+        private readonly HttpClient _httpClient;
 
-        public SetorServico(EmpresaServico empresa)
+        public SetorServico(HttpClient httpClient)
         {
-            _empresa = empresa;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
         }
 
-        public async Task<Boolean> Adicionar(CriarSetorDTO setor)
+        public async Task<SetorDTO> Adicionar(CriarSetorDTO setor)
         {
-            var empresa = await _empresa.BuscaPorId(setor.EmpresaId);
-            _setor.Add(new SetorDTO
-            {
-                Id = _nextId++,
-                Nome = setor.Nome,
-                Status = setor.Status,
-                Empresa = empresa
-            });
-            return true;
+            var response = await _httpClient.PostAsJsonAsync("setor", setor);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<SetorDTO>();
         }
 
-        public Boolean Atualizar(SetorDTO setor)
+        public async Task<bool> Atualizar(int id, AlterarSetorDTO setor)
         {
-            var setorExistente = _setor.FirstOrDefault(t => t.Id == setor.Id);
-            if (setorExistente != null)
-            {
-                setorExistente.Nome = setor.Nome;
-                setorExistente.Status = setor.Status;
-                return (true);
-            }
-            return (false);
+            // DEBUG: Verifique o que está sendo enviado
+            Console.WriteLine($"HTTP Client enviando - Status: {setor.Status}");
+
+            var response = await _httpClient.PutAsJsonAsync($"setor/{id}", setor);
+            return response.IsSuccessStatusCode;
         }
 
-        public Task<List<SetorDTO>> BuscaTodos()
+        public async Task<List<SetorDTO>> BuscaTodos()
         {
-            return Task.FromResult(_setor);
+            return await _httpClient.GetFromJsonAsync<List<SetorDTO>>("setor")
+                   ?? new List<SetorDTO>();
         }
 
-        public async Task<SetorDTO> BuscaPorId(int id) =>
-            _setor.FirstOrDefault(t => t.Id == id);
-
-        public Task Remover(int id)
+        public async Task<SetorDTO?> BuscaPorId(int id)
         {
-            var setor = _setor.FirstOrDefault(t => t.Id == id);
-            if (setor != null) _setor.Remove(setor);
-            return Task.CompletedTask;
+            return await _httpClient.GetFromJsonAsync<SetorDTO?>($"setor/{id}");
+        }
+
+        public async Task<bool> Remover(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"setor/{id}");
+            return response.IsSuccessStatusCode;
         }
     }
 }
-

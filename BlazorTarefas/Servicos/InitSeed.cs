@@ -50,7 +50,7 @@ namespace BlazorTarefas.Servicos
                 Nome = "Administrador",
                 Senha = "admin123", // Em produção, use hash de senha
                 FuncaoUsuario = Usuario.Funcao.Dev,
-                SetorUsuario = Usuario.Setor.Ti
+                SetorUsuario = setorTI
             };
             
             var usuario1 = new Usuario
@@ -58,7 +58,7 @@ namespace BlazorTarefas.Servicos
                 Nome = "Usuário Padrão",
                 Senha = "user123", // Em produção, use hash de senha
                 FuncaoUsuario = Usuario.Funcao.Analista,
-                SetorUsuario = Usuario.Setor.Ti
+                SetorUsuario = setorRH
             };
             
             dbContext.Usuarios.AddRange(admin, usuario1);

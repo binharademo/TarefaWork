@@ -13,17 +13,16 @@
 }
 else
 {
-    <EditForm Model="setor" OnValidSubmit="SalvarSetor" FormName="editarSetorForm">
-
+    <EditForm Model="setorDTO" OnValidSubmit="SalvarSetor" FormName="editarSetorForm">
         <DataAnnotationsValidator />
         <div class="form-group mb-3">
             <label>Nome</label>
-            <InputText class="form-control" @bind-Value="setor.Nome" />
-            <ValidationMessage For="() => setor.Nome" />
+            <InputText class="form-control" @bind-Value="setorDTO.Nome" />
+            <ValidationMessage For="() => setorDTO.Nome" />
         </div>
         <div class="form-group mb-3">
             <label>Status</label>
-            <InputRadioGroup @bind-Value="setor.Status">
+            <InputRadioGroup @bind-Value="setorDTO.Status">
                 <div class="form-check">
                     <InputRadio class="form-check-input" Value="true" />
                     <label class="form-check-label">Ativo</label>
@@ -33,12 +32,10 @@ else
                     <label class="form-check-label">Inativo</label>
                 </div>
             </InputRadioGroup>
-            <ValidationMessage For="() => setor.Status" />
+            <ValidationMessage For="() => setorDTO.Status" />
         </div>
-
         <button type="submit" class="btn btn-success">Salvar</button>
         <button type="button" class="btn btn-secondary" @onclick="Cancelar">Cancelar</button>
-
     </EditForm>
 }
 
@@ -48,32 +45,50 @@ else
     public int Id { get; set; }
 
     private SetorDTO setor = new();
+    private AlterarSetorDTO setorDTO = new();
 
     protected override async Task OnInitializedAsync()
     {
-        // Carrega a tarefa pelo ID passado na URL
+        // Carrega o setor pelo ID
         setor = await SetorServico.BuscaPorId(Id);
+
+        if (setor != null)
+        {
+            // Preenche os dados do DTO usado no formulário
+            setorDTO = new AlterarSetorDTO
+                {
+                    Id = setor.Id, 
+                    Nome = setor.Nome,
+                    Status = setor.Status,
+                    EmpresaId = setor.Empresa.Id
+                };
+
+            // DEBUG: Adicione estas linhas para verificar
+            Console.WriteLine($"Setor carregado - Status: {setor.Status}");
+            Console.WriteLine($"DTO criado - Status: {setorDTO.Status}");
+        }
     }
 
-    private void SalvarSetor()
+    private async Task SalvarSetor()
     {
-        var resultado = SetorServico.Atualizar(setor);
+        // DEBUG: Verifique o que está sendo enviado
+        Console.WriteLine($"Enviando - Nome: {setorDTO.Nome}, Status: {setorDTO.Status}, EmpresaId: {setorDTO.EmpresaId}");
 
+        var resultado = await SetorServico.Atualizar(Id, setorDTO);
         if (resultado)
         {
-            // Se a atualização for bem-sucedida, navega para a lista de setores
             NavigationManager.NavigateTo("/setor/listar");
         }
         else
         {
             NavigationManager.NavigateTo("/erro");
         }
-       
     }
+
     private void Cancelar()
     {
-        // Cancela e volta para a lista
-        NavigationManager.NavigateTo("/setor");
+        NavigationManager.NavigateTo("/setor/listar");
     }
 }
+
 

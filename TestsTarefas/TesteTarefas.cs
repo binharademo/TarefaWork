@@ -12,9 +12,10 @@ namespace Tests_Tarefas
         {
             //Arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             int id = 1;
@@ -40,9 +41,10 @@ namespace Tests_Tarefas
         {
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             //Arrange
@@ -75,9 +77,10 @@ namespace Tests_Tarefas
         public void SalvarTarefa_ValoresNulosOuVazios()
         {
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             //Arrange
@@ -105,9 +108,10 @@ namespace Tests_Tarefas
         public void SalvarTarefa_ValoresEspeciais()
         {
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             //Arrange
@@ -134,9 +138,10 @@ namespace Tests_Tarefas
         public void ListarTarefas()
         {
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             //Arrange
@@ -175,9 +180,10 @@ namespace Tests_Tarefas
 
             // Arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario(nomeCriador, "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario(nomeCriador, "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario(nomeResponsavel, "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario(nomeResponsavel, "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             Tarefa tarefa01 = new Tarefa(id, titulo, statusEnum, criador, responsavel, prazo, descricao, prioridade);
@@ -204,9 +210,10 @@ namespace Tests_Tarefas
         public void AtualizarTarefa_02()
         {
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             //Arrange
@@ -237,10 +244,11 @@ namespace Tests_Tarefas
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            var setor = new Setor("Setor Teste", 1);
 
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             int id = 1;
@@ -266,9 +274,10 @@ namespace Tests_Tarefas
         {
             // Arrange
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             int id = 52;
@@ -298,12 +307,13 @@ namespace Tests_Tarefas
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            var setor = new Setor("Setor Teste", 1);
 
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
-            Usuario membro = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario membro = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(membro);
             var tarefa = Tarefa.Status.ToDo;
 
@@ -323,12 +333,13 @@ namespace Tests_Tarefas
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            var setor = new Setor("Setor Teste", 1);
 
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
-            Usuario membro = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario membro = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(membro);
             var tarefa = Tarefa.Status.ToDo;
 
@@ -347,14 +358,15 @@ namespace Tests_Tarefas
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            var setor = new Setor("Setor Teste", 1);
 
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
 
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
-            Usuario membroExistente = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario membroExistente = new Usuario("Guilherme", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(membroExistente);
 
             var tarefa = Tarefa.Status.ToDo;
@@ -376,9 +388,10 @@ namespace Tests_Tarefas
             //Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
             Tarefa tarefa01 = new Tarefa("titulo", tarefa, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta, new DateTime(2025, 05, 20));
@@ -394,9 +407,10 @@ namespace Tests_Tarefas
             // arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 
@@ -421,9 +435,10 @@ namespace Tests_Tarefas
             // arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 
@@ -445,9 +460,10 @@ namespace Tests_Tarefas
             // arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 
@@ -468,9 +484,10 @@ namespace Tests_Tarefas
             // arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            var setor = new Setor("Setor Teste", 1);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
             var tarefa = Tarefa.Status.ToDo;
 
@@ -499,10 +516,11 @@ namespace Tests_Tarefas
             // Arrange
             TarefaServico tarefaServico = new TarefaServico(new TarefaMemoriaRepositorio());
             UsuarioServico servico = new UsuarioServico(new UsuarioMemoriaRepositorio());
+            var setor = new Setor("Setor Teste", 1);
 
-            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario criador = new Usuario("Gabriel", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(criador);
-            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, Usuario.Setor.Ti);
+            Usuario responsavel = new Usuario("Vinicius", "123456", Usuario.Funcao.Dev, setor);
             servico.Criar(responsavel);
 
             Tarefa tarefa01 = new Tarefa("titulo", Tarefa.Status.ToDo, criador, responsavel, new DateTime(2025, 05, 20), "descricao", Tarefa.Prioridade.Alta);

@@ -68,31 +68,35 @@ namespace Tests_Tarefas.RepositorioEntity
         }
 
         [Fact]
+
         public void Excluir_setorEF()
         {
             // Arrange
             var empresaRepositorio = new EmpresaRepositorio(connectionString);
-            var empresa1 = empresaRepositorio.Listar().First();
+            var empresa1 = empresaRepositorio.Listar().FirstOrDefault();
             if (empresa1 == null)
             {
                 empresa1 = new Empresa("empresa1 teste", "777777");
                 empresaRepositorio.Cadastrar(empresa1);
+                empresa1 = empresaRepositorio.Listar().First(e => e.Cnpj == "777777");
             }
-            var empresa2 = empresaRepositorio.Listar().First(e => e.Id != empresa1.Id);
+
+            var empresa2 = empresaRepositorio.Listar().FirstOrDefault(e => e.Id != empresa1.Id);
             if (empresa2 == null)
             {
-                empresa2 = new Empresa("odeio vinicius ratzke", "777");
+                empresa2 = new Empresa("empresa2 teste", "888888");
                 empresaRepositorio.Cadastrar(empresa2);
+                empresa2 = empresaRepositorio.Listar().First(e => e.Cnpj == "888888");
             }
 
             var setorRepositorio = new SetorRepositorio(connectionString);
             setorRepositorio.InicializarBancoDados();
 
-            var setor = new Setor("ti", empresa1);
-            var setor2 = new Setor("morte a vinicius", empresa2);
+            var setor = new Setor("TI", empresa1);
+            var setor2 = new Setor("Backup", empresa2);
 
-            var criaSetor1 = setorRepositorio.Cadastrar(setor);
-            var criaSetor2 = setorRepositorio.Cadastrar(setor2);
+            setorRepositorio.Cadastrar(setor);
+            setorRepositorio.Cadastrar(setor2);
 
             // Act
             var resultadoExclusao = setorRepositorio.Remover(setor);
@@ -100,6 +104,7 @@ namespace Tests_Tarefas.RepositorioEntity
             // Assert
             Assert.True(resultadoExclusao);
         }
+
 
         [Fact]
         public void Listar_setorEF()

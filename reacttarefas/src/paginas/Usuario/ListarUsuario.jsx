@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
     Table,
@@ -17,13 +17,19 @@ import {
     Chip,
     Tooltip,
     IconButton,
-    Divider
+    Divider,
+    Menu,
+    MenuItem
 } from '@mui/material';
 import {
     Add as AddIcon,
     Refresh as RefreshIcon,
     Person as PersonIcon,
-    Error as ErrorIcon
+    Error as ErrorIcon,
+    MoreVert as Icon,
+    Edit as EditIcon,
+    Delete as DeleteIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 
 function ListarUsuario() {
@@ -31,6 +37,9 @@ function ListarUsuario() {
     const [carregando, setCarregando] = useState(true);
     const [erro, setErro] = useState(null);
     const navigate = useNavigate();
+
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [usuarioSelecionado, setUsuarioSelecionado] = useState(null);
 
     const fetchUsuarios = async () => {
         setCarregando(true);
@@ -63,6 +72,22 @@ function ListarUsuario() {
 
     const handleNovoUsuario = () => {
         navigate('/usuario/cadastro');
+    };
+
+    const handleAbrirMenu = (event, usuario) => {
+        setAnchorEl(event.currentTarget);
+        setUsuarioSelecionado(usuario);
+    };
+
+    const handleFecharMenu = () => {
+        setAnchorEl(null);
+    };
+
+    const handleEditarUsuario = () => {
+        if (usuarioSelecionado) {
+            navigate(`/usuario/editar/${usuarioSelecionado.id}`);
+        }
+        handleFecharMenu();
     };
 
     const renderFuncao = (funcao) => {
@@ -115,7 +140,8 @@ function ListarUsuario() {
                 sx={{
                     p: 3,
                     borderRadius: 2,
-                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)'
+                    background: 'linear-gradient(to right bottom, #ffffff, #f8f9fa)',
+                    border: '1px solid #4E71FF'
                 }}
             >
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
@@ -213,6 +239,7 @@ function ListarUsuario() {
                                     <TableCell sx={{ fontWeight: 'bold' }}>Nome</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Funcao</TableCell>
                                     <TableCell sx={{ fontWeight: 'bold' }}>Setor</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>Ações</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -234,6 +261,15 @@ function ListarUsuario() {
                                         <TableCell sx={{ fontWeight: 500 }}>{usuario.nome}</TableCell>
                                         <TableCell>{renderFuncao(usuario.funcaoUsuario)}</TableCell>
                                         <TableCell>{renderSetor(usuario.setorUsuario)}</TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                size="small"
+                                                onClick={(e) => handleAbrirMenu(e, usuario)}
+                                                aria-label="Opções da tarefa"
+                                            >
+                                                <Icon />
+                                            </IconButton>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                             </TableBody>
@@ -247,6 +283,25 @@ function ListarUsuario() {
                     </Typography>
                 </Box>
             </Paper>
+            <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleFecharMenu}
+                keepMounted
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
+            >
+                <MenuItem onClick={handleEditarUsuario}>
+                    <EditIcon fontSize="small" sx={{ mr: 1 }} color="primary" />
+                    Editar
+                </MenuItem>
+            </Menu>
         </Container>
     );
 }
