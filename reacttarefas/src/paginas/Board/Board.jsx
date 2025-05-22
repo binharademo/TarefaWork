@@ -1,5 +1,5 @@
 ﻿import React, { useState, useEffect } from 'react';
-// Importamos versão estritamente compatível com ES6 para evitar problemas
+import { useNavigate } from 'react-router-dom';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
 import {
     Paper,
@@ -12,25 +12,41 @@ import {
     Container,
     Snackbar,
     Alert,
-    IconButton
+    IconButton,
+    Menu,
+    MenuItem,
+    ListItemIcon,
+    useTheme,
+    styled,
+    alpha
 } from '@mui/material';
 import {
     CheckCircle as CheckCircleIcon,
     Warning as WarningIcon,
     Error as ErrorIcon,
-    LowPriority as LowPriorityIcon,
     PriorityHigh as PriorityHighIcon,
     MoreVert as MoreVertIcon,
-    DragIndicator as DragIndicatorIcon
+    Visibility as VisibilityIcon,
+    Edit as EditIcon
 } from '@mui/icons-material';
 
-// Estilos para as colunas por status
-const columnStyles = {
-    0: { borderTop: '4px solid #4caf50' },   // Concluído
-    1: { borderTop: '4px solid #ff9800' },   // Em Andamento
-    2: { borderTop: '4px solid #f44336' }    // Pendente
+const STATUS_COLORS = {
+    0: 'success', // Concluído
+    1: 'warning', // Em Andamento
+    2: 'error'    // Pendente
 };
 
+const StyledColumn = styled(Paper)(({ theme, status }) => ({
+    padding: theme.spacing(2),
+    minHeight: 500,
+    borderRadius: theme.shape.borderRadius * 2,
+    backgroundColor: theme.palette.background.paper,
+    borderTop: `4px solid ${theme.palette[STATUS_COLORS[status]].main}`,
+    transition: 'background-color 0.3s ease',
+    '&:hover': {
+        backgroundColor: theme.palette.action.hover
+    }
+}));
 const borderStyles = {
     0: { border: '1px solid #4caf50' },   // Concluído
     1: { border: '1px solid #ff9800' },   // Em Andamento
@@ -43,191 +59,135 @@ const statusLabels = {
     2: 'Pendente'
 };
 
+const StyledCard = styled(Card)(({ theme, isdragging, status }) => ({
+    cursor: 'grab',
+    borderRadius: theme.shape.borderRadius * 2,
+    boxShadow: isdragging ? theme.shadows[6] : theme.shadows[1],
+    transform: isdragging ? 'scale(1.02)' : 'scale(1)',
+    transition: 'all 0.2s ease-in-out',
+    backgroundColor: alpha(theme.palette[STATUS_COLORS[status]].main, 0.1),
+    borderLeft: `4px solid ${theme.palette[STATUS_COLORS[status]].main}`,
+    '&:hover': {
+        boxShadow: theme.shadows[4]
+    }
+}));
+
 export default function BoardTarefas() {
+    const theme = useTheme();
+    const navigate = useNavigate();
     const [columns, setColumns] = useState({ 0: [], 1: [], 2: [] });
     const [loading, setLoading] = useState(true);
     const [notification, setNotification] = useState({ open: false, message: '', severity: 'info' });
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedTaskId, setSelectedTaskId] = useState(null);
+    const menuOpen = Boolean(anchorEl);
 
-    // Carrega tarefas e agrupa por status
-    useEffect(() => {
-        fetchTarefas();
-    }, []);
+    useEffect(() => { fetchTarefas(); }, []);
 
     const fetchTarefas = () => {
         setLoading(true);
         fetch('http://localhost:53011/Tarefa')
-            .then((res) => {
-                if (!res.ok) throw new Error('Falha ao carregar tarefas');
-                return res.json();
-            })
-            .then((data) => {
+            .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+            .then(data => {
                 const grouped = { 0: [], 1: [], 2: [] };
-                data.forEach((tarefa) => {
-                    // Certifique-se de que o status é um número
-                    const status = Number(tarefa.status);
-                    if (grouped[status] !== undefined) {
-                        grouped[status].push(tarefa);
-                    }
-                });
+                data.forEach(t => grouped[Number(t.status)]?.push(t));
                 setColumns(grouped);
             })
-            .catch((error) => {
-                console.error('Erro ao carregar tarefas:', error);
-                showNotification('Erro ao carregar tarefas', 'error');
-            })
+            .catch(() => showNotification('Erro ao carregar tarefas', 'error'))
             .finally(() => setLoading(false));
     };
 
-    // Função para mostrar notificações
-    const showNotification = (message, severity = 'info') => {
+    const showNotification = (message, severity = 'info') =>
         setNotification({ open: true, message, severity });
-    };
+    const closeNotification = () =>
+        setNotification(prev => ({ ...prev, open: false }));
 
-    const closeNotification = () => {
-        setNotification({ ...notification, open: false });
-    };
+    const statusLabels = { 0: 'Concluído', 1: 'Em Andamento', 2: 'Pendente' };
 
-    // Atualiza tarefa no backend
-    const updateTarefa = async (tarefa) => {
-        try {
-            const response = await fetch(`http://localhost:53011/Tarefa/${tarefa.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(tarefa)
-            });
-
-            if (!response.ok) {
-                throw new Error('Falha ao atualizar tarefa');
-            }
-
-            showNotification(`Tarefa "${tarefa.titulo}" movida para ${statusLabels[tarefa.status]}`, 'success');
-            return true;
-        } catch (error) {
-            console.error('Erro ao atualizar tarefa:', error);
-            showNotification('Erro ao atualizar status da tarefa', 'error');
-
-            // Recarregar tarefas em caso de erro para garantir sincronização
-            fetchTarefas();
-            return false;
-        }
-    };
-
-    // Ícones de status e prioridade
-    const getStatusIcon = (status) => {
-        if (status === 0) return <CheckCircleIcon color="success" fontSize="small" />;
-        if (status === 1) return <WarningIcon color="warning" fontSize="small" />;
-        return <ErrorIcon color="error" fontSize="small" />;
-    };
-
-    const getPrioridadeIcon = (p) => {
-        if (p === 0) return <PriorityHighIcon fontSize="small" color="success" />;
-        if (p === 1) return <PriorityHighIcon fontSize="small" color="warning" />;
-        if (p === 2) return <PriorityHighIcon fontSize="small" color="danger" />;
-        return <PriorityHighIcon fontSize="small" color="error" />;
-    };
-
-    // Formatação de datas e tempos
-    const formatarData = (d) => {
-        try {
-            return new Date(d).toLocaleDateString('pt-BR');
-        } catch (e) {
-            return 'Data inválida';
-        }
-    };
-
-    const converterParaSegundos = (str) => {
+    const converterParaSegundos = str => {
         if (!str) return 0;
-        try {
-            const [h = 0, m = 0, ss = 0] = str.split(':').map(Number);
-            return h * 3600 + m * 60 + ss;
-        } catch (e) {
-            return 0;
-        }
+        const [h = 0, m = 0, s = 0] = str.split(':').map(Number);
+        return h * 3600 + m * 60 + s;
     };
 
-    const formatarTempo = (s) => {
+    const formatarData = d => new Date(d).toLocaleDateString('pt-BR');
+    const formatarTempo = s => {
         const h = Math.floor(s / 3600);
         const m = Math.floor((s % 3600) / 60);
         const ss = s % 60;
-        return [h, m, ss]
-            .map((n) => n.toString().padStart(2, '0'))
-            .join(':');
+        return [h, m, ss].map(n => n.toString().padStart(2, '0')).join(':');
     };
 
-    // Handle drag & drop
+    const handleMenuOpen = (event, taskId) => {
+        event.stopPropagation();
+        setSelectedTaskId(taskId);
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+        setSelectedTaskId(null);
+    };
+
+    const handleVisualizar = () => {
+        navigate(`/tarefa/visualizar/${selectedTaskId}`);
+        handleMenuClose();
+    };
+    const handleEditar = () => {
+        navigate(`/tarefa/editar/${selectedTaskId}`);
+        handleMenuClose();
+    };
+
     const handleDragEnd = async (result) => {
         const { source, destination } = result;
+        if (!destination) return;
 
-        // Se não houver destino (tarefa solta fora de coluna) ou
-        // se a tarefa for solta na mesma posição, não faz nada
-        if (!destination ||
-            (source.droppableId === destination.droppableId &&
-                source.index === destination.index)) {
+        const srcId = source.droppableId;
+        const dstId = destination.droppableId;
+
+        // 1) Reordenar dentro da mesma coluna
+        if (srcId === dstId) {
+            const items = Array.from(columns[srcId]);
+            const [moved] = items.splice(source.index, 1);
+            items.splice(destination.index, 0, moved);
+            setColumns(prev => ({ ...prev, [srcId]: items }));
             return;
         }
 
+        // 2) Movimentar entre colunas (status diferente)
+        const srcList = Array.from(columns[srcId]);
+        const dstList = Array.from(columns[dstId]);
+        const [moved] = srcList.splice(source.index, 1);
+        const updated = { ...moved, status: Number(dstId) };
+        dstList.splice(destination.index, 0, updated);
+
+        setColumns(prev => ({
+            ...prev,
+            [srcId]: srcList,
+            [dstId]: dstList
+        }));
+
+        showNotification(`Movendo "${updated.titulo}" para ${statusLabels[updated.status]}...`, 'info');
         try {
-            const srcId = source.droppableId;
-            const dstId = destination.droppableId;
-
-            // Cria cópias das listas para manipulação
-            const srcList = [...columns[srcId]];
-            const dstList = srcId === dstId ? srcList : [...columns[dstId]];
-
-            // Remove da origem
-            const [movedTask] = srcList.splice(source.index, 1);
-
-            // Cria uma cópia da tarefa com o status atualizado
-            const updatedTask = {
-                ...movedTask,
-                status: parseInt(dstId, 10)
-            };
-
-            // Insere no destino
-            dstList.splice(destination.index, 0, updatedTask);
-
-            // Atualiza estado de forma otimista
-            const newColumns = {
-                ...columns,
-                [srcId]: srcList,
-                [dstId]: dstList
-            };
-
-            setColumns(newColumns);
-
-            // Feedback visual imediato
-            showNotification(`Movendo "${updatedTask.titulo}" para ${statusLabels[updatedTask.status]}...`, 'info');
-
-            // Tenta atualizar no backend
-            const response = await fetch(`http://localhost:53011/Tarefa/${updatedTask.id}`, {
+            const res = await fetch(`http://localhost:53011/Tarefa/${updated.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedTask)
+                body: JSON.stringify(updated)
             });
-
-            if (!response.ok) {
-                throw new Error('Falha ao atualizar tarefa');
-            }
-
-            showNotification(`Tarefa "${updatedTask.titulo}" movida para ${statusLabels[updatedTask.status]}`, 'success');
-        } catch (error) {
-            console.error('Erro ao atualizar tarefa:', error);
-            showNotification('Erro ao atualizar status da tarefa. Recarregando...', 'error');
-
-            // Recarregar tarefas em caso de erro para garantir sincronização
-            setTimeout(fetchTarefas, 1000); // Pequeno atraso para melhor UX
+            if (!res.ok) throw new Error();
+            showNotification(`Tarefa "${updated.titulo}" movida!`, 'success');
+        } catch {
+            showNotification('Erro ao atualizar. Sincronizando...', 'error');
+            setTimeout(fetchTarefas, 1000);
         }
     };
 
-    if (loading) {
-        return (
-            <Container>
-                <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
-                    <CircularProgress size={60} />
-                </Box>
-            </Container>
-        );
-    }
+    if (loading) return (
+        <Container>
+            <Box display="flex" justifyContent="center" alignItems="center" height="80vh">
+                <CircularProgress size={60} />
+            </Box>
+        </Container>
+    );
 
     return (
         <Container maxWidth="xl" sx={{ mt: 4, mb: 4, backgroundColor: 'white', padding: '20px 50px 20px 50px', borderRadius: 5, border: '1px solid #4E71FF' }}>
@@ -242,7 +202,9 @@ export default function BoardTarefas() {
                         <Grid item key={status} sx={{ minWidth: 280 }}>
                             <Droppable droppableId={String(status)}>
                                 {(provided, snapshot) => (
-                                    <Paper
+                                    <StyledColumn
+                                        elevation={snapshot.isDraggingOver ? 4 : 1}
+                                        status={status}
                                         ref={provided.innerRef}
                                         {...provided.droppableProps}
                                         sx={{
@@ -255,75 +217,80 @@ export default function BoardTarefas() {
                                         }}
                                     >
                                         <Typography variant="h6" textAlign="center" gutterBottom>
-                                            {statusLabels[status]} ({columns[status].length})
-                                        </Typography>
-
-                                        {columns[status].map((tarefa, index) => (
-                                            <Draggable
-                                                key={tarefa.id.toString()}
-                                                draggableId={tarefa.id.toString()}
-                                                index={index}
-                                            >
-                                                {(provided, snapshot) => (
-                                                    <div
-                                                        ref={provided.innerRef}
-                                                        {...provided.draggableProps}
-                                                        style={{
-                                                            ...provided.draggableProps.style,
-                                                            marginBottom: 16,
-                                                            opacity: snapshot.isDragging ? 0.8 : 1,
-                                                            boxShadow: snapshot.isDragging ? '0 0 10px rgba(0,0,0,0.3)' : 'none'
-                                                        }}
-                                                    >
-                                                        <Card sx={{
-                                                            cursor: 'grab',
-                                                            backgroundColor: snapshot.isDragging ? '#f5f5f5' : 'white',
-                                                            transition: 'all 0.2s ease'
-                                                        }}>
-                                                            <CardContent>
-                                                                <Box display="flex" justifyContent="space-between" alignItems="center">
-                                                                    <Box display="flex" alignItems="center" width="100%">
-                                                                        <Box {...provided.dragHandleProps} sx={{ mr: 1, cursor: 'grab' }}>
-                                                                            <DragIndicatorIcon fontSize="small" color="action" />
-                                                                        </Box>
-                                                                        <Typography fontWeight={500} sx={{ flex: 1 }}>
-                                                                            {tarefa.titulo}
-                                                                        </Typography>
-                                                                        <IconButton size="small">
-                                                                            <MoreVertIcon fontSize="small" />
+                                    >
+                                        <Typography
+                                            variant="h6"
+                                            align="center"
+                                            gutterBottom
+                                            sx={{ color: theme.palette[STATUS_COLORS[status]].dark }}
+                                        >
+                                        
+                                        {columns[status].map((t, idx) => {
+                                            const expired = new Date(t.prazo) < new Date();
+                                            return (
+                                                <Draggable key={t.id} draggableId={String(t.id)} index={idx}>
+                                                    {(prov, snap) => (
+                                                        <Box
+                                                            ref={prov.innerRef}
+                                                            {...prov.draggableProps}
+                                                            {...prov.dragHandleProps}
+                                                            sx={{ mb: 2 }}
+                                                        >
+                                                            <StyledCard isdragging={snap.isDragging ? 1 : 0} status={t.status}>
+                                                                <CardContent>
+                                                                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                                                                        <Typography fontWeight={600}>{t.titulo}</Typography>
+                                                                        <IconButton size="small" onClick={e => handleMenuOpen(e, t.id)}>
+                                                                            <MoreVertIcon />
                                                                         </IconButton>
                                                                     </Box>
-                                                                </Box>
-                                                                <Typography variant="body2" mt={1} mb={2}>
-                                                                    {tarefa.descricao?.slice(0, 80)}
-                                                                    {tarefa.descricao?.length > 80 && '...'}
-                                                                </Typography>
-                                                                <Box display="flex" gap={1} mb={1}>
-                                                                    {getStatusIcon(tarefa.status)}
-                                                                    {getPrioridadeIcon(tarefa.prioridadeTarefa)}
-                                                                </Box>
-                                                                <Box display="flex" justifyContent="space-between">
-                                                                    <Typography variant="caption">
-                                                                        Prazo: {formatarData(tarefa.prazo)}
+                                                                    <Typography variant="body2" mt={1} mb={1} sx={{ color: theme.palette.text.secondary }}>
+                                                                        {t.descricao?.slice(0, 80)}{t.descricao?.length > 80 && '...'}
                                                                     </Typography>
-                                                                    <Typography variant="caption">
-                                                                        {formatarTempo(converterParaSegundos(tarefa.tempoTotal))}
-                                                                    </Typography>
-                                                                </Box>
-                                                            </CardContent>
-                                                        </Card>
-                                                    </div>
-                                                )}
-                                            </Draggable>
-                                        ))}
-
+                                                                    <Box display="flex" alignItems="center" gap={1} mb={1}>
+                                                                        {t.status === 0
+                                                                            ? <CheckCircleIcon color="success" />
+                                                                            : t.status === 1
+                                                                                ? <WarningIcon color="warning" />
+                                                                                : <ErrorIcon color="error" />}
+                                                                        <PriorityHighIcon color={
+                                                                            t.prioridadeTarefa === 0 ? "success" :
+                                                                                t.prioridadeTarefa === 1 ? "warning" : "error"
+                                                                        } />
+                                                                    </Box>
+                                                                    <Box display="flex" justifyContent="space-between" alignItems="center">
+                                                                        <Box
+                                                                            sx={{
+                                                                                px: 1,
+                                                                                py: 0.25,
+                                                                                borderRadius: 1,
+                                                                                backgroundColor: expired
+                                                                                    ? alpha(theme.palette.error.main, 0.2)
+                                                                                    : 'transparent'
+                                                                            }}
+                                                                        >
+                                                                            <Typography variant="caption" sx={{ color: expired ? theme.palette.error.dark : 'inherit' }}>
+                                                                                Prazo: {formatarData(t.prazo)}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                        <Typography variant="caption">
+                                                                            {formatarTempo(converterParaSegundos(t.tempoTotal))}
+                                                                        </Typography>
+                                                                    </Box>
+                                                                </CardContent>
+                                                            </StyledCard>
+                                                        </Box>
+                                                    )}
+                                                </Draggable>
+                                            );
+                                        })}
                                         {provided.placeholder}
                                         {columns[status].length === 0 && (
-                                            <Typography variant="body2" color="text.secondary" textAlign="center" sx={{ mt: 2 }}>
+                                            <Typography variant="body2" align="center" sx={{ mt: 2, color: theme.palette.text.secondary }}>
                                                 Nenhuma tarefa
                                             </Typography>
                                         )}
-                                    </Paper>
+                                    </StyledColumn>
                                 )}
                             </Droppable>
                         </Grid>
@@ -331,18 +298,30 @@ export default function BoardTarefas() {
                 </Grid>
             </DragDropContext>
 
-            {/* Notificação */}
+            <Menu
+                anchorEl={anchorEl}
+                open={menuOpen}
+                onClose={handleMenuClose}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <MenuItem onClick={handleVisualizar}>
+                    <ListItemIcon><VisibilityIcon fontSize="small" /></ListItemIcon>
+                    Visualizar
+                </MenuItem>
+                <MenuItem onClick={handleEditar}>
+                    <ListItemIcon><EditIcon fontSize="small" /></ListItemIcon>
+                    Editar
+                </MenuItem>
+            </Menu>
+
             <Snackbar
                 open={notification.open}
                 autoHideDuration={4000}
                 onClose={closeNotification}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                <Alert
-                    onClose={closeNotification}
-                    severity={notification.severity}
-                    sx={{ width: '100%' }}
-                >
+                <Alert onClose={closeNotification} severity={notification.severity} elevation={6} variant="filled">
                     {notification.message}
                 </Alert>
             </Snackbar>
