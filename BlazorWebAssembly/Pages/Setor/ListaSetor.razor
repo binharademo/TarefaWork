@@ -1,0 +1,90 @@
+﻿@page "/setor"
+@page "/setor/lista"
+@inject HttpClient Http
+
+<PageTitle>Lista de Setores</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudGrid>
+			<MudItem xs="8">
+				<MudText Typo="Typo.h5" Class="mb-4">
+					<MudIcon Icon="@Icons.Material.Filled.List" /> Lista de Setores
+				</MudText>
+			</MudItem>
+			<MudItem xs="4" Class="d-flex justify-end">
+				<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+						   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+					Cadastrar
+				</MudButton>
+			</MudItem>
+		</MudGrid>
+
+		@if (setores == null)
+		{
+			<MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="my-7" />
+			<MudText Align="Align.Center">Carregando...</MudText>
+		}
+		else if (!setores.Any())
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				Nenhum setor cadastrado. Clique em "Cadastrar" para começar.
+			</MudAlert>
+		}
+		else
+		{
+			<MudTable Items="@setores" Hover="true" Breakpoint="Breakpoint.Sm">
+				<HeaderContent>
+					<MudTh>ID</MudTh>
+					<MudTh>Nome</MudTh>
+					<MudTh>Status</MudTh>
+					<MudTh>Empresa</MudTh>
+					<MudTh>Ações</MudTh>
+				</HeaderContent>
+				<RowTemplate>
+					<MudTd DataLabel="ID">@context.Id</MudTd>
+					<MudTd DataLabel="Nome">@context.Nome</MudTd>
+					<MudTd DataLabel="Status">
+						<MudSwitch @bind-Value="context.Status" Color="Color.Primary" />
+					</MudTd>
+					<MudTd DataLabel="Empresa">@context.Empresa.Nome</MudTd>
+					<MudTd>
+						<MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
+									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
+					</MudTd>
+				</RowTemplate>
+			</MudTable>
+		}
+	</MudPaper>
+</MudContainer>
+
+@code {
+	private List<SetorDTO>? setores;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			var response = await Http.GetAsync("Setor");
+			if (!response.IsSuccessStatusCode)
+				throw new Exception($"API retornou status {response.StatusCode}");
+
+			setores = await response.Content.ReadFromJsonAsync<List<SetorDTO>>() ?? new List<SetorDTO>();
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro ao carregar setores: {ex.Message}");
+			setores = new List<SetorDTO>();
+		}
+	}
+
+	private void NavegarParaCriacao()
+	{
+		NavigationManager.NavigateTo("/setor/criar");
+	}
+
+	private void NavegarParaEdicao(int id)
+	{
+		NavigationManager.NavigateTo($"/setor/editar/{id}");
+	}
+}

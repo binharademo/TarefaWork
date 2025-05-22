@@ -5,10 +5,10 @@
 @inject ISnackbar Snackbar
 @inject HttpClient Http
 
-<PageTitle>Novo Usuário</PageTitle>
+<PageTitle>Nova Empresa</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-	<MudText Typo="Typo.h4" Class="mb-4">Nova Tarefa</MudText>
+	<MudText Typo="Typo.h4" Class="mb-4">Nova Empresa</MudText>
 
 	<MudForm Model="empresa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
 		<MudGrid>
@@ -18,7 +18,8 @@
 			</MudItem>
 			<MudItem xs="12">
 				<MudTextField Label="CNPJ" @bind-Value="empresa.Cnpj" Required="true"
-							  RequiredError="Nome é obrigatório" />
+							  RequiredError="CNPJ é obrigatório" 
+							  Mask="@(new PatternMask("00.000.000/0000-00"))" />
 			</MudItem>
 
 			<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">

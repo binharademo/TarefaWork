@@ -71,27 +71,12 @@
 
 @code {
 	private List<UsuarioDTO>? usuarios;
+	[Inject]
+	public UsuarioServico usuarioServico { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
-		await CarregarListaUsuarios();
-	}
-
-	private async Task CarregarListaUsuarios()
-	{
-		try
-		{
-			var response = await Http.GetAsync("Usuario");
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
-			usuarios = new List<UsuarioDTO>();
-		}
+		usuarios = await usuarioServico.Lista();
 	}
 
 	private void NavegarParaCriacao()

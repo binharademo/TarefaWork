@@ -2,6 +2,7 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@inject UsuarioServico usuarioServico
 
 <PageTitle>Nova Tarefa</PageTitle>
 
@@ -18,14 +19,6 @@
 			<MudItem xs="12">
 				<MudTextField Label="Descrição" @bind-Value="tarefa.Descricao"
 							  Lines="3" />
-			</MudItem>
-
-			<MudItem xs="12" sm="6">
-				<MudSelect Label="Prioridade" @bind-Value="tarefa.PrioridadeTarefa">
-					<MudSelectItem Value="0">Baixa</MudSelectItem>
-					<MudSelectItem Value="1">Média</MudSelectItem>
-					<MudSelectItem Value="2">Alta</MudSelectItem>
-				</MudSelect>
 			</MudItem>
 
 			<MudItem xs="12" sm="6">
@@ -47,6 +40,21 @@
 			</MudItem>
 
 			<MudItem xs="12" sm="6">
+				<MudField Label="Prioridade" Variant="Variant.Text" InnerPadding="false">
+					<MudChipSet CheckMark Size="Size.Small"
+								@bind-SelectedValue="tarefa.PrioridadeTarefa"
+								SelectionMode="SelectionMode.SingleSelection">
+						@foreach (var prioridade in prioridades)
+						{
+							<MudChip Icon="@prioridade.Icone" Color="@prioridade.Cor" Variant="Variant.Text" Value="@prioridade.Id">
+								@prioridade.Nome
+							</MudChip>
+						}
+					</MudChipSet>
+				</MudField>
+			</MudItem>
+
+			<MudItem xs="12" sm="6">
 				<MudDatePicker Label="Prazo" Editable="true" @bind-Date="_prazo"
 							   DateFormat="dd/MM/yyyy" Required="true"
 							   RequiredError="Prazo é obrigatório" />
@@ -65,37 +73,25 @@
 @code {
 	private TarefaDTO tarefa = new();
 	private List<UsuarioDTO>? usuarios;
+	private List<TarefaPrioridade> prioridades = TarefaPrioridade.Carregar();
 	private bool success;
 	private string[] errors = { };
-	private MudForm form;
+	private MudForm? form;
 	private DateTime? _prazo = DateTime.Now.AddDays(2);
 
 	protected override async Task OnInitializedAsync()
 	{
-		await CarregarListaUsuarios();
-	}
-
-	private async Task CarregarListaUsuarios()
-	{
-		try
-		{
-			var response = await Http.GetAsync("Usuario");
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
-			usuarios = new List<UsuarioDTO>();
-		}
+		usuarios = await usuarioServico.Lista();
+		tarefa.CriadorId = usuarios?.FirstOrDefault()?.Id ?? 0;
+		tarefa.ResponsavelId = usuarios?.FirstOrDefault()?.Id ?? 0;
 	}
 
 	private async Task SalvarTarefa()
 	{
 		try
 		{
+			if (form is null) return;
+
 			await form.Validate();
 			if (!success)
 				return;

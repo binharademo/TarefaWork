@@ -1,0 +1,74 @@
+﻿@inject ISnackbar Snackbar
+@inject ComentarioServico comentarioServico
+@inject UsuarioServico usuarioServico
+
+<MudDialog>
+    <TitleContent>
+        Adicionar Comentários
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="descricao"
+        Label="Comentário"
+        Variant="Variant.Outlined"
+        Lines="3"
+        MaxLength="500"
+        Counter="500"
+        HelperText="Digite seu comentário aqui"
+        Required="true"
+        RequiredError="O comentário é obrigatório" />
+
+        <MudSelect Label="Criador" @bind-Value="usuarioId">
+            @foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+            {
+                <MudSelectItem Value="@usuario.Id">@usuario.Nome</MudSelectItem>
+            }
+        </MudSelect>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Secondary" OnClick="Cancelar">Cancelar</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Salvar">Salvar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+
+    [Parameter] public int TarefaId { get; set; }
+    private List<UsuarioDTO>? usuarios;
+    private int usuarioId { get; set; }
+    private string descricao = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        usuarios = await usuarioServico.Lista();
+        usuarioId = usuarios?.FirstOrDefault()?.Id ?? 0;
+    }
+
+    private async Task Salvar()
+    {
+        if (string.IsNullOrWhiteSpace(descricao))
+        {
+            Snackbar.Add("Comentário obrigatório", Severity.Warning);
+            return;
+        }
+
+        var novoComentario = new ComentarioDTO
+            {
+                descricao = descricao.Trim(),
+                UsuarioId = usuarioId, //TODO: usuario logado
+                dataCriacao = DateTime.Now
+            };
+
+        var erro = await comentarioServico.Salva(TarefaId, novoComentario);
+        if (!string.IsNullOrWhiteSpace(erro))
+        {
+            Snackbar.Add($"Erro ao salvar comentário: {erro}", Severity.Error);
+            return;
+        }
+
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Cancelar() => MudDialog.Cancel();
+}

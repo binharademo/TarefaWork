@@ -1,6 +1,8 @@
 ﻿@page "/tarefa/board"
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@inject UsuarioServico usuarioServico
+@inject TarefaServico tarefaServico
 
 <PageTitle>Quadro de Tarefas</PageTitle>
 
@@ -25,6 +27,16 @@
 					Ver Lista de Tarefas
 				</MudButton>
 			</MudItem>
+			<MudSpacer />
+			<MudItem class="d-flex justify-end">
+				<MudButton Variant="Variant.Text"
+						   Color="Color.Primary"
+						   OnClick="async () => { await Recarregar(); StateHasChanged(); }"
+						   StartIcon="@Icons.Material.Filled.Refresh">
+					Atualizar
+				</MudButton>
+			</MudItem>
+
 		</MudGrid>
 
 		@if (tarefas == null)
@@ -34,15 +46,6 @@
 		}
 		else
 		{
-			<div class="d-flex justify-center mb-2">
-				<MudButton Variant="Variant.Text"
-						   Color="Color.Primary"
-						   OnClick="async () => { tarefas = await CarregarListaTarefas(); StateHasChanged(); }"
-						   StartIcon="@Icons.Material.Filled.Refresh">
-					Atualizar
-				</MudButton>
-			</div>
-
 			<MudDropContainer T="TarefaDTO"
 							  Items="tarefas"
 							  ItemsSelector="@((item,dropzone) => item.Status.ToString() == dropzone)"
@@ -56,7 +59,7 @@
 									 Style="min-width: 250px; min-height: 300px;max-width: 400px;"
 									 Class="rounded-lg border-2 border-solid mud-border-lines-default pa-2 flex-grow-1 flex-shrink-0">
 							<MudText Typo="Typo.h6" Class="px-2 py-1 d-flex align-center">
-								<MudIcon Icon="@GetStatusIcon(status.Tipo)" Color="@GetStatusColor(status.Tipo)" Class="mr-2" />
+								<MudIcon Icon="@status.Icone" Color="@status.Cor" Class="mr-2" />
 								@status.Nome
 								<MudSpacer />
 								<MudBadge Content="@tarefas.Count(t => t.Status == status.Id)"
@@ -70,16 +73,25 @@
 				</ChildContent>
 				<ItemRenderer>
 					<MudCard Elevation="1" Class="mt-2">
+						<MudCardHeader>
+							<CardHeaderContent>
+								<MudText Typo="Typo.subtitle1">@context.Titulo</MudText>
+							</CardHeaderContent>
+							<CardHeaderActions>
+								<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"
+											   OnClick="() => NavegarParaDetalhes(context.Id)" />
+							</CardHeaderActions>
+						</MudCardHeader>
 						<MudCardContent Class="py-2">
-							<MudText Typo="Typo.subtitle1">@context.Titulo</MudText>
 							<MudText Typo="Typo.body2">@context.Descricao</MudText>
-							<MudText Typo="Typo.caption">@usuarios.FirstOrDefault(u => u.Id == context.CriadorId).Nome</MudText>
+							<MudText Typo="Typo.caption">@(usuarios?.FirstOrDefault(u => u.Id == context.ResponsavelId)?.Nome ?? "Não Encontrado")</MudText>
 						</MudCardContent>
 						<MudCardActions>
 							<MudChip T="string" Size="Size.Small"
-									 Color="@GetPriorityColor(context.PrioridadeTarefa)"
+									 Color="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Cor"
+									 Icon="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Icone"
 									 Variant="Variant.Filled">
-								@GetPriorityString(context.PrioridadeTarefa)
+								@prioridades.First(p => p.Id == context.PrioridadeTarefa).Nome
 							</MudChip>
 							<MudSpacer />
 							<MudIconButton Icon="@Icons.Material.Filled.Edit"
@@ -96,65 +108,31 @@
 </MudContainer>
 
 @code {
-	private List<TarefaStatusDTO> statusList = new();
-	private List<UsuarioDTO> usuarios;
+	private List<TarefaStatus> statusList = TarefaStatus.Carregar();
+	private List<TarefaPrioridade> prioridades = TarefaPrioridade.Carregar();
+	private List<UsuarioDTO>? usuarios;
 	private List<TarefaDTO>? tarefas;
 
 	protected override async Task OnInitializedAsync()
 	{
-		statusList.Add(new TarefaStatusDTO(0, "Na Fila", TarefaStatusTipo.WAITING));
-		statusList.Add(new TarefaStatusDTO(1, "Em Execução", TarefaStatusTipo.IN_PROGRESS));
-		statusList.Add(new TarefaStatusDTO(2, "Finalizados", TarefaStatusTipo.FINISHED));
-
-		tarefas = await CarregarListaTarefas();
-		await CarregarListaUsuarios();
+		await Recarregar();
 	}
 
-	private async Task<List<TarefaDTO>> CarregarListaTarefas()
+	private async Task Recarregar()
 	{
-		try
-		{
-			var response = await Http.GetAsync("Tarefa");
-
-			if (response.IsSuccessStatusCode)
-			{
-				return await response.Content.ReadFromJsonAsync<List<TarefaDTO>>() ?? new List<TarefaDTO>();
-			}
-			else
-			{
-				Snackbar.Add($"Erro ao carregar tarefas: {response.StatusCode}", Severity.Error);
-				return new List<TarefaDTO>();
-			}
-		}
-		catch (Exception ex)
-		{
-			Snackbar.Add($"Erro ao carregar tarefas: {ex.Message}", Severity.Error);
-			return new List<TarefaDTO>();
-		}
-	}
-
-	private async Task CarregarListaUsuarios()
-	{
-		try
-		{
-			var response = await Http.GetAsync("Usuario");
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
-			usuarios = new List<UsuarioDTO>();
-		}
+		usuarios = await usuarioServico.Lista();
+		tarefas = await tarefaServico.Lista();
 	}
 
 	private async Task ItemUpdated(MudItemDropInfo<TarefaDTO> dropInfo)
 	{
+		if (dropInfo.Item is null)
+			return;
+
 		// Obtém o novo status da coluna de destino
 		if (!int.TryParse(dropInfo.DropzoneIdentifier, out int newStatusId))
 			return;
+
 		// Atualiza o status da tarefa localmente
 		dropInfo.Item.Status = newStatusId;
 
@@ -165,33 +143,14 @@
 		{
 			Snackbar.Add("Erro ao mover a tarefa.", Severity.Error);
 			// Se falhar, recarrega as tarefas do servidor para garantir consistência
-			tarefas = await CarregarListaTarefas();
+			await Recarregar();
 			StateHasChanged();
 		}
 	}
 
-	private Color GetPriorityColor(int prioridade)
+	private void NavegarParaDetalhes(int id)
 	{
-		return prioridade switch
-		{
-			0 => Color.Success,  // Baixa
-			1 => Color.Info,     // Normal
-			2 => Color.Warning,  // Alta
-			3 => Color.Error,    // Urgente
-			_ => Color.Default
-		};
-	}
-
-	private String GetPriorityString(int prioridade)
-	{
-		return prioridade switch
-		{
-			0 => "Baixa",
-			1 => "Normal",
-			2 => "Alta",
-			3 => "Urgente",
-			_ => "..."
-		};
+		NavigationManager.NavigateTo($"/tarefa/{id}?backTo=tarefa/board");
 	}
 
 	private void NavegarParaCriacao()
@@ -201,31 +160,6 @@
 
 	private void NavegarParaEdicao(int id)
 	{
-		NavigationManager.NavigateTo($"/tarefa/editar/{id}");
+		NavigationManager.NavigateTo($"/tarefa/editar/{id}?backTo=tarefa/board");
 	}
-
-	// Obtém ícone apropriado para cada status
-	private string GetStatusIcon(TarefaStatusTipo status)
-	{
-		return status switch
-		{
-			TarefaStatusTipo.WAITING => Icons.Material.Filled.List,        // Fila
-			TarefaStatusTipo.IN_PROGRESS => Icons.Material.Filled.DirectionsRun, // Em Execução
-			TarefaStatusTipo.FINISHED => Icons.Material.Filled.CheckCircle,  // Finalizados
-			_ => Icons.Material.Filled.Help
-		};
-	}
-
-	// Estilos personalizados para as colunas do quadro
-	private Color GetStatusColor(TarefaStatusTipo status)
-	{
-		return status switch
-		{
-			TarefaStatusTipo.WAITING => Color.Default, // Fila
-			TarefaStatusTipo.IN_PROGRESS => Color.Info, // Em Execução
-			TarefaStatusTipo.FINISHED => Color.Success, // Finalizados
-			_ => Color.Default
-		};
-	}
-
 }

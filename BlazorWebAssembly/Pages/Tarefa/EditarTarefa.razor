@@ -2,6 +2,8 @@
 @using Microsoft.AspNetCore.WebUtilities
 @inject ISnackbar Snackbar
 @inject HttpClient Http
+@inject UsuarioServico usuarioServico
+@inject TarefaServico tarefaServico
 
 <PageTitle>Editar Tarefa</PageTitle>
 
@@ -13,7 +15,7 @@
 			ERRO: Tarefa não encontrada.
 		</MudAlert>
 		<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
-				   Size="Size.Large" OnClick="() => Cancelar()">
+		Size="Size.Large" OnClick="() => Cancelar()">
 			Voltar
 		</MudButton>
 	}
@@ -22,35 +24,21 @@
 		<MudForm Model="tarefa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
 			<MudGrid>
 				<MudItem xs="2">
-					<MudTextField Label="ID" value="@tarefa.Id" ReadOnly />
+					<MudTextField Variant="Variant.Filled" Label="ID" @bind-Value="tarefa.Id" ReadOnly />
 				</MudItem>
 
 				<MudItem xs="10">
 					<MudTextField Label="Título" @bind-Value="tarefa.Titulo" Required="true"
-								  RequiredError="Título é obrigatório" />
+					RequiredError="Título é obrigatório" />
 				</MudItem>
 
 				<MudItem xs="12">
 					<MudTextField Label="Descrição" @bind-Value="tarefa.Descricao"
-								  Lines="3" />
+					Lines="3" />
 				</MudItem>
 
 				<MudItem xs="12" sm="6">
-					<MudSelect Label="Prioridade" @bind-Value="tarefa.PrioridadeTarefa">
-						<MudSelectItem Value="0">Baixa</MudSelectItem>
-						<MudSelectItem Value="1">Média</MudSelectItem>
-						<MudSelectItem Value="2">Alta</MudSelectItem>
-					</MudSelect>
-				</MudItem>
-
-				<MudItem xs="12" sm="6">
-					<MudTextField Label="Criador" value="@usuarios.FirstOrDefault(u => u.Id == tarefa.CriadorId)" ReadOnly />
-				</MudItem>
-
-				<MudItem xs="12" sm="6">
-					<MudDatePicker Label="Prazo" Editable="true" @bind-Date="_prazo"
-								   DateFormat="dd/MM/yyyy" Required="true"
-								   RequiredError="Prazo é obrigatório" />
+					<MudTextField Label="Criador" value="@(usuarios?.FirstOrDefault(u => u.Id == tarefa.CriadorId)?.Nome ?? "Não Encontrado")" ReadOnly />
 				</MudItem>
 
 				<MudItem xs="12" sm="6">
@@ -62,18 +50,47 @@
 					</MudSelect>
 				</MudItem>
 
-				<MudItem xs="12">
-					<MudRadioGroup Label="Status" @bind-Value="tarefa.Status">
-						<MudRadio Color="Color.Primary" Value="0">Na Fila</MudRadio>
-						<MudRadio Color="Color.Default" Value="1">Em Execução</MudRadio>
-					</MudRadioGroup>
+				<MudItem xs="12" sm="6">
+					<MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
+						<MudChipSet CheckMark Size="Size.Small"
+						@bind-SelectedValue="tarefa.Status"
+						SelectionMode="SelectionMode.SingleSelection">
+							@foreach (var status in statusList)
+							{
+								<MudChip Icon="@status.Icone" Color="@status.Cor" Variant="Variant.Text" Value="@status.Id">
+									@status.Nome
+								</MudChip>
+							}
+						</MudChipSet>
+					</MudField>
+				</MudItem>
+
+				<MudItem xs="12" sm="6">
+					<MudField Label="Prioridade" Variant="Variant.Text" InnerPadding="false">
+						<MudChipSet CheckMark Size="Size.Small"
+						@bind-SelectedValue="tarefa.PrioridadeTarefa"
+						SelectionMode="SelectionMode.SingleSelection">
+							@foreach (var prioridade in prioridades)
+							{
+								<MudChip Icon="@prioridade.Icone" Color="@prioridade.Cor" Variant="Variant.Text" Value="@prioridade.Id">
+									@prioridade.Nome
+								</MudChip>
+							}
+						</MudChipSet>
+					</MudField>
+				</MudItem>
+
+				<MudItem xs="12" sm="6">
+					<MudDatePicker Label="Prazo" Editable="true" @bind-Date="_prazo"
+					DateFormat="dd/MM/yyyy" Required="true"
+					RequiredError="Prazo é obrigatório" />
 				</MudItem>
 
 				<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
 					<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-							   OnClick="Cancelar">Cancelar</MudButton>
+					OnClick="Cancelar">Cancelar</MudButton>
 					<MudButton Variant="Variant.Filled" Color="Color.Primary"
-							   OnClick="SalvarTarefa">Salvar</MudButton>
+					OnClick="SalvarTarefa">Salvar</MudButton>
 				</MudItem>
 			</MudGrid>
 		</MudForm>
@@ -85,54 +102,37 @@
 	public int Id { get; set; }
 
 	private TarefaDTO? tarefa;
-	private List<UsuarioDTO> usuarios;
+	private List<UsuarioDTO>? usuarios;
+	private List<TarefaPrioridade> prioridades = TarefaPrioridade.Carregar();
+	private List<TarefaStatus> statusList = TarefaStatus.Carregar();
 	private bool success;
 	private string[] errors = { };
-	private MudForm form;
+	private MudForm? form;
 	private DateTime? _prazo = DateTime.Now.AddDays(2);
+	private string backTo = "/tarefa/lista";
 
 	protected override async Task OnInitializedAsync()
 	{
-		await CarregarListaUsuarios();
+		usuarios = await usuarioServico.Lista();
+		tarefa = await tarefaServico.Busca(Id);
 
-		try
-		{
-			var response = await Http.GetAsync($"Tarefa/{Id}");
+		if(tarefa is null)
+			Snackbar.Add("Erro ao carregar dados da tarefa", Severity.Error);
 
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			tarefa = await response.Content.ReadFromJsonAsync<TarefaDTO>();
-
-		}
-		catch (Exception ex)
-		{
-			Snackbar.Add(ex.Message, Severity.Error);
-			Console.WriteLine($"Erro ao carregar tarefas: {ex.Message}");
-		}
-	}
-
-	private async Task CarregarListaUsuarios()
-	{
-		try
-		{
-			var response = await Http.GetAsync("Usuario");
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			usuarios = await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? new List<UsuarioDTO>();
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Erro ao carregar usuarios: {ex.Message}");
-			usuarios = new List<UsuarioDTO>();
-		}
+		// Verificar se há parâmetros na URL para mostrar o formulário de cadastro
+		var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("backTo", out var valueBackTo))
+			if (Uri.IsWellFormedUriString(valueBackTo, UriKind.Relative))
+				backTo = valueBackTo.ToString();
+		
 	}
 
 	private async Task SalvarTarefa()
 	{
 		try
 		{
+			if (form is null) return;
+
 			await form.Validate();
 			if (tarefa is null) return;
 			if (!success) return;
@@ -140,7 +140,7 @@
 
 			tarefa.Prazo = _prazo.Value;
 
-			var response = await Http.PostAsJsonAsync("Tarefa", tarefa);
+			var response = await Http.PutAsJsonAsync($"Tarefa/{Id}", tarefa);
 
 			if (!response.IsSuccessStatusCode)
 				throw new Exception(await response.Content.ReadAsStringAsync());
