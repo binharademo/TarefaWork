@@ -321,3 +321,6 @@ Resource.designer.cs
 /*.db
 /*.db-*
 /aplicacao_dotnet.zip
+/ApiRest/DTOs/TarefaDTO.cs
+/.gitignore
+/.gitignore
