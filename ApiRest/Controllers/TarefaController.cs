@@ -106,7 +106,7 @@ public class TarefaController : ControllerBase
         tarefaExistente.PrioridadeTarefa = tarefaDTO.PrioridadeTarefa;
 
 
-        if (!_tarefa.Atualizar(tarefaExistente, tarefaDTO.Status, tarefaDTO.Descricao, tarefaDTO.Prazo, tarefaDTO.Titulo,tarefaDTO.PrioridadeTarefa))
+        if (!_tarefa.Atualizar(tarefaExistente, tarefaDTO.Status, tarefaDTO.Descricao, tarefaDTO.Prazo, tarefaDTO.Titulo,tarefaDTO.PrioridadeTarefa, tarefaDTO.ResponsavelId))
             return StatusCode(500);
 
         var tarefaAtualizada = _tarefa.BuscarPorId(tarefaExistente.Id);

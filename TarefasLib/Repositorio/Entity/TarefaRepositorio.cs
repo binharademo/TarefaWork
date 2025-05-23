@@ -21,7 +21,7 @@ namespace TarefasLibrary.Repositorio.Entity
             using var context = new AppDbContext(_connectionString);
             context.Database.EnsureCreated();
         }
-        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade, int responsavelId)
         {
             using var context = new AppDbContext(_connectionString);
             var tarefaExistente = context.Tarefas.Find(tarefa.Id);
@@ -32,6 +32,7 @@ namespace TarefasLibrary.Repositorio.Entity
                 tarefaExistente.StatusTarefa = novostatus;
                 tarefaExistente.Descricao = novadescricao;
                 tarefaExistente.Prazo = novoprazo;
+                tarefaExistente.ResponsavelId = responsavelId;
                 context.SaveChanges();
                 return true;
             }

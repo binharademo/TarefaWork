@@ -36,7 +36,7 @@ namespace TarefasLibrary.Repositorio
             return null;
         }
 
-        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade)
+        public bool Atualizar(Tarefa tarefa, Tarefa.Status novostatus, string novadescricao, DateTime novoprazo, string novotitulo, Tarefa.Prioridade novaprioridade, int responsavelId)
         {
             // TODO: Validar todos os parâmetros antes de atualizar (null checks e validações de negócio)
             if(novostatus == null)
@@ -51,6 +51,7 @@ namespace TarefasLibrary.Repositorio
             tarefa.StatusTarefa = novostatus;
             tarefa.Descricao = novadescricao;
             tarefa.Prazo = novoprazo;
+            tarefa.ResponsavelId = responsavelId;
             return true;
         }
 
