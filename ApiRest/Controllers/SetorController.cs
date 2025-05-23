@@ -89,17 +89,6 @@ public class SetorController : ControllerBase
             return NotFound();
         }
 
-        // Verificar se a empresa existe, se foi alterada
-        if (setorExistente.Empresa.Id != setorDTO.EmpresaId)
-        {
-            var empresa = _empresa.BuscarPorId(setorDTO.EmpresaId);
-            if (empresa == null)
-            {
-                return BadRequest("Empresa não encontrada");
-            }
-            setorExistente.Empresa = empresa;
-        }
-
         // Atualizar os campos do setor
         setorExistente.Nome = setorDTO.Nome;
         setorExistente.Status = setorDTO.Status;

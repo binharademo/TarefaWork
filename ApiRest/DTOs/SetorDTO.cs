@@ -7,27 +7,20 @@ namespace ApiRest.DTOs
         public int Id { get; set; }
         public string Nome { get; set; }
         public bool Status { get; set; }
-        public EmpresaDTO Empresa { get; set; }
+        public int EmpresaId { get; set; }
         public SetorDTO(Setor setor)
         {
             Id = setor.Id;
             Nome = setor.Nome;
             Status = setor.Status;
-            Empresa = new EmpresaDTO
-            {
-                Id = setor.Empresa.Id,
-                Nome = setor.Empresa.Nome,
-                Cnpj = setor.Empresa.Cnpj
-            };
+            EmpresaId = setor.EmpresaId;
         }
 
         public SetorDTO() { }
-
     }
 
     public class CriarSetorDTO
     {
-        public int Id { get; set; }
         public string Nome { get; set; }
         public bool Status { get; set; }
         public int EmpresaId { get; set; }
@@ -37,13 +30,8 @@ namespace ApiRest.DTOs
 
     public class AlterarSetorDTO
     {
-        public int Id { get; set; }
-
         public string Nome { get; set; }
 
         public bool Status { get; set; }
-
-        public int EmpresaId { get; set; }
-
     }
 }
