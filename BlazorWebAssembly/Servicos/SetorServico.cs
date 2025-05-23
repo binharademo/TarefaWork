@@ -12,7 +12,7 @@ namespace BlazorWebAssembly.Servicos
         {
             try
             {
-                var response = await _http.GetAsync("Setor");
+                var response = await _http.GetAsync("/Setor");
 
                 if (response.IsSuccessStatusCode)
                     return await response.Content.ReadFromJsonAsync<List<SetorDTO>>() ?? [];
@@ -30,7 +30,7 @@ namespace BlazorWebAssembly.Servicos
         {
             try
             {
-                var response = await _http.GetAsync($"Setor/{Id}");
+                var response = await _http.GetAsync($"/Setor/{Id}");
 
                 if (response.IsSuccessStatusCode)
                     return await response.Content.ReadFromJsonAsync<SetorDTO>();
@@ -43,5 +43,32 @@ namespace BlazorWebAssembly.Servicos
             }
             return null;
         }
+
+        public async Task<string> Salva(int id, SetorDTO setor)
+        {
+            try
+            {
+                HttpResponseMessage response;
+                if (id == 0)
+                    response = await _http.PostAsJsonAsync("/Setor", setor);
+                else
+                    response = await _http.PutAsJsonAsync($"/Setor/{id}", setor);
+
+                if (response.IsSuccessStatusCode)
+                    return string.Empty;
+
+                return response.StatusCode.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public SetorDTO NaoEncotrado() => new SetorDTO
+        {
+            Id = -1,
+            Nome = "Não Encontrado"
+        };
     }
 }

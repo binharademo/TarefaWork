@@ -3,61 +3,72 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Text.RegularExpressions
 @inject ISnackbar Snackbar
-@inject HttpClient Http
+@inject EmpresaServico empresaServico
+@inject SetorServico setorServico
 
 <PageTitle>Editar Setor</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-	<MudText Typo="Typo.h4" Class="mb-4">Editar Setor</MudText>
+	<MudText Typo="Typo.h4">
+		<MudIcon Icon="@Icons.Material.Filled.Folder" /> Gerenciador de Setores
+	</MudText>
 
-	@if (setor == null)
-	{
-		<MudAlert Severity="Severity.Info" Class="my-4">
-			ERRO: Setor não encontrado.
-		</MudAlert>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
-				   Size="Size.Large" OnClick="() => Cancelar()">
-			Voltar
-		</MudButton>
-	}
-	else
-	{
-		<MudForm Model="setor" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-			<MudGrid>
-				<MudItem xs="2">
-					<MudTextField Variant="Variant.Filled" Label="ID" @bind-Value="setor.Id" ReadOnly />
-				</MudItem>
-				<MudItem xs="10">
-					<MudTextField Label="Nome" @bind-Value="setor.Nome" Required="true"
-								  RequiredError="Nome é obrigatório" />
-				</MudItem>
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudText Typo="Typo.h5" Class="mb-4">
+			<MudIcon Icon="@Icons.Material.Filled.Edit" /> Editar Setor
+		</MudText>
 
-				<MudItem xs="2">
-					<MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
-						<MudSwitch @bind-Value="setor.Status" Color="Color.Primary" />
-					</MudField>
-				</MudItem>
+		@if (setor == null)
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				ERRO: Setor não encontrado.
+			</MudAlert>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
+					   Size="Size.Large" OnClick="() => Cancelar()">
+				Voltar
+			</MudButton>
+		}
+		else
+		{
+			<MudForm Model="setor" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+				<MudGrid>
+					<MudItem xs="2">
+						<MudField Label="ID" Variant="Variant.Text" Underline="false">@setor.Id</MudField>
+					</MudItem>
+					<MudItem xs="10">
+						<MudTextField Label="Nome" @bind-Value="setor.Nome" Required="true"
+									  RequiredError="Nome é obrigatório" />
+					</MudItem>
 
-				<MudItem xs="10">
-					<MudTextField Variant="Variant.Filled" Label="Empresa" @bind-Value="setor.Empresa.Nome" ReadOnly />
-				</MudItem>
+					<MudItem xs="2">
+						<MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
+							<MudSwitch @bind-Value="setor.Status" Color="Color.Primary" />
+						</MudField>
+					</MudItem>
 
-				<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
-					<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-							   OnClick="Cancelar">Cancelar</MudButton>
-					<MudButton Variant="Variant.Filled" Color="Color.Primary"
-							   OnClick="SalvarSetor">Salvar</MudButton>
-				</MudItem>
-			</MudGrid>
-		</MudForm>
-	}
+					<MudItem xs="10">
+						<MudField Label="Empresa" Variant="Variant.Text" Underline="false">
+							@((empresas?.FirstOrDefault(e => e.Id == setor.EmpresaId) ?? empresaServico.NaoEncotrado()).Nome)
+						</MudField>
+					</MudItem>
+
+					<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+						<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+								   OnClick="Cancelar">Cancelar</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary"
+								   OnClick="SalvarSetor">Salvar</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudForm>
+		}
+	</MudPaper>
 </MudContainer>
 
 @code {
 	[Parameter]
 	public int Id { get; set; }
 
-	private SetorDTO setor;
+	private SetorDTO? setor;
 	private List<EmpresaDTO>? empresas;
 	private bool success;
 	private string[] errors = { };
@@ -65,54 +76,25 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
-		{
-			var response = await Http.GetAsync($"Setor/{Id}");
-
-			if (!response.IsSuccessStatusCode)
-			{
-				Snackbar.Add($"Erro ao carregar setor: {response.StatusCode}", Severity.Error);
-				Console.WriteLine($"Erro ao carregar setor: {response.StatusCode}");
-				return;
-			}
-
-			setor = await response.Content.ReadFromJsonAsync<SetorDTO>() ?? new();
-
-			response = await Http.GetAsync($"Empresa");
-
-			if (!response.IsSuccessStatusCode)
-			{
-				Snackbar.Add($"Erro ao carregar Empresa: {response.StatusCode}", Severity.Error);
-				Console.WriteLine($"Erro ao carregar Empresa: {response.StatusCode}");
-				return;
-			}
-
-			empresas = await response.Content.ReadFromJsonAsync<List<EmpresaDTO>>() ?? new();
-
-		}
-		catch (Exception ex)
-		{
-			Snackbar.Add("Erro ao carregar dados", Severity.Error);
-			Console.WriteLine($"Erro ao carregar dados: {ex.Message}");
-		}
+		setor = await setorServico.Busca(Id);
+		empresas = await empresaServico.Lista();
 	}
 
 	private async Task SalvarSetor()
 	{
 		try
 		{
-			if (form is null) return;
+			if (form is null || setor is null) return;
 
 			await form.Validate();
 			if (!success)
 				return;
 
-			var response = await Http.PutAsJsonAsync($"Setor/{Id}", setor);
-
-			if (!response.IsSuccessStatusCode)
+			var erro = await setorServico.Salva(setor.Id, setor);
+			if (!string.IsNullOrWhiteSpace(erro))
 			{
-				Snackbar.Add($"Erro ao salvar setor: {response.StatusCode}", Severity.Error);
-				Console.WriteLine($"Erro ao salvar setor: {response.StatusCode}");
+				Snackbar.Add($"Erro ao salvar setor: {erro}", Severity.Error);
+				Console.WriteLine($"Erro ao salvar setor: {erro}");
 				return;
 			}
 

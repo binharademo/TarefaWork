@@ -1,6 +1,7 @@
 ﻿@page "/setor"
 @page "/setor/lista"
-@inject HttpClient Http
+@inject EmpresaServico empresaServico
+@inject SetorServico setorServico
 
 <PageTitle>Lista de Setores</PageTitle>
 
@@ -47,7 +48,7 @@
 					<MudTd DataLabel="Status">
 						<MudSwitch @bind-Value="context.Status" Color="Color.Primary" />
 					</MudTd>
-					<MudTd DataLabel="Empresa">@context.Empresa.Nome</MudTd>
+					<MudTd DataLabel="Empresa">@((empresas?.FirstOrDefault(e => e.Id == context.EmpresaId) ?? empresaServico.NaoEncotrado()).Nome)</MudTd>
 					<MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Primary"
 									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
@@ -60,22 +61,12 @@
 
 @code {
 	private List<SetorDTO>? setores;
+	private List<EmpresaDTO>? empresas;
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
-		{
-			var response = await Http.GetAsync("Setor");
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			setores = await response.Content.ReadFromJsonAsync<List<SetorDTO>>() ?? new List<SetorDTO>();
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Erro ao carregar setores: {ex.Message}");
-			setores = new List<SetorDTO>();
-		}
+		setores = await setorServico.Lista();
+		empresas = await empresaServico.Lista();
 	}
 
 	private void NavegarParaCriacao()

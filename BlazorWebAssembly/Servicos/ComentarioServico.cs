@@ -34,7 +34,7 @@ namespace BlazorWebAssembly.Servicos
                 if (comentario.Id == 0)
                     response = await _http.PostAsJsonAsync($"/Tarefa/{tarefaId}/Comentario", comentario);
                 else
-                    response = await _http.PutAsJsonAsync($"/Tarefa/{tarefaId}/Comentario{comentario.Id}", comentario);
+                    response = await _http.PutAsJsonAsync($"/Tarefa/{tarefaId}/Comentario/{comentario.Id}", comentario);
 
                 if (response.IsSuccessStatusCode)
                     return string.Empty;
@@ -46,5 +46,13 @@ namespace BlazorWebAssembly.Servicos
                 return ex.Message;
             }
         }
+
+        public ComentarioDTO NaoEncotrado() => new ComentarioDTO
+        {
+            Id = -1,
+            descricao = "Não Encontrado",
+            dataCriacao = DateTime.MinValue,
+            UsuarioId = -1
+        };
     }
 }

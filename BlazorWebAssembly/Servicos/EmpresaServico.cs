@@ -43,5 +43,33 @@ namespace BlazorWebAssembly.Servicos
             }
             return null;
         }
+
+
+        public async Task<string> Salva(int id, EmpresaDTO empresa)
+        {
+            try
+            {
+                HttpResponseMessage response;
+                if (id == 0)
+                    response = await _http.PostAsJsonAsync("/Empresa", empresa);
+                else
+                    response = await _http.PutAsJsonAsync($"/Empresa/{id}", empresa);
+
+                if (response.IsSuccessStatusCode)
+                    return string.Empty;
+
+                return response.StatusCode.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public EmpresaDTO NaoEncotrado() => new EmpresaDTO
+        {
+            Id = -1,
+            Nome = "Não Encontrado"
+        };
     }
 }

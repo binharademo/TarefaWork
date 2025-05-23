@@ -11,7 +11,7 @@ namespace BlazorWebAssembly.Servicos
         {
             try
             {
-                var response = await _http.GetAsync("Usuario");
+                var response = await _http.GetAsync("/Usuario");
 
                 if (response.IsSuccessStatusCode)
                     return await response.Content.ReadFromJsonAsync<List<UsuarioDTO>>() ?? [];
@@ -29,7 +29,7 @@ namespace BlazorWebAssembly.Servicos
         {
             try
             {
-                var response = await _http.GetAsync($"Usuario/{Id}");
+                var response = await _http.GetAsync($"/Usuario/{Id}");
 
                 if (response.IsSuccessStatusCode)
                     return await response.Content.ReadFromJsonAsync<UsuarioDTO>() ?? NaoEncotrado();
@@ -43,7 +43,28 @@ namespace BlazorWebAssembly.Servicos
             return NaoEncotrado();
         }
 
-        private UsuarioDTO NaoEncotrado() => new UsuarioDTO
+        public async Task<string> Salva(int id, UsuarioDTO usuario)
+        {
+            try
+            {
+                HttpResponseMessage response;
+                if (id == 0)
+                    response = await _http.PostAsJsonAsync("/Usuario", usuario);
+                else
+                    response = await _http.PutAsJsonAsync($"/Usuario/{id}", usuario);
+
+                if (response.IsSuccessStatusCode)
+                    return string.Empty;
+
+                return response.StatusCode.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public UsuarioDTO NaoEncotrado() => new UsuarioDTO
         {
             Id = -1,
             Nome = "Não Encontrado"

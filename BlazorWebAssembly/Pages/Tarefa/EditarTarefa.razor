@@ -1,100 +1,109 @@
 ﻿@page "/tarefa/editar/{id:int}"
 @using Microsoft.AspNetCore.WebUtilities
 @inject ISnackbar Snackbar
-@inject HttpClient Http
 @inject UsuarioServico usuarioServico
 @inject TarefaServico tarefaServico
 
 <PageTitle>Editar Tarefa</PageTitle>
 
+
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-	<MudText Typo="Typo.h4" Class="mb-4">Editar Tarefa</MudText>
-	@if (tarefa == null)
-	{
-		<MudAlert Severity="Severity.Info" Class="my-4">
-			ERRO: Tarefa não encontrada.
-		</MudAlert>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
-		Size="Size.Large" OnClick="() => Cancelar()">
-			Voltar
-		</MudButton>
-	}
-	else
-	{
-		<MudForm Model="tarefa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-			<MudGrid>
-				<MudItem xs="2">
-					<MudTextField Variant="Variant.Filled" Label="ID" @bind-Value="tarefa.Id" ReadOnly />
-				</MudItem>
+	<MudText Typo="Typo.h4">
+		<MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" /> Gerenciador de Tarefas
+	</MudText>
 
-				<MudItem xs="10">
-					<MudTextField Label="Título" @bind-Value="tarefa.Titulo" Required="true"
-					RequiredError="Título é obrigatório" />
-				</MudItem>
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudText Typo="Typo.h5" Class="mb-4">
+			<MudIcon Icon="@Icons.Material.Filled.Edit" /> Editar Tarefa
+		</MudText>
 
-				<MudItem xs="12">
-					<MudTextField Label="Descrição" @bind-Value="tarefa.Descricao"
-					Lines="3" />
-				</MudItem>
+		@if (tarefa == null)
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				ERRO: Tarefa não encontrada.
+			</MudAlert>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
+					   Size="Size.Large" OnClick="() => Cancelar()">
+				Voltar
+			</MudButton>
+		}
+		else
+		{
+			<MudForm Model="tarefa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+				<MudGrid>
+					<MudItem xs="2">
+						<MudTextField Variant="Variant.Filled" Label="ID" @bind-Value="tarefa.Id" ReadOnly />
+					</MudItem>
 
-				<MudItem xs="12" sm="6">
-					<MudTextField Label="Criador" value="@(usuarios?.FirstOrDefault(u => u.Id == tarefa.CriadorId)?.Nome ?? "Não Encontrado")" ReadOnly />
-				</MudItem>
+					<MudItem xs="10">
+						<MudTextField Label="Título" @bind-Value="tarefa.Titulo" Required="true"
+									  RequiredError="Título é obrigatório" />
+					</MudItem>
 
-				<MudItem xs="12" sm="6">
-					<MudSelect Label="Responsável" @bind-Value="tarefa.ResponsavelId">
-						@foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
-						{
-							<MudSelectItem Value="@usuario.Id">@usuario.Nome</MudSelectItem>
-						}
-					</MudSelect>
-				</MudItem>
+					<MudItem xs="12">
+						<MudTextField Label="Descrição" @bind-Value="tarefa.Descricao"
+									  Lines="3" />
+					</MudItem>
 
-				<MudItem xs="12" sm="6">
-					<MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
-						<MudChipSet CheckMark Size="Size.Small"
-						@bind-SelectedValue="tarefa.Status"
-						SelectionMode="SelectionMode.SingleSelection">
-							@foreach (var status in statusList)
+					<MudItem xs="12" sm="6">
+						<MudTextField Label="Criador" value="@(usuarios?.FirstOrDefault(u => u.Id == tarefa.CriadorId)?.Nome ?? "Não Encontrado")" ReadOnly />
+					</MudItem>
+
+					<MudItem xs="12" sm="6">
+						<MudSelect Label="Responsável" @bind-Value="tarefa.ResponsavelId">
+							@foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
 							{
-								<MudChip Icon="@status.Icone" Color="@status.Cor" Variant="Variant.Text" Value="@status.Id">
-									@status.Nome
-								</MudChip>
+								<MudSelectItem Value="@usuario.Id">@usuario.Nome</MudSelectItem>
 							}
-						</MudChipSet>
-					</MudField>
-				</MudItem>
+						</MudSelect>
+					</MudItem>
 
-				<MudItem xs="12" sm="6">
-					<MudField Label="Prioridade" Variant="Variant.Text" InnerPadding="false">
-						<MudChipSet CheckMark Size="Size.Small"
-						@bind-SelectedValue="tarefa.PrioridadeTarefa"
-						SelectionMode="SelectionMode.SingleSelection">
-							@foreach (var prioridade in prioridades)
-							{
-								<MudChip Icon="@prioridade.Icone" Color="@prioridade.Cor" Variant="Variant.Text" Value="@prioridade.Id">
-									@prioridade.Nome
-								</MudChip>
-							}
-						</MudChipSet>
-					</MudField>
-				</MudItem>
+					<MudItem xs="12" sm="6">
+						<MudField Label="Status" Variant="Variant.Text" InnerPadding="false">
+							<MudChipSet CheckMark Size="Size.Small"
+										@bind-SelectedValue="tarefa.Status"
+										SelectionMode="SelectionMode.SingleSelection">
+								@foreach (var status in statusList)
+								{
+									<MudChip Icon="@status.Icone" Color="@status.Cor" Variant="Variant.Text" Value="@status.Id">
+										@status.Nome
+									</MudChip>
+								}
+							</MudChipSet>
+						</MudField>
+					</MudItem>
 
-				<MudItem xs="12" sm="6">
-					<MudDatePicker Label="Prazo" Editable="true" @bind-Date="_prazo"
-					DateFormat="dd/MM/yyyy" Required="true"
-					RequiredError="Prazo é obrigatório" />
-				</MudItem>
+					<MudItem xs="12" sm="6">
+						<MudField Label="Prioridade" Variant="Variant.Text" InnerPadding="false">
+							<MudChipSet CheckMark Size="Size.Small"
+										@bind-SelectedValue="tarefa.PrioridadeTarefa"
+										SelectionMode="SelectionMode.SingleSelection">
+								@foreach (var prioridade in prioridades)
+								{
+									<MudChip Icon="@prioridade.Icone" Color="@prioridade.Cor" Variant="Variant.Text" Value="@prioridade.Id">
+										@prioridade.Nome
+									</MudChip>
+								}
+							</MudChipSet>
+						</MudField>
+					</MudItem>
 
-				<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
-					<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-					OnClick="Cancelar">Cancelar</MudButton>
-					<MudButton Variant="Variant.Filled" Color="Color.Primary"
-					OnClick="SalvarTarefa">Salvar</MudButton>
-				</MudItem>
-			</MudGrid>
-		</MudForm>
-	}
+					<MudItem xs="12" sm="6">
+						<MudDatePicker Label="Prazo" Editable="true" @bind-Date="_prazo"
+									   DateFormat="dd/MM/yyyy" Required="true"
+									   RequiredError="Prazo é obrigatório" />
+					</MudItem>
+
+					<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+						<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+								   OnClick="Cancelar">Cancelar</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary"
+								   OnClick="SalvarTarefa">Salvar</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudForm>
+		}
+	</MudPaper>
 </MudContainer>
 
 @code {
@@ -116,7 +125,7 @@
 		usuarios = await usuarioServico.Lista();
 		tarefa = await tarefaServico.Busca(Id);
 
-		if(tarefa is null)
+		if (tarefa is null)
 			Snackbar.Add("Erro ao carregar dados da tarefa", Severity.Error);
 
 		// Verificar se há parâmetros na URL para mostrar o formulário de cadastro
@@ -124,26 +133,27 @@
 		if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("backTo", out var valueBackTo))
 			if (Uri.IsWellFormedUriString(valueBackTo, UriKind.Relative))
 				backTo = valueBackTo.ToString();
-		
+
 	}
 
 	private async Task SalvarTarefa()
 	{
 		try
 		{
-			if (form is null) return;
+			if (form is null || tarefa is null) return;
 
 			await form.Validate();
-			if (tarefa is null) return;
-			if (!success) return;
-			if (!_prazo.HasValue) return;
+			if (!success || !_prazo.HasValue) return;
 
 			tarefa.Prazo = _prazo.Value;
 
-			var response = await Http.PutAsJsonAsync($"Tarefa/{Id}", tarefa);
-
-			if (!response.IsSuccessStatusCode)
-				throw new Exception(await response.Content.ReadAsStringAsync());
+			var erro = await tarefaServico.Salva(tarefa.Id, tarefa);
+			if (!string.IsNullOrWhiteSpace(erro))
+			{
+				Snackbar.Add($"Erro ao salvar tarefa: {erro}", Severity.Error);
+				Console.WriteLine($"Erro ao salvar tarefa: {erro}");
+				return;
+			}
 
 			NavigationManager.NavigateTo("/tarefa/lista");
 		}

@@ -1,10 +1,10 @@
 ﻿@page "/usuario"
 @page "/usuario/lista"
-@inject HttpClient Http
+@inject UsuarioServico usuarioServico
 
 <PageTitle>Lista de Usuários</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
 	<MudGrid>
 		<MudItem xs="6">
 			<MudText Typo="Typo.h4">
@@ -49,13 +49,13 @@
 					<MudTd DataLabel="ID">@context.Id</MudTd>
 					<MudTd DataLabel="Título">@context.Nome</MudTd>
 					<MudTd DataLabel="Setor">
-						<MudChip T="string" Color="@GetSetorColor(context.SetorUsuario)" Size="Size.Small">
-							@GetSetorString(context.SetorUsuario)
+						<MudChip T="string" Color="@GetSetorColor(context.SetorUsuarioId??0)" Size="Size.Small">
+							@context.SetorNome
 						</MudChip>
 					</MudTd>
 					<MudTd DataLabel="Função">
-						<MudChip T="string" Color="@GetFuncaoColor(context.FuncaoUsuario)" Size="Size.Small">
-							@GetFuncaoString(context.FuncaoUsuario)
+						<MudChip T="string" Color="@GetFuncaoColor(context.FuncaoUsuario??0)" Size="Size.Small">
+							@GetFuncaoString(context.FuncaoUsuario??-1)
 						</MudChip>
 					</MudTd>
 					<MudTd>
@@ -71,8 +71,6 @@
 
 @code {
 	private List<UsuarioDTO>? usuarios;
-	[Inject]
-	public UsuarioServico usuarioServico { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -101,27 +99,14 @@
 		};
 	}
 
-	private String GetSetorString(int setor)
-	{
-		return setor switch
-		{
-			0 => "T.I.",
-			1 => "Marketing",
-			2 => "Financeiro",
-			3 => "R.H.",
-			_ => "..."
-		};
-	}
-
 	private Color GetFuncaoColor(int setor)
 	{
 		return setor switch
 		{
-			0 => Color.Success,  // Baixa
-			1 => Color.Info,     // Normal
-			2 => Color.Warning,  // Alta
-			3 => Color.Error,    // Urgente
-			_ => Color.Default
+			0 => Color.Info,     // Funcionario
+			1 => Color.Success,  // Supervisor
+			2 => Color.Primary,  // Gerente
+			_ => Color.Error,    // ERRO
 		};
 	}
 
@@ -129,11 +114,10 @@
 	{
 		return setor switch
 		{
-			0 => "Desenvolvedor",
-			1 => "Analista",
-			2 => "Marketing",
-			3 => "Urgente",
-			_ => "..."
+			0 => "Funcionario",
+			1 => "Supervisor",
+			2 => "Gerente",
+			_ => "ERRO"
 		};
 	}
 }

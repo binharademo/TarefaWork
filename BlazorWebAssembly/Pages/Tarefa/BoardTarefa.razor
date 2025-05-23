@@ -1,31 +1,31 @@
 ﻿@page "/tarefa/board"
 @inject ISnackbar Snackbar
-@inject HttpClient Http
 @inject UsuarioServico usuarioServico
 @inject TarefaServico tarefaServico
 
 <PageTitle>Quadro de Tarefas</PageTitle>
 
-<MudContainer Class="mt-4">
-	<MudPaper Elevation="3" Class="pa-4">
-		<MudText Typo="Typo.h4" Class="mb-4">Quadro de Tarefas</MudText>
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+	<MudGrid>
+		<MudItem xs="6">
+			<MudText Typo="Typo.h4">
+				<MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" /> Gerenciador de Tarefas
+			</MudText>
+		</MudItem>
+		<MudItem xs="6" Class="d-flex justify-end">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
+					   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+				Cadastrar Nova Tarefa
+			</MudButton>
+		</MudItem>
+	</MudGrid>
 
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
 		<MudGrid Class="mb-4">
 			<MudItem>
-				<MudButton Variant="Variant.Filled"
-						   Color="Color.Success"
-						   StartIcon="@Icons.Material.Filled.Add"
-						   OnClick="NavegarParaCriacao">
-					Nova Tarefa
-				</MudButton>
-			</MudItem>
-			<MudItem>
-				<MudButton Variant="Variant.Outlined"
-						   Color="Color.Primary"
-						   StartIcon="@Icons.Material.Filled.List"
-						   Href="/tarefa/lista">
-					Ver Lista de Tarefas
-				</MudButton>
+				<MudText Typo="Typo.h5" Class="mb-4">
+					<MudIcon Icon="@Icons.Material.Filled.ViewKanban" /> Quadro de Tarefas
+				</MudText>
 			</MudItem>
 			<MudSpacer />
 			<MudItem class="d-flex justify-end">
@@ -36,7 +36,6 @@
 					Atualizar
 				</MudButton>
 			</MudItem>
-
 		</MudGrid>
 
 		@if (tarefas == null)
@@ -137,12 +136,13 @@
 		dropInfo.Item.Status = newStatusId;
 
 		// Envia a atualização para a API
-		var response = await Http.PutAsync($"tarefa/{dropInfo.Item.Id}/status/{newStatusId}", null);
-
-		if (!response.IsSuccessStatusCode)
+		var erro = await tarefaServico.AtualizaStatus(dropInfo.Item.Id, newStatusId);
+		if (!string.IsNullOrWhiteSpace(erro))
 		{
-			Snackbar.Add("Erro ao mover a tarefa.", Severity.Error);
-			// Se falhar, recarrega as tarefas do servidor para garantir consistência
+			Snackbar.Add($"Erro ao mover tarefa: {erro}", Severity.Error);
+			Console.WriteLine($"Erro ao mover tarefa: {erro}");
+
+			// Se falhou, recarrega as tarefas do servidor para garantir consistência
 			await Recarregar();
 			StateHasChanged();
 		}

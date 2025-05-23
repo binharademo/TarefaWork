@@ -3,65 +3,84 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Text.RegularExpressions
 @inject ISnackbar Snackbar
-@inject HttpClient Http
+@inject SetorServico setorServico
+@inject UsuarioServico usuarioServico
 
 <PageTitle>Novo Usuário</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-	<MudText Typo="Typo.h4" Class="mb-4">Nova Tarefa</MudText>
+	<MudText Typo="Typo.h4">
+		<MudIcon Icon="@Icons.Material.Filled.Groups" /> Gerenciador de Usuários
+	</MudText>
 
-	<MudForm Model="usuario" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-		<MudGrid>
-			<MudItem xs="12">
-				<MudTextField Label="Nome" @bind-Value="usuario.Nome" Required="true"
-							  RequiredError="Nome é obrigatório" />
-			</MudItem>
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudText Typo="Typo.h5" Class="mb-4">
+			<MudIcon Icon="@Icons.Material.Filled.PersonAdd" /> Novo Usuário
+		</MudText>
 
-			<MudItem xs="12" sm="6">
-				<MudTextField Label="Senha" @bind-Value="usuario.Senha" Required="true"
-							  InputType="InputType.Password"
-							  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))"
-							  RequiredError="Senha é obrigatória!" />
-			</MudItem>
-			<MudItem xs="12" sm="6">
-				<MudTextField Label="Confirme a Senha" @bind-Value="_Senha" Required="true"
-							  InputType="InputType.Password"
-							  Validation="@(new Func<string, string>(SenhasIguais))"
-							  RequiredError="Senha é obrigatória!" />
-			</MudItem>
+		<MudForm Model="usuario" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+			<MudGrid>
+				<MudItem xs="12">
+					<MudTextField Label="Nome" @bind-Value="usuario.Nome" Required="true"
+								  RequiredError="Nome é obrigatório" />
+				</MudItem>
 
-			<MudItem xs="12" sm="6">
-				<MudSelect Label="Prioridade" @bind-Value="usuario.SetorUsuario">
-					<MudSelectItem Value="0">T.I.</MudSelectItem>
-					<MudSelectItem Value="1">Marketing</MudSelectItem>
-				</MudSelect>
-			</MudItem>
+				<MudItem xs="12" sm="6">
+					<MudTextField Label="Senha" @bind-Value="usuario.Senha" Required="true"
+								  InputType="InputType.Password"
+								  Validation="@(new Func<string, IEnumerable<string>>(PasswordStrength))"
+								  RequiredError="Senha é obrigatória!" />
+				</MudItem>
+				<MudItem xs="12" sm="6">
+					<MudTextField Label="Confirme a Senha" @bind-Value="_Senha" Required="true"
+								  InputType="InputType.Password"
+								  Validation="@(new Func<string, string>(SenhasIguais))"
+								  RequiredError="Senha é obrigatória!" />
+				</MudItem>
 
-			<MudItem xs="12" sm="6">
-				<MudSelect Label="Prioridade" @bind-Value="usuario.FuncaoUsuario">
-					<MudSelectItem Value="0">Desenvolvedor</MudSelectItem>
-					<MudSelectItem Value="1">Analista</MudSelectItem>
-					<MudSelectItem Value="2">Marketing</MudSelectItem>
-				</MudSelect>
-			</MudItem>
+				<MudItem xs="12" sm="6">
+					<MudSelect T="int?" Label="Setor" @bind-Value="usuario.SetorUsuarioId" Required
+							   RequiredError="Setor é obrigatório!">
+						@foreach (var setor in setores ?? [])
+						{
+							<MudSelectItem T="int?" Value="@setor.Id">@setor.Nome</MudSelectItem>
+						}
+					</MudSelect>
+				</MudItem>
+
+				<MudItem xs="12" sm="6">
+					<MudSelect T="int?" Label="Função" @bind-Value="usuario.FuncaoUsuario" Required
+							   RequiredError="Função é obrigatória!">
+						<MudSelectItem T="int?" Value="0">Funcionario</MudSelectItem>
+						<MudSelectItem T="int?" Value="1">Supervisor</MudSelectItem>
+						<MudSelectItem T="int?" Value="2">Gerente</MudSelectItem>
+					</MudSelect>
+				</MudItem>
 
 
-			<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
-				<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-						   OnClick="Cancelar">Cancelar</MudButton>
-				<MudButton Variant="Variant.Filled" Color="Color.Primary"
-						   OnClick="SalvarUsuario">Salvar</MudButton>
-			</MudItem>
-		</MudGrid>
-	</MudForm>
+				<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+					<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+							   OnClick="Cancelar">Cancelar</MudButton>
+					<MudButton Variant="Variant.Filled" Color="Color.Primary"
+							   OnClick="SalvarUsuario">Salvar</MudButton>
+				</MudItem>
+			</MudGrid>
+		</MudForm>
+	</MudPaper>
 </MudContainer>
 
 @code {
+	private List<SetorDTO>? setores;
 	private UsuarioDTO usuario = new();
 	private bool success;
 	private string[] errors = { };
 	private MudForm? form;
 	private string? _Senha;
+
+	protected override async Task OnInitializedAsync()
+	{
+		setores = await setorServico.Lista();
+	}
 
 	private async Task SalvarUsuario()
 	{
@@ -73,11 +92,13 @@
 			if (!success)
 				return;
 
-
-			var response = await Http.PostAsJsonAsync("Usuario", usuario);
-
-			if (!response.IsSuccessStatusCode)
-				throw new Exception(await response.Content.ReadAsStringAsync());
+			var erro = await usuarioServico.Salva(usuario.Id, usuario);
+			if (!string.IsNullOrWhiteSpace(erro))
+			{
+				Snackbar.Add($"Erro ao salvar usuário {erro}", Severity.Error);
+				Console.WriteLine($"Erro ao salvar usuário: {erro}");
+				return;
+			}
 
 			NavigationManager.NavigateTo("/usuario/lista");
 		}

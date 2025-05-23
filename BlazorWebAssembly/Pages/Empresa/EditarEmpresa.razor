@@ -3,98 +3,88 @@
 @using System.ComponentModel.DataAnnotations
 @using System.Text.RegularExpressions
 @inject ISnackbar Snackbar
-@inject HttpClient Http
+@inject EmpresaServico empresaServico
 
 <PageTitle>Editar Empresa</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-	<MudText Typo="Typo.h4" Class="mb-4">Editar Empresa</MudText>
+	<MudText Typo="Typo.h4">
+		<MudIcon Icon="@Icons.Material.Filled.Groups" /> Gerenciador de Empresas
+	</MudText>
 
-	@if (empresa == null)
-	{
-		<MudAlert Severity="Severity.Info" Class="my-4">
-			ERRO: Empresa não encontrada.
-		</MudAlert>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
-		Size="Size.Large" OnClick="() => Cancelar()">
-			Voltar
-		</MudButton>
-	}
-	else
-	{
-		<MudForm Model="empresa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
-			<MudGrid>
-				<MudItem xs="2">
-					<MudTextField Variant="Variant.Filled" Label="ID" @bind-Value="empresa.Id" ReadOnly />
-				</MudItem>
-				<MudItem xs="10">
-					<MudTextField Label="Nome" @bind-Value="empresa.Nome" Required="true"
-								  RequiredError="Nome é obrigatório" />
-				</MudItem>
-				<MudItem xs="12">
-					<MudTextField Variant="Variant.Filled" Label="CNPJ" @bind-Value="empresa.Cnpj" Required="true"
-								  RequiredError="CNPJ é obrigatório"
-								  Mask="@(new PatternMask("00.000.000/0000-00"))" ReadOnly/>
-				</MudItem>
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+		<MudText Typo="Typo.h5" Class="mb-4">
+			<MudIcon Icon="@Icons.Material.Filled.Edit" /> Editar Empresa
+		</MudText>
 
-				<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
-					<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
-							   OnClick="Cancelar">Cancelar</MudButton>
-					<MudButton Variant="Variant.Filled" Color="Color.Primary"
-							   OnClick="SalvarEmpresa">Salvar</MudButton>
-				</MudItem>
-			</MudGrid>
-		</MudForm>
-	}
+		@if (empresa == null)
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				ERRO: Empresa não encontrada.
+			</MudAlert>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
+					   Size="Size.Large" OnClick="() => Cancelar()">
+				Voltar
+			</MudButton>
+		}
+		else
+		{
+			<MudForm Model="empresa" @ref="form" @bind-IsValid="@success" @bind-Errors="@errors">
+				<MudGrid>
+					<MudItem xs="2">
+						<MudTextField Variant="Variant.Filled" Label="ID" @bind-Value="empresa.Id" ReadOnly />
+					</MudItem>
+					<MudItem xs="10">
+						<MudTextField Label="Nome" @bind-Value="empresa.Nome" Required="true"
+									  RequiredError="Nome é obrigatório" />
+					</MudItem>
+					<MudItem xs="12">
+						<MudTextField Variant="Variant.Filled" Label="CNPJ" @bind-Value="empresa.Cnpj" Required="true"
+									  RequiredError="CNPJ é obrigatório"
+									  Mask="@(new PatternMask("00.000.000/0000-00"))" ReadOnly />
+					</MudItem>
+
+					<MudItem xs="12" Class="d-flex gap-4 mt-4 justify-content-end">
+						<MudButton Variant="Variant.Outlined" Color="Color.Secondary"
+								   OnClick="Cancelar">Cancelar</MudButton>
+						<MudButton Variant="Variant.Filled" Color="Color.Primary"
+								   OnClick="SalvarEmpresa">Salvar</MudButton>
+					</MudItem>
+				</MudGrid>
+			</MudForm>
+		}
+	</MudPaper>
 </MudContainer>
 
 @code {
 	[Parameter]
 	public int Id { get; set; }
 
-	private EmpresaDTO empresa;
+	private EmpresaDTO? empresa;
 	private bool success;
 	private string[] errors = { };
 	private MudForm? form;
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
-		{
-			var response = await Http.GetAsync($"Empresa/{Id}");
-
-			if (!response.IsSuccessStatusCode)
-			{
-				Snackbar.Add($"Erro ao carregar empresa: {response.StatusCode}", Severity.Error);
-				Console.WriteLine($"Erro ao carregar empresa: {response.StatusCode}");
-				return;
-			}
-
-			empresa = await response.Content.ReadFromJsonAsync<EmpresaDTO>() ?? new();
-
-		}
-		catch (Exception ex)
-		{
-			Snackbar.Add("Erro ao carregar empresa", Severity.Error);
-			Console.WriteLine($"Erro ao carregar empresa: {ex.Message}");
-		}
+		empresa = await empresaServico.Busca(Id);
 	}
 
 	private async Task SalvarEmpresa()
 	{
 		try
 		{
-			if (form is null) return;
+			if (form is null || empresa is null) return;
 
 			await form.Validate();
 			if (!success)
 				return;
 
-			var response = await Http.PutAsJsonAsync($"Empresa/{Id}", empresa);
-
-			if (!response.IsSuccessStatusCode){
-				Snackbar.Add($"Erro ao salvar empresa: {response.StatusCode}", Severity.Error);
-				Console.WriteLine($"Erro ao salvar empresa: {response.StatusCode}");
+			var erro = await empresaServico.Salva(empresa.Id, empresa);
+			if (!string.IsNullOrWhiteSpace(erro))
+			{
+				Snackbar.Add($"Erro ao salvar setor: {erro}", Severity.Error);
+				Console.WriteLine($"Erro ao salvar setor: {erro}");
 				return;
 			}
 

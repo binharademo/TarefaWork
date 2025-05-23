@@ -1,6 +1,6 @@
 ﻿@page "/empresa"
 @page "/empresa/lista"
-@inject HttpClient Http
+@inject EmpresaServico empresaServico
 
 <PageTitle>Lista de Empresas</PageTitle>
 
@@ -9,7 +9,7 @@
 		<MudGrid>
 			<MudItem xs="8">
 				<MudText Typo="Typo.h5" Class="mb-4">
-					<MudIcon Icon="@Icons.Material.Filled.List" /> Lista de Empresas
+					<MudIcon Icon="@Icons.Material.Filled.List" /> Gerenciador de Empresas
 				</MudText>
 			</MudItem>
 			<MudItem xs="4" Class="d-flex justify-end">
@@ -60,19 +60,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
-		try
-		{
-			var response = await Http.GetAsync("Empresa");
-			if (!response.IsSuccessStatusCode)
-				throw new Exception($"API retornou status {response.StatusCode}");
-
-			empresas = await response.Content.ReadFromJsonAsync<List<EmpresaDTO>>() ?? new List<EmpresaDTO>();
-		}
-		catch (Exception ex)
-		{
-			Console.WriteLine($"Erro ao carregar empresas: {ex.Message}");
-			empresas = new List<EmpresaDTO>();
-		}
+		empresas = await empresaServico.Lista();
 	}
 
 	private void NavegarParaCriacao()

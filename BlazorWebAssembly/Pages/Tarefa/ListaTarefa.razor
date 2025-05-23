@@ -1,31 +1,43 @@
 ﻿@page "/tarefa"
 @page "/tarefa/lista"
 @using BlazorWebAssembly.Modelos
-@inject HttpClient Http
+@inject UsuarioServico usuarioServico
+@inject TarefaServico tarefaServico 
 
 <PageTitle>Lista de Tarefas</PageTitle>
-
-<h3>Lista de Tarefas</h3>
 
 <MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
 	<MudGrid>
 		<MudItem xs="6">
 			<MudText Typo="Typo.h4">
-				<MudIcon Icon="@Icons.Material.Filled.CheckBox" /> Gerenciador de Tarefas
+				<MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" /> Gerenciador de Tarefas
 			</MudText>
 		</MudItem>
 		<MudItem xs="6" Class="d-flex justify-end">
 			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
-					   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+			Size="Size.Large" OnClick="() => NavegarParaCriacao()">
 				Cadastrar Nova Tarefa
 			</MudButton>
 		</MudItem>
 	</MudGrid>
 
 	<MudPaper Class="pa-4 mt-4" Elevation="3">
-		<MudText Typo="Typo.h5" Class="mb-4">
-			<MudIcon Icon="@Icons.Material.Filled.List" /> Lista de Tarefas
-		</MudText>
+		<MudGrid Class="mb-4">
+			<MudItem>
+				<MudText Typo="Typo.h5" Class="mb-4">
+					<MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" /> Lista de Tarefas
+				</MudText>
+			</MudItem>
+			<MudSpacer />
+			<MudItem class="d-flex justify-end">
+				<MudButton Variant="Variant.Text"
+				Color="Color.Primary"
+				OnClick="async () => { await Recarregar(); StateHasChanged(); }"
+				StartIcon="@Icons.Material.Filled.Refresh">
+					Atualizar
+				</MudButton>
+			</MudItem>
+		</MudGrid>
 
 		@if (tarefas == null)
 		{
@@ -56,15 +68,15 @@
 					<MudTd DataLabel="Título">@context.Titulo</MudTd>
 					<MudTd DataLabel="Prioridade">
 						<MudChip T="string" Size="Size.Small"
-								 Icon="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Icone"
-								 Color="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Cor">
+						Icon="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Icone"
+						Color="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Cor">
 							@prioridades.First(p => p.Id == context.PrioridadeTarefa).Nome
 						</MudChip>
 					</MudTd>
 					<MudTd DataLabel="Status">
 						<MudChip T="string" Size="Size.Small"
-								 Icon="@statusList.First(p => p.Id == context.Status).Icone"
-								 Color="@statusList.First(p => p.Id == context.Status).Cor">
+						Icon="@statusList.First(p => p.Id == context.Status).Icone"
+						Color="@statusList.First(p => p.Id == context.Status).Cor">
 							@statusList.First(p => p.Id == context.Status).Nome
 						</MudChip>
 					</MudTd>
@@ -73,8 +85,8 @@
 					<MudTd DataLabel="Prazo">@context.Prazo.ToShortDateString()</MudTd>					
 					<MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Edit"
-									   Color="Color.Primary"
-									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
+						Color="Color.Primary"
+						OnClick="@(() => NavegarParaEdicao(context.Id))" />
 					</MudTd>
 				</RowTemplate>
 			</MudTable>
@@ -83,17 +95,17 @@
 </MudContainer>
 
 @code {
-	[Inject]
-	public UsuarioServico usuarioServico { get; set; }
-	[Inject]
-	public TarefaServico tarefaServico { get; set; }
-
 	private List<TarefaStatus> statusList = TarefaStatus.Carregar();
 	private List<TarefaPrioridade> prioridades = TarefaPrioridade.Carregar();
 	private List<UsuarioDTO>? usuarios;
 	private List<TarefaDTO>? tarefas;
 
 	protected override async Task OnInitializedAsync()
+	{
+		await Recarregar();
+	}
+
+	private async Task Recarregar()
 	{
 		usuarios = await usuarioServico.Lista();
 		tarefas = await tarefaServico.Lista();

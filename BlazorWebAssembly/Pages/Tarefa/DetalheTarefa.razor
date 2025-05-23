@@ -1,7 +1,6 @@
 ﻿@page "/tarefa/{Id:int}"
 @using Microsoft.AspNetCore.WebUtilities
 @inject ISnackbar Snackbar
-@inject HttpClient Http
 @inject UsuarioServico usuarioServico
 @inject TarefaServico tarefaServico
 @inject ComentarioServico comentarioServico
@@ -10,19 +9,34 @@
 <PageTitle>Detalhes da Tarefa</PageTitle>
 
 <MudContainer MaxWidth="MaxWidth.Medium" Class="pa-4">
-	@if (tarefa == null)
-	{
-		<MudAlert Severity="Severity.Info" Class="my-4">
-			ERRO: Tarefa não encontrada.
-		</MudAlert>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
-				   Size="Size.Large" OnClick="() => Cancelar()">
-			Voltar
-		</MudButton>
-	}
-	else
-	{
-		<MudPaper Class="ma-4 pa-2">
+	<MudGrid>
+		<MudItem xs="6">
+			<MudText Typo="Typo.h4">
+				<MudIcon Icon="@Icons.Material.Filled.ChecklistRtl" /> Gerenciador de Tarefas
+			</MudText>
+		</MudItem>
+		<MudItem xs="6" Class="d-flex justify-end">
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.KeyboardReturn"
+					   Size="Size.Large" OnClick="() => Cancelar()">
+				Voltar
+			</MudButton>
+		</MudItem>
+	</MudGrid>
+
+	<MudPaper Class="pa-4 mt-4" Elevation="3">
+
+		@if (tarefa == null)
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				ERRO: Tarefa não encontrada.
+			</MudAlert>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
+					   Size="Size.Large" OnClick="() => Cancelar()">
+				Voltar
+			</MudButton>
+		}
+		else
+		{
 			<MudText Typo="Typo.h6" Class="ma-2">Detalhes da Tarefa</MudText>
 
 			<MudCard Class="pa-2 mt-2" Elevation="0" Outlined="true">
@@ -86,7 +100,7 @@
 					</MudCardHeader>
 
 					<MudStack Spacing="2">
-						@foreach (var comentario in comentarios.OrderByDescending(c => c.dataCriacao))
+						@foreach (var comentario in (comentarios ?? []).OrderByDescending(c => c.dataCriacao))
 						{
 							<MudPaper Class="pa-3" Outlined="true">
 								<MudGrid>
@@ -125,8 +139,9 @@
 					Voltar
 				</MudButton>
 			</MudStack>
-		</MudPaper>
-	}
+
+		}
+	</MudPaper>
 </MudContainer>
 
 @code {
