@@ -52,7 +52,7 @@ mkdir -p "$DIRETORIO_TEMP"
 
 # Descompactar o arquivo ZIP
 exibir_mensagem "Descompactando arquivo ZIP..."
-unzip -o "$ARQUIVO_ZIP" -d "$DIRETORIO_TEMP"
+unzip -o "$ARQUIVO_ZIP" -d "$DIRETORIO_TEMP" -qq
 if [ $? -gt 1 ]; then
     exibir_mensagem "Falha ao descompactar o arquivo ZIP." "ERRO"
     exit 1
@@ -81,6 +81,7 @@ chmod -R 755 "$DIRETORIO_DESTINO"
 exibir_mensagem "Iniciando o serviço..."
 systemctl start "$NOME_SERVICO"
 systemctl start "$NOME_SERVICO_API"
+systemctl restart nginx
 
 # Verificar se o serviço está em execução
 if systemctl is-active --quiet "$NOME_SERVICO"; then

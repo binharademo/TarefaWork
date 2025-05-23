@@ -57,10 +57,8 @@ else
             // Preenche os dados do DTO usado no formulário
             setorDTO = new AlterarSetorDTO
                 {
-                    Id = setor.Id, 
                     Nome = setor.Nome,
-                    Status = setor.Status,
-                    EmpresaId = setor.Empresa.Id
+                    Status = setor.Status
                 };
 
             // DEBUG: Adicione estas linhas para verificar
@@ -72,7 +70,7 @@ else
     private async Task SalvarSetor()
     {
         // DEBUG: Verifique o que está sendo enviado
-        Console.WriteLine($"Enviando - Nome: {setorDTO.Nome}, Status: {setorDTO.Status}, EmpresaId: {setorDTO.EmpresaId}");
+        Console.WriteLine($"Enviando - Nome: {setorDTO.Nome}, Status: {setorDTO.Status}");
 
         var resultado = await SetorServico.Atualizar(Id, setorDTO);
         if (resultado)

@@ -152,7 +152,7 @@ try {
     Start-Sleep -Milliseconds 2000  # Wait a bit for output to appear
     $saida = $stream.Read()
             
-    if (-not($saida -match "SUCCESS")) {
+#    if (-not($saida -match "SUCCESS")) {
         $linhasValidas = $saida -split '\r?\n' | Where-Object {
             # remove linhas em branco
             if ($_ -match '^\s*$') { return $false }
@@ -169,7 +169,7 @@ try {
         }
         $saida = $linhasValidas -join "`n"
         Escrever-Mensagem "Saida: $saida" "ERRO"
-    }
+#    }
         
     # Encerrar a sessão SSH
     Remove-SSHSession -SessionId $sessaoSSH.SessionId | Out-Null
