@@ -161,14 +161,14 @@ try {
             # remove eco do próprio comando (caso o shell o repita)
             if ($_ -eq "sudo ./configurar_e_iniciar.sh") { return $false }
             # opcional: remova as linhas SUCCESS/FAILURE
-            if ($_ -match '^(SUCCESS|FAILURE)$') { return $false }
+#            if ($_ -match '^(SUCCESS|FAILURE)$') { return $false }
             # remove o shell prompt (ex.: usuario@servidor:~$)
             if ($_ -match '^[^@\s]+@[^:\s]+:[^$\r\n]+\$') { return $false }
             # caso contrário, mantém a linha
             return $true
         }
         $saida = $linhasValidas -join "`n"
-        Escrever-Mensagem "Saida: $saida" "ERRO"
+        Escrever-Mensagem "Saida:`n$saida" "INFO"
 #    }
         
     # Encerrar a sessão SSH

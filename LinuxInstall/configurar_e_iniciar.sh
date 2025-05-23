@@ -52,7 +52,7 @@ mkdir -p "$DIRETORIO_TEMP"
 
 # Descompactar o arquivo ZIP
 exibir_mensagem "Descompactando arquivo ZIP..."
-unzip -o "$ARQUIVO_ZIP" -d "$DIRETORIO_TEMP" -qq
+unzip -qq -o "$ARQUIVO_ZIP" -d "$DIRETORIO_TEMP" 
 if [ $? -gt 1 ]; then
     exibir_mensagem "Falha ao descompactar o arquivo ZIP." "ERRO"
     exit 1
