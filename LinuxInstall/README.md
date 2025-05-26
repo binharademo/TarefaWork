@@ -34,6 +34,8 @@ Este script irá:
 
 No Windows, execute o script PowerShell `compilar_e_enviar.ps1` com os parâmetros necessários:
 
+
+# .\LinuxInstall\compilar_e_enviar.ps1 -ServidorIP 192.168.0.39 -Usuario winaudio -Senha Win@dmin
 ```powershell
 .\compilar_e_enviar.ps1 -ServidorIP "seu_ip_aqui" -Usuario "seu_usuario" -Senha "sua_senha"
 ```
