@@ -1,5 +1,6 @@
 ﻿@page "/tarefa/board"
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 @inject UsuarioServico usuarioServico
 @inject TarefaServico tarefaServico
 
@@ -78,7 +79,7 @@
 							</CardHeaderContent>
 							<CardHeaderActions>
 								<MudIconButton Icon="@Icons.Material.Filled.Settings" Color="Color.Default"
-											   OnClick="() => NavegarParaDetalhes(context.Id)" />
+											   OnClick="() => NavegarParaDetalhes(context)" />
 							</CardHeaderActions>
 						</MudCardHeader>
 						<MudCardContent Class="py-2">
@@ -148,9 +149,28 @@
 		}
 	}
 
-	private void NavegarParaDetalhes(int id)
+	private async void NavegarParaDetalhes(TarefaDTO tarefa)
 	{
-		NavigationManager.NavigateTo($"/tarefa/{id}?backTo=tarefa/board");
+		try
+		{
+			var parameters = new DialogParameters { { "tarefa", tarefa } };
+			var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = true, Position = DialogPosition.Center };
+			var dialog = await DialogService.ShowAsync<VerTarefaDialog>("Ver Tarefa", parameters, options);
+			var result = await dialog.Result;
+
+			if (result is null || !result.Canceled)
+			{
+				await Recarregar();
+				StateHasChanged();
+			}
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao abrir tarefa: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao abrir tarefa: {ex.Message}");
+			if (ex.InnerException != null)
+				Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+		}
 	}
 
 	private void NavegarParaCriacao()

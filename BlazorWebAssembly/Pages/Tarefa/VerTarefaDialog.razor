@@ -1,0 +1,244 @@
+﻿@inject ISnackbar Snackbar
+@inject UsuarioServico usuarioServico
+@inject TarefaServico tarefaServico
+@inject ComentarioServico comentarioServico
+
+<MudDialog>
+	<TitleContent>
+		<MudText Typo="Typo.h6" Class="mh-2">Tarefa #@tarefa?.Id - @tarefa?.Titulo</MudText>
+	</TitleContent>
+	<DialogContent>
+		@if (tarefa == null)
+		{
+			<MudAlert Severity="Severity.Info" Class="my-4">
+				ERRO: Tarefa não encontrada.
+			</MudAlert>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Error"
+					   Size="Size.Large" OnClick="() => Cancelar()">
+				Voltar
+			</MudButton>
+		}
+		else
+		{
+			<MudGrid>
+				<MudItem xs="12" sm="9">
+					<MudCard Class="pa-2 my-1" Elevation="1">
+						<MudCardHeader>
+							<CardHeaderContent>
+								<MudText Typo="Typo.subtitle1">Descrição</MudText>
+							</CardHeaderContent>
+						</MudCardHeader>
+						<MudText Class="pa-2" Typo="Typo.body2">@tarefa.Descricao</MudText>
+					</MudCard>
+
+					<MudCard Class="pa-2 my-2" Elevation="1">
+						<MudCardHeader>
+							<CardHeaderContent>
+								<MudText Typo="Typo.h6">Comentários (@(comentarios?.Count ?? 0))</MudText>
+							</CardHeaderContent>
+						</MudCardHeader>
+						@* Adicionar comentários *@
+						<MudPaper Class="pa-2 mb-2" Outlined="true">
+							<MudTextField @bind-Value="descricaoNovoComentario"
+										  Label="Comentário"
+										  Variant="Variant.Outlined"
+										  Lines="3" MaxLength="500" Counter="500"
+										  HelperText="Digite seu comentário aqui" />
+							<MudStack row>
+								<MudSelect T="int?" Label="Criador" Class="w-25" @bind-Value="comentarioUsuario">
+									@* TODO: USAR USUARIO LOGADO *@
+									@foreach (var usuario in usuarios ?? Enumerable.Empty<UsuarioDTO>())
+									{
+										<MudSelectItem T="int?" Value="@usuario.Id">@usuario.Nome</MudSelectItem>
+									}
+								</MudSelect>
+								<MudButton Variant="Variant.Filled"
+										   Color="Color.Primary"
+										   StartIcon="@Icons.Material.Filled.AddComment"
+										   OnClick="AdicionarComentario"
+										   Class="mb-2 w-50">
+									Adicionar Comentário
+								</MudButton>
+							</MudStack>
+
+						</MudPaper>
+
+						@foreach (var comentario in (comentarios ?? []).OrderByDescending(c => c.dataCriacao))
+						{
+							<MudChat ChatPosition="ChatBubblePosition.Start">
+								<MudAvatar Color="Color.Primary">
+									@GetInitials(PegaNomeUsuario(comentario.UsuarioId))
+								</MudAvatar>
+								<MudChatHeader Name="@PegaNomeUsuario(comentario.UsuarioId)" />
+								<MudChatBubble>@comentario.descricao</MudChatBubble>
+								<MudChatFooter Text="@comentario.dataCriacao.ToString("dd/MM/yyyy HH:mm")" />
+							</MudChat>
+						}
+					</MudCard>
+				</MudItem>
+				<MudItem xs="12" sm="2" Class="ma-4">
+					<MudStack>
+						<MudField Underline="false" Label="Tempo" FullWidth>
+							<MudIconButton Icon="@Icons.Material.Filled.PlayCircle" Color="Color.Primary"
+										   OnClick="() => CronometroPlay()" />
+							@tarefa.TempoTotal.ToString(@"hh\:mm")
+						</MudField>
+						<MudSelect @bind-Value="tarefa.Status" Label="Status" Underline="false" FullWidth>
+							@foreach (var status in statusList)
+							{
+								<MudSelectItem Value="@status.Id">
+									<MudIcon Icon="@status.Icone" Color="@status.Cor" />
+									@status.Nome
+								</MudSelectItem>
+							}
+						</MudSelect>
+
+						<MudSelect @bind-Value="tarefa.PrioridadeTarefa" Label="Prioridade" Underline="false" FullWidth>
+							@foreach (var prioridade in prioridades)
+							{
+								<MudSelectItem Value="@prioridade.Id">
+									<MudIcon Icon="@prioridade.Icone" Color="@prioridade.Cor" />
+									@prioridade.Nome
+								</MudSelectItem>
+							}
+						</MudSelect>
+						<MudField Underline="false" Label="Criador" FullWidth>
+							<MudText>@PegaNomeUsuario(tarefa.CriadorId)</MudText>
+						</MudField>
+						<MudField Underline="false" Label="Responsável" FullWidth>
+							<MudText>@PegaNomeUsuario(tarefa.ResponsavelId)</MudText>
+						</MudField>
+						<MudField Underline="false" Label="Data de Criação" FullWidth>
+							<MudText>@tarefa.DataCriacao.ToString("dd/MM/yyyy")</MudText>
+						</MudField>
+						<MudField Underline="false" Label="Prazo" FullWidth>
+							<MudText>@tarefa.Prazo.ToString("dd/MM/yyyy")</MudText>
+						</MudField>
+					</MudStack>
+				</MudItem>
+			</MudGrid>
+		}
+	</DialogContent>
+
+	<DialogActions>
+		<MudButton Variant="Variant.Outlined" Color="Color.Secondary" OnClick="Cancelar">Cancelar</MudButton>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Salvar">Salvar</MudButton>
+	</DialogActions>
+</MudDialog>
+
+@code {
+	[CascadingParameter] IMudDialogInstance MudDialog { get; set; } = default!;
+	[Parameter] public TarefaDTO? tarefa { get; set; }
+
+	private List<UsuarioDTO>? usuarios;
+	private List<ComentarioDTO>? comentarios;
+	private List<TarefaPrioridade> prioridades = TarefaPrioridade.Carregar();
+	private List<TarefaStatus> statusList = TarefaStatus.Carregar();
+	private string descricaoNovoComentario = string.Empty;
+	private int? comentarioUsuario;
+
+	protected override async Task OnInitializedAsync()
+	{
+		await CarregarDados();
+	}
+
+	private async Task CarregarDados()
+	{
+		try
+		{
+			if (tarefa is null)
+			{
+				Snackbar.Add("Erro ao carregar dados da tarefa", Severity.Error);
+				return;
+			}
+
+			usuarios = await usuarioServico.Lista();
+			comentarios = await comentarioServico.Lista(tarefa.Id);
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao carregar dados: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao carregar dados: {ex}");
+		}
+	}
+
+	private async Task AdicionarComentario()
+	{
+		try
+		{
+			if (tarefa is null || comentarioUsuario is null)
+			{
+				Snackbar.Add("Tarefa não encontrada", Severity.Warning);
+				return;
+			}
+
+			if (string.IsNullOrWhiteSpace(descricaoNovoComentario))
+			{
+				Snackbar.Add("Por favor, digite um comentário", Severity.Warning);
+				return;
+			}
+
+			var novoComentario = new ComentarioDTO
+				{
+					descricao = descricaoNovoComentario.Trim(),
+					UsuarioId = comentarioUsuario ?? 0, // TODO: Pegar o ID do usuário logado
+					dataCriacao = DateTime.Now
+				};
+
+			var erros = await comentarioServico.Salva(tarefa.Id, novoComentario);
+
+			if (string.IsNullOrWhiteSpace(erros))
+			{
+				descricaoNovoComentario = string.Empty;
+				Snackbar.Add("Comentário adicionado com sucesso!", Severity.Success);
+
+				// Recarregar os comentários
+				comentarios = await comentarioServico.Lista(tarefa.Id);
+				StateHasChanged();
+			}
+			else
+			{
+				Snackbar.Add($"Erro ao salvar comentário: {erros}", Severity.Error);
+				Console.WriteLine($"Erro ao salvar comentário: {erros}");
+			}
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro inesperado ao adicionar comentário: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao adicionar comentário: {ex}");
+		}
+	}
+
+	private string PegaNomeUsuario(int id)
+	{
+		try
+		{
+			var usuario = usuarios?.FirstOrDefault(u => u.Id == id);
+			return usuario?.Nome ?? "Usuário não encontrado";
+		}
+		catch
+		{
+			return "Erro ao carregar usuário";
+		}
+	}
+
+	private string GetInitials(string nomeCompleto)
+	{
+		if (string.IsNullOrWhiteSpace(nomeCompleto))
+			return "??";
+
+		var palavras = nomeCompleto.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+		if (palavras.Length == 1)
+			return palavras[0].Substring(0, Math.Min(2, palavras[0].Length)).ToUpper();
+
+		return $"{palavras[0][0]}{palavras[^1][0]}".ToUpper();
+	}
+
+	private async Task CronometroPlay()
+	{
+		Snackbar.Add("Não implementado ainda...");
+	}
+
+	private void Cancelar() => MudDialog.Cancel();
+	private void Salvar() => MudDialog.Close(DialogResult.Ok(true));
+}

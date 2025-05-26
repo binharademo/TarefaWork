@@ -1,8 +1,9 @@
 ﻿@page "/tarefa"
 @page "/tarefa/lista"
-@using BlazorWebAssembly.Modelos
+@inject ISnackbar Snackbar
+@inject IDialogService DialogService
 @inject UsuarioServico usuarioServico
-@inject TarefaServico tarefaServico 
+@inject TarefaServico tarefaServico
 
 <PageTitle>Lista de Tarefas</PageTitle>
 
@@ -15,7 +16,7 @@
 		</MudItem>
 		<MudItem xs="6" Class="d-flex justify-end">
 			<MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add"
-			Size="Size.Large" OnClick="() => NavegarParaCriacao()">
+					   Size="Size.Large" OnClick="() => NavegarParaCriacao()">
 				Cadastrar Nova Tarefa
 			</MudButton>
 		</MudItem>
@@ -31,9 +32,9 @@
 			<MudSpacer />
 			<MudItem class="d-flex justify-end">
 				<MudButton Variant="Variant.Text"
-				Color="Color.Primary"
-				OnClick="async () => { await Recarregar(); StateHasChanged(); }"
-				StartIcon="@Icons.Material.Filled.Refresh">
+						   Color="Color.Primary"
+						   OnClick="async () => { await Recarregar(); StateHasChanged(); }"
+						   StartIcon="@Icons.Material.Filled.Refresh">
 					Atualizar
 				</MudButton>
 			</MudItem>
@@ -52,7 +53,7 @@
 		}
 		else
 		{
-			<MudTable Items="@tarefas" Hover="true" Breakpoint="Breakpoint.Sm">
+			<MudTable T="TarefaDTO" Items="@tarefas" Hover="true" Breakpoint="Breakpoint.Sm" OnRowClick="RowClickEvent" RowClass="cursor-pointer">
 				<HeaderContent>
 					<MudTh>ID</MudTh>
 					<MudTh>Título</MudTh>
@@ -64,29 +65,29 @@
 					<MudTh>Ações</MudTh>
 				</HeaderContent>
 				<RowTemplate>
-					<MudTd DataLabel="ID">@context.Id</MudTd>
+					<MudTd DataLabel="ID" HideSmall>@context.Id</MudTd>
 					<MudTd DataLabel="Título">@context.Titulo</MudTd>
 					<MudTd DataLabel="Prioridade">
 						<MudChip T="string" Size="Size.Small"
-						Icon="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Icone"
-						Color="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Cor">
+								 Icon="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Icone"
+								 Color="@prioridades.First(p => p.Id == context.PrioridadeTarefa).Cor">
 							@prioridades.First(p => p.Id == context.PrioridadeTarefa).Nome
 						</MudChip>
 					</MudTd>
 					<MudTd DataLabel="Status">
 						<MudChip T="string" Size="Size.Small"
-						Icon="@statusList.First(p => p.Id == context.Status).Icone"
-						Color="@statusList.First(p => p.Id == context.Status).Cor">
+								 Icon="@statusList.First(p => p.Id == context.Status).Icone"
+								 Color="@statusList.First(p => p.Id == context.Status).Cor">
 							@statusList.First(p => p.Id == context.Status).Nome
 						</MudChip>
 					</MudTd>
-					<MudTd DataLabel="Criador">@(usuarios?.FirstOrDefault(u => u.Id == context.CriadorId)?.Nome ?? "Não Encontrado")</MudTd>
+					<MudTd DataLabel="Criador" HideSmall>@(usuarios?.FirstOrDefault(u => u.Id == context.CriadorId)?.Nome ?? "Não Encontrado")</MudTd>
 					<MudTd DataLabel="Responsável">@(usuarios?.FirstOrDefault(u => u.Id == context.ResponsavelId)?.Nome ?? "Não Encontrado")</MudTd>
-					<MudTd DataLabel="Prazo">@context.Prazo.ToShortDateString()</MudTd>					
+					<MudTd DataLabel="Prazo" HideSmall>@context.Prazo.ToShortDateString()</MudTd>
 					<MudTd>
 						<MudIconButton Icon="@Icons.Material.Filled.Edit"
-						Color="Color.Primary"
-						OnClick="@(() => NavegarParaEdicao(context.Id))" />
+									   Color="Color.Primary"
+									   OnClick="@(() => NavegarParaEdicao(context.Id))" />
 					</MudTd>
 				</RowTemplate>
 			</MudTable>
@@ -103,6 +104,32 @@
 	protected override async Task OnInitializedAsync()
 	{
 		await Recarregar();
+	}
+
+	private async Task RowClickEvent(TableRowClickEventArgs<TarefaDTO> tableRowClickEventArgs)
+	{
+		Console.WriteLine($"Clicou '{tableRowClickEventArgs.Item?.Id}'.");
+
+		try
+		{
+			var parameters = new DialogParameters { { "tarefa", tableRowClickEventArgs.Item } };
+			var options = new DialogOptions { CloseOnEscapeKey = true, MaxWidth = MaxWidth.Medium, FullWidth = true, BackdropClick = true, Position = DialogPosition.Center };
+			var dialog = await DialogService.ShowAsync<VerTarefaDialog>("Ver Tarefa", parameters, options);
+			var result = await dialog.Result;
+
+			if (result is null || !result.Canceled)
+			{
+				await Recarregar();
+				StateHasChanged();
+			}
+		}
+		catch (Exception ex)
+		{
+			Snackbar.Add($"Erro ao abrir tarefa: {ex.Message}", Severity.Error);
+			Console.WriteLine($"Erro ao abrir tarefa: {ex.Message}");
+			if (ex.InnerException != null)
+				Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+		}
 	}
 
 	private async Task Recarregar()
