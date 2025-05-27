@@ -46,7 +46,7 @@ function ListarUsuario() {
         setErro(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Usuario');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar usuarios');
             }
@@ -105,12 +105,12 @@ function ListarUsuario() {
 
     const renderSetor = (setor) => {
         switch (setor) {
-            case 0:
-                return <Chip label="TI" size="small" color="success" />;
             case 1:
+                return <Chip label="TI" size="small" color="success" />;
+            case 2:
                 return <Chip label="Marketing" size="small" color="warning" />;
             default:
-                return <Chip label={setor} size="small" />;
+                return <Chip label={`ERRO (${setor})`} size="small" />;
         }
     };
 
@@ -260,7 +260,7 @@ function ListarUsuario() {
                                         <TableCell>{usuario.id}</TableCell>
                                         <TableCell sx={{ fontWeight: 500 }}>{usuario.nome}</TableCell>
                                         <TableCell>{renderFuncao(usuario.funcaoUsuario)}</TableCell>
-                                        <TableCell>{renderSetor(usuario.setorUsuario)}</TableCell>
+                                        <TableCell>{renderSetor(usuario.setorUsuarioId)}</TableCell>
                                         <TableCell>
                                             <IconButton
                                                 size="small"

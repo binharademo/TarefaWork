@@ -37,7 +37,7 @@ function EditarUsuario() {
         nome: '',
         senha: '',
         funcaoUsuario: '',
-        setorUsuario: ''
+        setorUsuarioId: ''
     });
 
     useEffect(() => {
@@ -46,7 +46,7 @@ function EditarUsuario() {
             setErro(null);
 
             try {
-                const response = await fetch(`http://localhost:53011/Usuario/${id}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario/${id}`);
                 if (!response.ok) {
                     throw new Error('Erro ao carregar dados do usuário');
                 }
@@ -81,12 +81,12 @@ function EditarUsuario() {
                 nome: usuario.nome,
                 senha: usuario.senha || '', // Inclui senha no DTO, mesmo se vazia
                 funcaoUsuario: parseInt(usuario.funcaoUsuario),
-                setorUsuario: parseInt(usuario.setorUsuario)
+                setorUsuarioId: parseInt(usuario.setorUsuarioId)
             };
 
             console.log('Enviando dados para atualização:', usuarioDTO);
 
-            const response = await fetch(`http://localhost:53011/Usuario/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
@@ -232,12 +232,12 @@ function EditarUsuario() {
                                 <Select
                                     required
                                     label="Setor"
-                                    name="setorUsuario"
-                                    value={usuario.setorUsuario}
+                                    name="setorUsuarioId"
+                                    value={usuario.setorUsuarioId}
                                     onChange={handleInputChange}
                                 >
-                                    <MenuItem value={0}>TI</MenuItem>
-                                    <MenuItem value={1}>Marketing</MenuItem>
+                                    <MenuItem value={1}>TI</MenuItem>
+                                    <MenuItem value={2}>Marketing</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid>

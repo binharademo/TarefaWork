@@ -39,7 +39,7 @@ function CadastrarSetor() {
     useEffect(() => {
         const carregarEmpresas = async () => {
             try {
-                const response = await fetch('http://localhost:53011/Empresa');
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Empresa`);
                 if (!response.ok) {
                     throw new Error('Erro ao carregar empresas');
                 }
@@ -75,7 +75,7 @@ function CadastrarSetor() {
         }
 
         try {
-            const response = await fetch('http://localhost:53011/Setor', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Setor`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

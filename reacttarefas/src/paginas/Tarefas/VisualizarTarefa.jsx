@@ -45,7 +45,7 @@ function VisualizarTarefa() {
     useEffect(() => {
         const fetchUsuarios = async () => {
             try {
-                const response = await fetch('http://localhost:53011/Usuario');
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario`);
                 if (!response.ok) {
                     throw new Error('Erro ao carregar usuários');
                 }
@@ -72,7 +72,7 @@ function VisualizarTarefa() {
             setErro(null);
 
             try {
-                const response = await fetch(`http://localhost:53011/Tarefa/${id}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Tarefa/${id}`);
                 if (!response.ok) {
                     throw new Error('Erro ao carregar detalhes da tarefa');
                 }
@@ -94,17 +94,17 @@ function VisualizarTarefa() {
     };
 
     const getStatusLabel = (status) => {
-        const statusLabels = ['Concluído', 'Em Andamento', 'Pendente'];
+        const statusLabels = ['Pendente', 'Em Andamento', 'Concluído'];
         return statusLabels[status] || 'Desconhecido';
     };
 
     const getStatusIcon = (status) => {
         switch (status) {
-            case 0: // Concluído
+            case 2: // Concluído
                 return <CheckCircleIcon color="success" />;
             case 1: // EmAndamento
                 return <WarningIcon color="warning" />;
-            case 2: // Pendente
+            case 0: // Pendente
                 return <ErrorIcon color="error" />;
             default:
                 return <ErrorIcon />;
@@ -113,11 +113,11 @@ function VisualizarTarefa() {
 
     const getStatusColor = (status) => {
         switch (status) {
-            case 0: // Concluído
+            case 2: // Concluído
                 return 'success';
             case 1: // EmAndamento
                 return 'warning';
-            case 2: // Pendente
+            case 0: // Pendente
                 return 'error';
             default:
                 return 'default';
@@ -140,10 +140,6 @@ function VisualizarTarefa() {
             default:
                 return <LowPriorityIcon />;
         }
-    };
-
-    const formatarData = (data) => {
-        return new Date(data).toLocaleDateString('pt-BR');
     };
 
     const formatarDataCompleta = (data) => {

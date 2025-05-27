@@ -31,9 +31,9 @@ import {
 } from '@mui/icons-material';
 
 const STATUS_COLORS = {
-    0: 'success', // Concluído
+    0: 'error',    // Pendente
     1: 'warning', // Em Andamento
-    2: 'error'    // Pendente
+    2: 'success' // Concluído
 };
 
 const StyledColumn = styled(Paper)(({ theme, status }) => ({
@@ -74,7 +74,7 @@ export default function BoardTarefas() {
 
     const fetchTarefas = () => {
         setLoading(true);
-        fetch('http://localhost:53011/Tarefa')
+        fetch(`${import.meta.env.VITE_API_URL}/Tarefa`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(data => {
                 const grouped = { 0: [], 1: [], 2: [] };
@@ -90,7 +90,7 @@ export default function BoardTarefas() {
     const closeNotification = () =>
         setNotification(prev => ({ ...prev, open: false }));
 
-    const statusLabels = { 0: 'Concluído', 1: 'Em Andamento', 2: 'Pendente' };
+    const statusLabels = { 0: 'Pendente', 1: 'Em Andamento', 2: 'Concluído' };
 
     const converterParaSegundos = str => {
         if (!str) return 0;
@@ -156,7 +156,7 @@ export default function BoardTarefas() {
 
         showNotification(`Movendo "${updated.titulo}" para ${statusLabels[updated.status]}...`, 'info');
         try {
-            const res = await fetch(`http://localhost:53011/Tarefa/${updated.id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/Tarefa/${updated.id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updated)
@@ -186,7 +186,7 @@ export default function BoardTarefas() {
             </Box>
             <DragDropContext onDragEnd={handleDragEnd}>
                 <Grid container spacing={5} wrap="nowrap" sx={{ overflowX: 'auto' }}>
-                    {[2, 1, 0].map((status) => (
+                    {[0, 1, 2].map((status) => (
                         <Grid item key={status} sx={{ minWidth: 280 }}>
                             <Droppable droppableId={String(status)}>
                                 {(provided, snapshot) => (
@@ -235,10 +235,10 @@ export default function BoardTarefas() {
                                                                     </Typography>
                                                                     <Box display="flex" alignItems="center" gap={1} mb={1}>
                                                                         {t.status === 0
-                                                                            ? <CheckCircleIcon color="success" />
+                                                                            ? <ErrorIcon color="error" />
                                                                             : t.status === 1
                                                                                 ? <WarningIcon color="warning" />
-                                                                                : <ErrorIcon color="error" />}
+                                                                                : <CheckCircleIcon color="success" />}
                                                                         <PriorityHighIcon color={
                                                                             t.prioridadeTarefa === 0 ? "success" :
                                                                                 t.prioridadeTarefa === 1 ? "warning" : "error"

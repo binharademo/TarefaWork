@@ -48,7 +48,7 @@ function ListarSetor() {
         setErro(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Setor');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Setor`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar setores');
             }

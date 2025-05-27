@@ -102,6 +102,23 @@ server {
 }
 EOF
 
+echo "Criando arquivo de configuração Nginx para o front React..."
+cat > /etc/nginx/sites-available/react <<EOF
+server {
+    listen 8082;
+    server_name 192.168.0.39;  # Substitua pelo seu domínio ou IP
+    access_log  /var/log/nginx/react.access.log;
+    error_log /var/log/nginx/react.error.log;
+
+    root /var/www/react/;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ index.html =404;
+    }
+}
+EOF
+
 echo "Criando arquivo de configuração Nginx para a aplicação WebAssembly..."
 cat > /etc/nginx/sites-available/dotnet-webAssembly <<EOF
 limit_req_zone $http_x_forwarded_for zone=webassembly:20m rate=100r/s; # you missed line like this

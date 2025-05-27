@@ -52,14 +52,14 @@ function CadastroTarefa() {
         responsavelId: '',
         prazo: null,
         tempoTotal: null,
-        status: 2, // 2 = Pendente (valor padrão)
+        status: 0, // 0 = Pendente (valor padrão)
         prioridadeTarefa: 0 // 0 = Baixa
     });
 
     useEffect(() => {
         async function fetchUsuarios() {
             try {
-                const response = await fetch('http://localhost:53011/Usuario');
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario`);
                 if (!response.ok) {
                     throw new Error('Erro ao carregar usuarios');
                 }
@@ -94,7 +94,7 @@ function CadastroTarefa() {
         setError(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Tarefa', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Tarefa`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -285,7 +285,7 @@ function CadastroTarefa() {
                                             </InputAdornment>
                                         }
                                     >
-                                        <MenuItem value={0}>
+                                        <MenuItem value={2}>
                                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                 <CheckCircleIcon color="success" sx={{ mr: 1 }} /> Concluído
                                             </Box>
@@ -295,7 +295,7 @@ function CadastroTarefa() {
                                                 <PlayCircleIcon color="primary" sx={{ mr: 1 }} /> Em Andamento
                                             </Box>
                                         </MenuItem>
-                                        <MenuItem value={2}>
+                                        <MenuItem value={0}>
                                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                 <PendingIcon color="action" sx={{ mr: 1 }} /> Pendente
                                             </Box>

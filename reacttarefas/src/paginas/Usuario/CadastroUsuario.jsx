@@ -32,7 +32,7 @@ function CadastroUsuario() {
         nome: '',
         senha: '',
         funcaoUsuario: '',
-        setorUsuario: ''
+        setorUsuarioId: ''
     });
     const [error, setError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
@@ -50,14 +50,14 @@ function CadastroUsuario() {
         e.preventDefault();
         setError(null);
         try {
-            const response = await fetch('http://localhost:53011/Usuario', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({
                     "Nome": usuario.nome,
                     "Senha": usuario.senha,
                     "FuncaoUsuario": parseInt(usuario.funcaoUsuario, 10),
-                    "SetorUsuario": parseInt(usuario.setorUsuario, 10)
+                    "SetorUsuarioId": parseInt(usuario.setorUsuarioId, 10)
                 })
             });
             if (!response.ok) {
@@ -184,9 +184,9 @@ function CadastroUsuario() {
                                     <InputLabel id="setor-label">Setor</InputLabel>
                                     <Select
                                         labelId="setor-label"
-                                        id="setorUsuario"
-                                        name="setorUsuario"
-                                        value={usuario.setorUsuario}
+                                        id="setorUsuarioId"
+                                        name="setorUsuarioId"
+                                        value={usuario.setorUsuarioId}
                                         onChange={handleChange}
                                         label="Setor"
                                         endAdornment={
@@ -197,8 +197,8 @@ function CadastroUsuario() {
                                         sx={{ minWidth: '150px;' }}
                                     >
                                         <MenuItem value="">Selecione um setor</MenuItem>
-                                        <MenuItem value={0}>TI</MenuItem>
-                                        <MenuItem value={1}>Marketing</MenuItem>
+                                        <MenuItem value={1}>TI</MenuItem>
+                                        <MenuItem value={2}>Marketing</MenuItem>
                                     </Select>
                                 </FormControl>
                             </Grid>

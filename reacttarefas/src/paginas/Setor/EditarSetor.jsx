@@ -35,7 +35,7 @@ function EditarSetor() {
     useEffect(() => {
         const carregarDados = async () => {
             try {
-                const setorResponse = await fetch(`http://localhost:53011/Setor/${id}`);
+                const setorResponse = await fetch(`${import.meta.env.VITE_API_URL}/Setor/${id}`);
                 if (!setorResponse.ok) {
                     throw new Error('Erro ao carregar dados do setor');
                 }
@@ -74,7 +74,7 @@ function EditarSetor() {
         setSuccess(false);
 
         try {
-            const getSetorResponse = await fetch(`http://localhost:53011/Setor/${id}`);
+            const getSetorResponse = await fetch(`${import.meta.env.VITE_API_URL}/Setor/${id}`);
             if (!getSetorResponse.ok) {
                 throw new Error('Erro ao obter dados atuais do setor');
             }
@@ -88,7 +88,7 @@ function EditarSetor() {
                 empresaId: setorAtual.empresa.id
             });
 
-            const response = await fetch(`http://localhost:53011/Setor/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Setor/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

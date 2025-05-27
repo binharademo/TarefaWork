@@ -8,6 +8,7 @@
 # Parâmetros
 DIRETORIO_TEMP="/tmp/aplicacao_dotnet"
 DIRETORIO_DESTINO="/var/www/dotnet"
+DIRETORIO_REACT="/var/www/react"
 NOME_SERVICO="dotnet-app"
 NOME_SERVICO_API="dotnet-api"
 ARQUIVO_ZIP="aplicacao_dotnet.zip"
@@ -76,6 +77,11 @@ cp -r "$DIRETORIO_TEMP"/* "$DIRETORIO_DESTINO"/
 exibir_mensagem "Configurando permissões..."
 chown -R www-data:www-data "$DIRETORIO_DESTINO"
 chmod -R 755 "$DIRETORIO_DESTINO"
+
+#Move arquivos React
+exibir_mensagem "Configurando REACT..."
+find "$DIRETORIO_REACT"/ -maxdepth 1 -mindepth 1 ! -name '.env' -exec rm -Rf {} +
+mv "$DIRETORIO_DESTINO"/react/* "$DIRETORIO_REACT"/
 
 # Iniciar o serviço
 exibir_mensagem "Iniciando o serviço..."

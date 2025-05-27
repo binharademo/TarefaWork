@@ -58,7 +58,7 @@ function CadastroEmpresa() {
         e.preventDefault();
         setError(null);
         try {
-            const response = await fetch('http://localhost:53011/Empresa', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Empresa`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

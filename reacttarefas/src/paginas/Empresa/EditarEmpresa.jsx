@@ -24,7 +24,7 @@ function EditarEmpresa() {
     useEffect(() => {
         const fetchEmpresa = async () => {
             try {
-                const response = await fetch(`http://localhost:53011/Empresa/${id}`);
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/Empresa/${id}`);
                 if (!response.ok) {
                     throw new Error('Erro ao carregar dados da empresa');
                 }
@@ -54,7 +54,7 @@ function EditarEmpresa() {
         }
 
         try {
-            const response = await fetch(`http://localhost:53011/Empresa/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Empresa/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(empresa)

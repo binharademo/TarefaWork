@@ -46,7 +46,7 @@ function ListarEmpresa() {
         setErro(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Empresa');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Empresa`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar empresas');
             }

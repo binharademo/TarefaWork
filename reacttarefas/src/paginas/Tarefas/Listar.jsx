@@ -58,7 +58,7 @@ function Listar() {
 
     const fetchUsuarios = async () => {
         try {
-            const response = await fetch('http://localhost:53011/Usuario');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Usuario`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar usuários');
             }
@@ -86,7 +86,7 @@ function Listar() {
         setErro(null);
 
         try {
-            const response = await fetch('http://localhost:53011/Tarefa');
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Tarefa`);
             if (!response.ok) {
                 throw new Error('Erro ao carregar tarefas');
             }
@@ -121,11 +121,11 @@ function Listar() {
 
     const getStatusIcon = (status) => {
         switch (status) {
-            case 0: // Concluído
+            case 2: // Concluído
                 return <CheckCircleIcon color="success" />;
             case 1: // EmAndamento
                 return <WarningIcon color="warning" />;
-            case 2: // Pendente
+            case 0: // Pendente
                 return <ErrorIcon color="error" />;
             default:
                 return <ErrorIcon />;
@@ -347,7 +347,7 @@ function Listar() {
                                         }}
                                     >
                                         <TableCell>
-                                            <Tooltip title={['Concluído', 'Em Andamento', 'Pendente'][tarefa.status]}>
+                                            <Tooltip title={['Pendente', 'Em Andamento', 'Concluído'][tarefa.status]}>
                                                 {getStatusIcon(tarefa.status)}
                                             </Tooltip>
                                         </TableCell>

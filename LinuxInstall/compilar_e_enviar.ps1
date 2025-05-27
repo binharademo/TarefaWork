@@ -108,6 +108,19 @@ if (-not (Test-Path "$DiretorioPublicacao\*.dll")) {
     exit 1
 }
 
+
+# Arquivos React
+Escrever-Mensagem "Buildando React"
+cd reacttarefas
+npm run build
+if (-not (Test-Path "dist")) {
+    Escrever-Mensagem "Não foram encontrados arquivos de build no diretório de publicação do React." "ERRO"
+    exit 1
+}
+cd ..
+mv reacttarefas\dist "$DiretorioPublicacao\react"
+
+
 # Comprimir os arquivos para envio
 $arquivoZip = "$env:TEMP\aplicacao_dotnet.zip"
 Escrever-Mensagem "Comprimindo arquivos para envio: $arquivoZip"

@@ -62,14 +62,14 @@ function EditarTarefa() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const tarefaResponse = await fetch(`http://localhost:53011/Tarefa/${id}`);
+                const tarefaResponse = await fetch(`${import.meta.env.VITE_API_URL}/Tarefa/${id}`);
                 if (!tarefaResponse.ok) {
                     throw new Error('Erro ao carregar tarefa');
                 }
                 const tarefaData = await tarefaResponse.json();
 
                 // Buscar usuários
-                const usuariosResponse = await fetch('http://localhost:53011/Usuario');
+                const usuariosResponse = await fetch(`${import.meta.env.VITE_API_URL}/Usuario`);
                 if (!usuariosResponse.ok) {
                     throw new Error('Erro ao carregar usuários');
                 }
@@ -118,7 +118,7 @@ function EditarTarefa() {
         setError(null);
 
         try {
-            const response = await fetch(`http://localhost:53011/Tarefa/${id}`, {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/Tarefa/${id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -319,7 +319,7 @@ function EditarTarefa() {
                                             </InputAdornment>
                                         }
                                     >
-                                        <MenuItem value={0}>
+                                        <MenuItem value={2}>
                                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                 <CheckCircleIcon color="success" sx={{ mr: 1 }} /> Concluído
                                             </Box>
@@ -329,7 +329,7 @@ function EditarTarefa() {
                                                 <PlayCircleIcon color="primary" sx={{ mr: 1 }} /> Em Andamento
                                             </Box>
                                         </MenuItem>
-                                        <MenuItem value={2}>
+                                        <MenuItem value={0}>
                                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                                 <PendingIcon color="action" sx={{ mr: 1 }} /> Pendente
                                             </Box>
